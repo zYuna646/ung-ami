@@ -6,13 +6,12 @@ use App\Models\Admin;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class AdminSeeder extends Seeder
 {
     public function run(): void
     {
-        $dataExists = User::where('email', 'admin@gmail.com')->exists();
+        $dataExists = User::where('email', 'admin@amiung.com')->exists();
 
         if ($dataExists) {
             return;
@@ -20,8 +19,8 @@ class AdminSeeder extends Seeder
 
         $user = User::create([
             'name' => 'Admin',
-            'email' => 'admin@gmail.com',
-            'password' => Hash::make('admin')
+            'email' => 'admin@amiung.com',
+            'password' => 'admin'
         ]);
 
         Admin::create([

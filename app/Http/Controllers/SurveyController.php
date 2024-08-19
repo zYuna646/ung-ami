@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Instrument;
 use Illuminate\Http\Request;
 
 class SurveyController extends Controller
 {
     public function index()
     {
+        $this->authorize('viewAnySurvey', Instrument::class);
+
         $instrumens = [
             (object) [
                 'id' => 1,
@@ -58,8 +61,10 @@ class SurveyController extends Controller
         return view('pages.survey.index', compact('instrumens'));
     }
 
-    public function show()
+    public function show(Instrument $instrument)
     {
+        $this->authorize('viewSurvey', $instrument);
+
         $instrumen = (object) [
             'id' => 1,
             'name' => 'Instrumen Audit Mutu Internal',

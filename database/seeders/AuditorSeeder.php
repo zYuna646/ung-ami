@@ -6,7 +6,6 @@ use App\Models\Auditor;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class AuditorSeeder extends Seeder
 {
@@ -65,7 +64,7 @@ class AuditorSeeder extends Seeder
             $user = User::create([
                 'name' => $row->name,
                 'email' => $row->email,
-                'password' => Hash::make(explode('@', $row->email)[0])
+                'password' => explode('@', $row->email)[0]
             ]);
 
             Auditor::create([

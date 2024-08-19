@@ -12,6 +12,10 @@
 	        'label' => 'Master',
 	        'subMenu' => [
 	            (object) [
+	                'label' => 'Badan & UPT',
+	                'route' => route('dashboard.master.units.index'),
+	            ],
+	            (object) [
 	                'label' => 'Fakultas',
 	                'route' => '#',
 	            ],
@@ -25,11 +29,24 @@
 	            ],
 	            (object) [
 	                'label' => 'Standar',
-	                'route' => route('dashboard.master.standars.index'),
+	                'route' => route('dashboard.master.standards.index'),
 	            ],
 	            (object) [
-	                'label' => 'Instrumen',
-	                'route' => route('dashboard.master.instrumens.index'),
+	                'label' => 'Survei',
+	                'route' => route('dashboard.master.periodes.index'),
+	            ],
+	        ],
+	    ],
+	    (object) [
+	        'label' => 'Pengguna',
+	        'subMenu' => [
+	            (object) [
+	                'label' => 'Auditor',
+	                'route' => route('dashboard.users.auditors.index'),
+	            ],
+	            (object) [
+	                'label' => 'Auditi',
+	                'route' => '#',
 	            ],
 	        ],
 	    ],
@@ -57,12 +74,12 @@
 				@foreach ($menus as $menu)
 					@if (isset($menu->subMenu))
 						<li class="w-full" x-data="{ subMenuOpen: false }">
-							<div @click="subMenuOpen = !subMenuOpen" :class="subMenuOpen ? 'bg-neutral-100' : ''" class="inline-flex w-full items-center justify-between px-4 py-2">
+							<a @click="subMenuOpen = !subMenuOpen" :class="subMenuOpen ? 'bg-neutral-100' : ''" href="#" class="inline-flex w-full items-center justify-between px-4 py-2">
 								{{ $menu->label }}
 								<span>
 									<i :class="subMenuOpen ? 'rotate-180' : ''" class="fas fa-chevron-down text-xs transition-transform"></i>
 								</span>
-							</div>
+							</a>
 							<div x-show="subMenuOpen" @click.outside="subMenuOpen = false" x-transition class="mt-3 flex w-full flex-col gap-y-1 px-4 text-sm">
 								@foreach ($menu->subMenu as $subMenu)
 									<a href="{{ $subMenu->route }}" class="rounded-md px-3 py-2">
@@ -131,7 +148,7 @@
 			@endguest
 			@auth
 				<div class="relative h-12 w-12 rounded-full" x-data="{ profileMenuOpen: false }">
-					<img src="{{ auth()->user()->avatar_url }}" alt="" class="w-full rounded-full hover:cursor-pointer" @click="profileMenuOpen = !profileMenuOpen">
+					<img src="{{ auth()->user()->avatar_url }}" alt="" class="w-full rounded-full border-2 p-1 hover:cursor-pointer" @click="profileMenuOpen = !profileMenuOpen">
 					<div x-cloak x-show="profileMenuOpen" @click.outside="profileMenuOpen = false" x-transition class="absolute -left-24 z-10 mt-2 w-36 rounded-md border border-neutral-200 bg-white py-2 text-neutral-700 shadow-md">
 						<div class="flex w-full flex-col gap-y-1 text-sm font-semibold">
 							<p class="w-full px-4 py-2.5">{{ auth()->user()->name }}</p>

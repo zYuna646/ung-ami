@@ -32,8 +32,13 @@ class Auditor extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function ketua_instrumens()
+    public function chief_periodes()
     {
-        return $this->hasMany(Instrumen::class, 'ketua_id');
+        return $this->hasMany(Periode::class, 'chief_auditor_id');
+    }
+
+    public function member_periodes()
+    {
+        return $this->belongsToMany(Periode::class, 'auditor_members');
     }
 }

@@ -1,5 +1,5 @@
 <nav class="{{ $class ?? '' }} flex justify-between text-sm text-slate-500" aria-label="Breadcrumb">
-	<ol class="inline-flex items-center space-x-2">
+	<ol class="flex flex-wrap items-center space-x-2">
 		@foreach ($data as $name => $url)
 			<li class="inline-flex items-center">
 				@if ($url)
