@@ -1,15 +1,17 @@
 @props([
-	'class',
+	'class' => '',
 	'name',
-	'label',
+	'label' => null,
 	'placeholder' => '',
 	'inputClass' => '',
 	'value' => old($name),
 ])
 <div class="{{ $class }}">
-	<label for="{{ $name }}" class="mb-2 block text-sm font-medium text-gray-900">
-		{{ $label }}
-	</label>
+	@if ($label)
+		<label for="{{ $name }}" class="mb-2 block text-sm font-medium text-gray-900">
+			{{ $label }}
+		</label>
+	@endif
 	<textarea
 		id="{{ $name }}"
 		name="{{ $name }}"

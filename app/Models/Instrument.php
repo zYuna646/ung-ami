@@ -37,4 +37,9 @@ class Instrument extends Model
     {
         return $this->hasMany(Indicator::class);
     }
+
+    public function questions()
+    {
+        return $this->hasManyThrough(Question::class, Indicator::class);
+    }
 }

@@ -19,7 +19,8 @@ Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('auth.authenticate');
 Route::get('/survey', [SurveyController::class, 'index'])->name('survey.index');
-Route::get('/survey/{instrumen}', [SurveyController::class, 'show'])->name('survey.show');
+Route::get('/survey/{instrument}', [SurveyController::class, 'show'])->name('survey.show');
+Route::post('/survey/{instrument}', [SurveyController::class, 'store'])->name('survey.store');
 Route::prefix('dashboard')->name('dashboard.')->middleware(['web', 'auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -35,6 +36,6 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['web', 'auth'])->gro
     });
     Route::prefix('users')->name('users.')->group(function () {
         Route::resource('/auditors', AuditorController::class)->except('show')->names('auditors');
-        Route::resource('/auditees', AuditeeController::class)->except('show')->names('auditees');
+        Route::resource('/auditees', AuditeeController::class)->except('show')->names('auditees')->parameters(['auditees' => 'user']);
     });
 });

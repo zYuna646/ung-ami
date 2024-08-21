@@ -8,20 +8,18 @@ use Illuminate\Auth\Access\Response;
 
 class InstrumentPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
     public function viewAny(User $user): bool
     {
         //
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
     public function view(User $user, Instrument $instrument): bool
     {
-        //
+        $hasUserInUnits = $instrument->periode->units->contains(function ($unit) {
+            return $unit->user && $unit->user->id === auth()->user()->id;
+        });
+
+        return $hasUserInUnits;
     }
 
     /**

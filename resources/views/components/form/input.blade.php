@@ -1,7 +1,7 @@
 @props([
 	'class' => '',
 	'name',
-	'label',
+	'label' => null,
 	'inputClass' => '',
 	'type' => 'text',
 	'placeholder' => '',
@@ -10,9 +10,11 @@
 ])
 
 <div class="{{ $class }}">
-	<label for="{{ $name }}" class="mb-2 block text-sm font-medium text-gray-900">
-		{{ $label }}
-	</label>
+	@if ($label)
+		<label for="{{ $name }}" class="mb-2 block text-sm font-medium text-gray-900">
+			{{ $label }}
+		</label>
+	@endif
 	<input
 		type="{{ $type }}"
 		id="{{ $name }}"

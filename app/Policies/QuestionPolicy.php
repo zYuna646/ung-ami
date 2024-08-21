@@ -8,20 +8,18 @@ use Illuminate\Auth\Access\Response;
 
 class QuestionPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
     public function viewAny(User $user): bool
     {
         //
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
     public function view(User $user, Question $question): bool
     {
-        //
+        $hasUserInUnits = $question->units->contains(function ($unit) {
+            return $unit->user && $unit->user->id === auth()->user()->id;
+        });
+
+        return $hasUserInUnits;
     }
 
     /**

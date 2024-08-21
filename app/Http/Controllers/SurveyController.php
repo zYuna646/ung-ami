@@ -2,134 +2,92 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SubmitSurveyRequest;
 use App\Models\Instrument;
+use App\Models\Periode;
+use App\Models\SurveyResponse;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class SurveyController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAnySurvey', Instrument::class);
 
-        $instrumens = [
-            (object) [
-                'id' => 1,
-                'name' => 'Instrumen Audit Mutu Internal',
-                'standar' => (object) [
-                    'name' => 'Visi Misi Tujuan dan Sasaran'
-                ],
-                'tipe' => 'AMI Reguler SPMI',
-                'ketua' => (object) [
-                    'name' => 'Prof. Dr. Ir. Hasim, M'
-                ]
-            ],
-            (object) [
-                'id' => 2,
-                'name' => 'Instrumen Audit Keuangan',
-                'standar' => (object) [
-                    'name' => 'Kepatuhan terhadap Regulasi Keuangan'
-                ],
-                'tipe' => 'AMI Reguler Keuangan',
-                'ketua' => (object) [
-                    'name' => 'Dr. Akhmad, SE., M.Si'
-                ]
-            ],
-            (object) [
-                'id' => 3,
-                'name' => 'Instrumen Audit Teknologi Informasi',
-                'standar' => (object) [
-                    'name' => 'Keamanan dan Kepatuhan TI'
-                ],
-                'tipe' => 'AMI Reguler TI',
-                'ketua' => (object) [
-                    'name' => 'Ir. Rahmat, MT'
-                ]
-            ],
-            (object) [
-                'id' => 4,
-                'name' => 'Instrumen Audit Sumber Daya Manusia',
-                'standar' => (object) [
-                    'name' => 'Efektivitas Manajemen SDM'
-                ],
-                'tipe' => 'AMI Reguler SDM',
-                'ketua' => (object) [
-                    'name' => 'Dr. Rita, MM'
-                ]
-            ]
-        ];
+        $periodes = Periode::latest()->get();
 
-        return view('pages.survey.index', compact('instrumens'));
+        if (!$request->has('periode') && $periodes->isNotEmpty()) {
+            $latestPeriodeUuid = $periodes->first()->uuid;
+            return redirect()->route('survey.index', ['periode' => $latestPeriodeUuid]);
+        }
+
+        $selectedPeriode = $periodes->firstWhere('uuid', $request->periode);
+        $instruments = Instrument::where('periode_id', optional($selectedPeriode)->id)->latest()->get();
+
+        return view('pages.survey.index', compact('instruments', 'periodes'));
     }
 
     public function show(Instrument $instrument)
     {
         $this->authorize('viewSurvey', $instrument);
 
-        $instrumen = (object) [
-            'id' => 1,
-            'name' => 'Instrumen Audit Mutu Internal',
-            'standar' => (object) [
-                'name' => 'Visi Misi Tujuan dan Sasaran'
-            ],
-            'tipe' => 'AMI Reguler SPMI',
-            'ketua' => (object) [
-                'name' => 'Prof. Dr. Ir. Hasim, M'
-            ],
-            'indikator' => [
-                (object) [
-                    'name' => 'Tersedianya dokumen Visi, Tujuan, Strategi yang sangat jelas, sangat realistis dan memiliki pengesahan',
-                    'butir' => [
-                        (object) [
-                            'kode' => 'VMTS-01',
-                            'name' => 'Ketersediaan dokumen pedoman penyusunan VMTS?',
-                        ],
-                        (object) [
-                            'kode' => 'VMTS-02',
-                            'name' => 'Keterlibatan pemangku kepentingan dalam penyusunan VMTS?',
-                        ],
-                        (object) [
-                            'kode' => 'VMTS-03',
-                            'name' => 'Adanya evaluasi dan revisi berkala terhadap dokumen VMTS?',
-                        ]
-                    ]
-                ],
-                (object) [
-                    'name' => 'Implementasi Visi, Misi, Tujuan, dan Strategi dalam kegiatan operasional',
-                    'butir' => [
-                        (object) [
-                            'kode' => 'IMPL-01',
-                            'name' => 'Keselarasan program kerja dengan VMTS?',
-                        ],
-                        (object) [
-                            'kode' => 'IMPL-02',
-                            'name' => 'Ketersediaan bukti pelaksanaan program sesuai VMTS?',
-                        ],
-                        (object) [
-                            'kode' => 'IMPL-03',
-                            'name' => 'Monitoring dan evaluasi pelaksanaan program kerja?',
-                        ]
-                    ]
-                ],
-                (object) [
-                    'name' => 'Sosialisasi Visi, Misi, Tujuan, dan Strategi kepada seluruh pemangku kepentingan',
-                    'butir' => [
-                        (object) [
-                            'kode' => 'SOS-01',
-                            'name' => 'Adanya kegiatan sosialisasi VMTS kepada dosen, staf, dan mahasiswa?',
-                        ],
-                        (object) [
-                            'kode' => 'SOS-02',
-                            'name' => 'Ketersediaan media informasi tentang VMTS (website, brosur, dll)?',
-                        ],
-                        (object) [
-                            'kode' => 'SOS-03',
-                            'name' => 'Tingkat pemahaman pemangku kepentingan terhadap VMTS?',
-                        ]
-                    ]
-                ]
-            ]
-        ];
+        $questions = $instrument->indicators->flatMap->questions;
 
-        return view('pages.survey.show', compact('instrumen'));
+        $responses = SurveyResponse::where('instrument_id', $instrument->id)
+            ->where('user_id', auth()->id())
+            ->whereIn('question_id', $questions->pluck('id'))
+            ->get()
+            ->keyBy('question_id');
+
+        foreach ($instrument->indicators as $key1 => $indicator) {
+            foreach ($indicator->questions as $key2 => $question) {
+                $response = $responses->get($question->id);
+
+                $instrument->indicators[$key1]->questions[$key2]->response = (object) [
+                    'availability' => optional($response)->availability,
+                    'notes' => optional($response)->notes,
+                ];
+            }
+        }
+
+        return view('pages.survey.show', compact('instrument'));
+    }
+
+    public function store(SubmitSurveyRequest $request, Instrument $instrument)
+    {
+        // $this->authorize('submitSurvey', $instrument);
+
+        try {
+            $availabilityData = $request->input('availability');
+            $notesData = $request->input('notes');
+
+            foreach ($instrument->questions as $question) {
+                $questionId = $question->id;
+
+                if (isset($availabilityData[$questionId])) {
+                    $availability = $availabilityData[$questionId];
+                    $notes = $notesData[$questionId] ?? '';
+
+                    SurveyResponse::updateOrCreate(
+                        [
+                            'instrument_id' => $instrument->id,
+                            'user_id' => auth()->user()->id,
+                            'question_id' => $questionId,
+                        ],
+                        [
+                            'availability' => $availability,
+                            'notes' => $notes,
+                        ]
+                    );
+                }
+            }
+
+            return redirect()->back()->with('success', 'Survei berhasil disimpan.');
+        } catch (\Throwable $th) {
+            logger()->error($th->getMessage());
+
+            return back()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan survei.']);
+        }
     }
 }

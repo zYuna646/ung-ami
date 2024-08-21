@@ -56,7 +56,7 @@ class UnitSeeder extends Seeder
                         $user = User::firstOrCreate(
                             ['name' => $unit->user_name],
                             [
-                                'email' => strtolower(str_replace(' ', '_', $unit->user_name)) . '@amiung.com',
+                                'email' => strtolower(str_replace(' ', '.', $unit->user_name)) . '@amiung.com',
                                 'password' => Str::random(12)
                             ]
                         );
