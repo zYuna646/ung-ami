@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -74,6 +74,11 @@ class User extends Authenticatable
         return isset($this->auditor);
     }
 
+    public function isAuditee(): bool
+    {
+        return isset($this->unit) || isset($this->faculty) || isset($this->department) || isset($this->program);
+    }
+
     public function unit()
     {
         return $this->hasOne(Unit::class);
@@ -84,30 +89,30 @@ class User extends Authenticatable
         return isset($this->unit);
     }
 
-    // public function faculty()
-    // {
-    //     return $this->hasOne(Faculty::class);
-    // }
+    public function faculty()
+    {
+        return $this->hasOne(Faculty::class);
+    }
 
     public function isFaculty(): bool
     {
         return isset($this->faculty);
     }
 
-    // public function department()
-    // {
-    //     return $this->hasOne(Department::class);
-    // }
+    public function department()
+    {
+        return $this->hasOne(Department::class);
+    }
 
     public function isDepartment(): bool
     {
         return isset($this->department);
     }
 
-    // public function program()
-    // {
-    //     return $this->hasOne(Program::class);
-    // }
+    public function program()
+    {
+        return $this->hasOne(Program::class);
+    }
 
     public function isProgram(): bool
     {

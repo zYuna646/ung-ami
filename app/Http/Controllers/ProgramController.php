@@ -2,43 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreUnitRequest;
-use App\Http\Requests\UpdateUnitRequest;
-use App\Models\Unit;
+use App\Http\Requests\StoreProgramRequest;
+use App\Http\Requests\UpdateProgramRequest;
+use App\Models\Program;
+use App\Models\Department;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
-class UnitController extends Controller
+class ProgramController extends Controller
 {
     public function __construct()
     {
-        $this->authorizeResource(Unit::class, 'unit');
+        $this->authorizeResource(Program::class, 'program');
     }
 
     public function index()
     {
-        $units = Unit::latest()->get();
+        $programs = Program::latest()->get();
 
-        return view('pages.dashboard.master.units.index', compact('units'));
+        return view('pages.dashboard.master.programs.index', compact('programs'));
     }
 
     public function create()
     {
-        return view('pages.dashboard.master.units.create');
+        $departments = Department::latest()->get();
+
+        return view('pages.dashboard.master.programs.create', compact('departments'));
     }
 
-    public function store(StoreUnitRequest $request)
+    public function store(StoreProgramRequest $request)
     {
         try {
             DB::beginTransaction();
 
             $data = $request->validated();
             $user = User::create([
-                'name' => "Kepala {$request->unit_name}",
-                'email' => strtolower(str_replace(' ', '.', $request->unit_name)) . '@amiung.com',
+                'name' => "Ketua Program Studi {$request->program_name}",
+                'email' => strtolower(str_replace(' ', '.', $request->program_name)) . '@amiung.com',
             ]);
             $data['user_id'] = $user->id;
-            Unit::create($data);
+            Program::create($data);
 
             DB::commit();
 
@@ -51,16 +54,16 @@ class UnitController extends Controller
         }
     }
 
-    public function edit(Unit $unit)
+    public function edit(Program $program)
     {
-        return view('pages.dashboard.master.units.edit', compact('unit'));
+        return view('pages.dashboard.master.programs.edit', compact('program'));
     }
 
-    public function update(UpdateUnitRequest $request, Unit $unit)
+    public function update(UpdateProgramRequest $request, Program $program)
     {
         try {
             $data = $request->validated();
-            $unit->update($data);
+            $program->update($data);
 
             return redirect()->back()->with('success', 'Data berhasil diperbarui.');
         } catch (\Throwable $th) {
@@ -70,13 +73,13 @@ class UnitController extends Controller
         }
     }
 
-    public function destroy(Unit $unit)
+    public function destroy(Program $program)
     {
         try {
-            $unit->user->delete();
-            $unit->delete();
+            $program->user->delete();
+            $program->delete();
 
-            return redirect()->route('dashboard.master.units.index')->with('success', 'Data berhasil dihapus.');
+            return redirect()->route('dashboard.master.programs.index')->with('success', 'Data berhasil dihapus.');
         } catch (\Throwable $th) {
             logger()->error($th->getMessage());
             

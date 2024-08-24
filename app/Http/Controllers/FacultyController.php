@@ -2,43 +2,43 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreUnitRequest;
-use App\Http\Requests\UpdateUnitRequest;
-use App\Models\Unit;
+use App\Http\Requests\StoreFacultyRequest;
+use App\Http\Requests\UpdateFacultyRequest;
+use App\Models\Faculty;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
-class UnitController extends Controller
+class FacultyController extends Controller
 {
     public function __construct()
     {
-        $this->authorizeResource(Unit::class, 'unit');
+        $this->authorizeResource(Faculty::class, 'faculty');
     }
 
     public function index()
     {
-        $units = Unit::latest()->get();
+        $faculties = Faculty::latest()->get();
 
-        return view('pages.dashboard.master.units.index', compact('units'));
+        return view('pages.dashboard.master.faculties.index', compact('faculties'));
     }
 
     public function create()
     {
-        return view('pages.dashboard.master.units.create');
+        return view('pages.dashboard.master.faculties.create');
     }
 
-    public function store(StoreUnitRequest $request)
+    public function store(StoreFacultyRequest $request)
     {
         try {
             DB::beginTransaction();
 
             $data = $request->validated();
             $user = User::create([
-                'name' => "Kepala {$request->unit_name}",
-                'email' => strtolower(str_replace(' ', '.', $request->unit_name)) . '@amiung.com',
+                'name' => "Dekan Fakultas {$request->faculty_name}",
+                'email' => strtolower(str_replace(' ', '.', $request->faculty_name)) . '@amiung.com',
             ]);
             $data['user_id'] = $user->id;
-            Unit::create($data);
+            Faculty::create($data);
 
             DB::commit();
 
@@ -51,16 +51,16 @@ class UnitController extends Controller
         }
     }
 
-    public function edit(Unit $unit)
+    public function edit(Faculty $faculty)
     {
-        return view('pages.dashboard.master.units.edit', compact('unit'));
+        return view('pages.dashboard.master.faculties.edit', compact('faculty'));
     }
 
-    public function update(UpdateUnitRequest $request, Unit $unit)
+    public function update(UpdateFacultyRequest $request, Faculty $faculty)
     {
         try {
             $data = $request->validated();
-            $unit->update($data);
+            $faculty->update($data);
 
             return redirect()->back()->with('success', 'Data berhasil diperbarui.');
         } catch (\Throwable $th) {
@@ -70,13 +70,13 @@ class UnitController extends Controller
         }
     }
 
-    public function destroy(Unit $unit)
+    public function destroy(Faculty $faculty)
     {
         try {
-            $unit->user->delete();
-            $unit->delete();
+            $faculty->user->delete();
+            $faculty->delete();
 
-            return redirect()->route('dashboard.master.units.index')->with('success', 'Data berhasil dihapus.');
+            return redirect()->route('dashboard.master.faculties.index')->with('success', 'Data berhasil dihapus.');
         } catch (\Throwable $th) {
             logger()->error($th->getMessage());
             

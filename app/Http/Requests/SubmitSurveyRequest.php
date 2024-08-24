@@ -16,8 +16,10 @@ class SubmitSurveyRequest extends FormRequest
         $rules = [];
 
         foreach ($this->instrument->questions as $question) {
-            $rules["availability.$question->id"] = 'required';
-            $rules["notes.$question->id"] = 'required';
+            if ($this->user()->can('view', $question)) {
+                $rules["availability.$question->id"] = 'required';
+                $rules["notes.$question->id"] = 'required';
+            }
         }
 
         return $rules;
@@ -28,8 +30,10 @@ class SubmitSurveyRequest extends FormRequest
         $messages = [];
 
         foreach ($this->instrument->questions as $question) {
-            $messages["availability.$question->id.required"] = "Ketersediaan dokumen untuk pertanyaan '{$question->text}' harus diisi.";
-            $messages["notes.$question->id.required"] = "Catatan untuk pertanyaan '{$question->text}' harus diisi.";
+            if ($this->user()->can('view', $question)) {
+                $messages["availability.$question->id.required"] = "Ketersediaan dokumen untuk pertanyaan '{$question->text}' harus diisi.";
+                $messages["notes.$question->id.required"] = "Catatan untuk pertanyaan '{$question->text}' harus diisi.";
+            }
         }
 
         return $messages;

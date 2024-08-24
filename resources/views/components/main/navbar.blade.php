@@ -5,7 +5,7 @@
 	        'route' => auth()->check() ? route('dashboard.index') : route('home.index'),
 	    ],
 	    (object) [
-					'show' => auth()->check() && (auth()->user()->isUnit() || auth()->user()->isFaculty() || auth()->user()->isDepartment() || auth()->user()->isProgram()),
+					'show' => auth()->check() && (auth()->user()->isAuditee() || auth()->user()->isAuditor()),
 	        'label' => 'Survei',
 	        'route' => route('survey.index'),
 	    ],
@@ -19,15 +19,15 @@
 	            ],
 	            (object) [
 	                'label' => 'Fakultas',
-	                'route' => '#',
+	                'route' => route('dashboard.master.faculties.index'),
 	            ],
 	            (object) [
 	                'label' => 'Jurusan',
-	                'route' => '#',
+	                'route' => route('dashboard.master.departments.index'),
 	            ],
 	            (object) [
 	                'label' => 'Prodi',
-	                'route' => '#',
+	                'route' => route('dashboard.master.programs.index'),
 	            ],
 	            (object) [
 	                'label' => 'Standar',

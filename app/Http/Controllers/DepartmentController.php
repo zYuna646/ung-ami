@@ -2,43 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreUnitRequest;
-use App\Http\Requests\UpdateUnitRequest;
-use App\Models\Unit;
+use App\Http\Requests\StoreDepartmentRequest;
+use App\Http\Requests\UpdateDepartmentRequest;
+use App\Models\Department;
+use App\Models\Faculty;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
-class UnitController extends Controller
+class DepartmentController extends Controller
 {
     public function __construct()
     {
-        $this->authorizeResource(Unit::class, 'unit');
+        $this->authorizeResource(Department::class, 'department');
     }
 
     public function index()
     {
-        $units = Unit::latest()->get();
+        $departments = Department::latest()->get();
 
-        return view('pages.dashboard.master.units.index', compact('units'));
+        return view('pages.dashboard.master.departments.index', compact('departments'));
     }
 
     public function create()
     {
-        return view('pages.dashboard.master.units.create');
+        $faculties = Faculty::latest()->get();
+
+        return view('pages.dashboard.master.departments.create', compact('faculties'));
     }
 
-    public function store(StoreUnitRequest $request)
+    public function store(StoreDepartmentRequest $request)
     {
         try {
             DB::beginTransaction();
 
             $data = $request->validated();
             $user = User::create([
-                'name' => "Kepala {$request->unit_name}",
-                'email' => strtolower(str_replace(' ', '.', $request->unit_name)) . '@amiung.com',
+                'name' => "Ketua Jurusan {$request->department_name}",
+                'email' => strtolower(str_replace(' ', '.', $request->department_name)) . '@amiung.com',
             ]);
             $data['user_id'] = $user->id;
-            Unit::create($data);
+            Department::create($data);
 
             DB::commit();
 
@@ -51,16 +54,16 @@ class UnitController extends Controller
         }
     }
 
-    public function edit(Unit $unit)
+    public function edit(Department $department)
     {
-        return view('pages.dashboard.master.units.edit', compact('unit'));
+        return view('pages.dashboard.master.departments.edit', compact('department'));
     }
 
-    public function update(UpdateUnitRequest $request, Unit $unit)
+    public function update(UpdateDepartmentRequest $request, Department $department)
     {
         try {
             $data = $request->validated();
-            $unit->update($data);
+            $department->update($data);
 
             return redirect()->back()->with('success', 'Data berhasil diperbarui.');
         } catch (\Throwable $th) {
@@ -70,13 +73,13 @@ class UnitController extends Controller
         }
     }
 
-    public function destroy(Unit $unit)
+    public function destroy(Department $department)
     {
         try {
-            $unit->user->delete();
-            $unit->delete();
+            $department->user->delete();
+            $department->delete();
 
-            return redirect()->route('dashboard.master.units.index')->with('success', 'Data berhasil dihapus.');
+            return redirect()->route('dashboard.master.departments.index')->with('success', 'Data berhasil dihapus.');
         } catch (\Throwable $th) {
             logger()->error($th->getMessage());
             

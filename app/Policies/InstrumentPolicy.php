@@ -15,11 +15,16 @@ class InstrumentPolicy
 
     public function view(User $user, Instrument $instrument): bool
     {
-        $hasUserInUnits = $instrument->periode->units->contains(function ($unit) {
-            return $unit->user && $unit->user->id === auth()->user()->id;
-        });
+        return $instrument->periode->units->contains(function ($unit) use ($user) {
+            $userInUnit = $unit->user && $unit->user->id === $user->id;
+            $userMatchesUnit = !$unit->user && (
+                ($unit->unit_name === 'Fakultas' && $user->isFaculty()) ||
+                ($unit->unit_name === 'Jurusan' && $user->isDepartment()) ||
+                ($unit->unit_name === 'Program Studi' && $user->isProgram())
+            );
 
-        return $hasUserInUnits;
+            return $userInUnit || $userMatchesUnit || $user->isAuditor();
+        });
     }
 
     /**
@@ -64,11 +69,11 @@ class InstrumentPolicy
 
     public function viewAnySurvey(User $user): bool
     {
-        return $user->isUnit() || $user->isFaculty() || $user->isDepartment() || $user->isProgram();
+        return $user->isAuditee() || $user->isAuditor();
     }
 
     public function viewSurvey(User $user, Instrument $instrument): bool
     {
-        return $user->isUnit() || $user->isFaculty() || $user->isDepartment() || $user->isProgram();
+        return $user->isAuditee() || $user->isAuditor();
     }
 }

@@ -1,5 +1,5 @@
 @extends('layouts.app', [
-    'title' => 'Master Badan & UPT',
+    'title' => 'Master Jurusan',
 ])
 @push('styles')
 	<link rel="stylesheet" href="https://cdn.datatables.net/2.1.3/css/dataTables.dataTables.min.css">
@@ -8,14 +8,14 @@
 	<x-main.section>
 		<div class="flex flex-col justify-between gap-5 rounded-lg border border-slate-100 bg-white p-6 shadow-sm sm:flex-row sm:items-center">
 			<div>
-				<h1 class="text-lg font-bold">Master Badan & UPT</h1>
+				<h1 class="text-lg font-bold">Master Jurusan</h1>
 				<x-main.breadcrumb :data="[
 				    'Dasbor' => route('dashboard.index'),
-				    'Master Badan & UPT' => null,
+				    'Master Jurusan' => null,
 				]" />
 			</div>
 			<div>
-				<x-button :href="route('dashboard.master.units.create')" color="info">
+				<x-button :href="route('dashboard.master.departments.create')" color="info">
 					Tambah Data
 				</x-button>
 			</div>
@@ -34,33 +34,33 @@
 						</tr>
 					</thead>
 					<tbody>
-						@foreach ($units as $unit)
+						@foreach ($departments as $department)
 							<tr>
 								<td>{{ $loop->iteration }}</td>
-								<td>{{ $unit->unit_name }}</td>
+								<td>{{ $department->department_name }}</td>
 								<td>
-									@if (isset($unit->user))
-										<a href="{{ route('dashboard.users.auditees.edit', $unit->user->email) }}" class="text-blue-500 underline">{{ $unit->user->name }}</a>
+									@if (isset($department->user))
+										<a href="{{ route('dashboard.users.auditees.edit', $department->user->email) }}" class="text-blue-500 underline">{{ $department->user->name }}</a>
 									@else
 										-
 									@endif
 								</td>
 								<td>
 									<div class="inline-flex gap-x-2">
-										@can('delete', $unit)
-											<x-button :href="route('dashboard.master.units.edit', $unit->uuid)" color="success" size="sm">
+										@can('delete', $department)
+											<x-button :href="route('dashboard.master.departments.edit', $department->uuid)" color="success" size="sm">
 												Edit
 											</x-button>
-											<x-button.delete :action="route('dashboard.master.units.destroy', $unit->uuid)" size="sm">
+											<x-button.delete :action="route('dashboard.master.departments.destroy', $department->uuid)" size="sm">
 												<p>Anda akan menghapus data berikut: </p>
 												<dl class="max-w-md divide-y divide-gray-200 text-gray-900">
 													<div class="flex flex-col pb-3">
 														<dt class="mb-1 text-gray-500">ID</dt>
-														<dd class="font-semibold">{{ $unit->uuid }}</dd>
+														<dd class="font-semibold">{{ $department->uuid }}</dd>
 													</div>
 													<div class="flex flex-col pt-3">
-														<dt class="mb-1 text-gray-500">Badan & UPT</dt>
-														<dd class="font-semibold">{{ $unit->unit_name }}</dd>
+														<dt class="mb-1 text-gray-500">Jurusan</dt>
+														<dd class="font-semibold">{{ $department->department_name }}</dd>
 													</div>
 												</dl>
 											</x-button.delete>

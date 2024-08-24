@@ -57,7 +57,6 @@ class UnitSeeder extends Seeder
                             ['name' => $unit->user_name],
                             [
                                 'email' => strtolower(str_replace(' ', '.', $unit->user_name)) . '@amiung.com',
-                                'password' => Str::random(12)
                             ]
                         );
                     }
