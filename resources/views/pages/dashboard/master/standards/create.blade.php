@@ -1,5 +1,5 @@
 @extends('layouts.app', [
-    'title' => 'Tambah Standar',
+    'title' => 'Tambah Data',
 ])
 @section('content')
 	<x-main.section>
@@ -8,7 +8,7 @@
 				<h1 class="text-lg font-bold">Tambah Standar</h1>
 				<x-main.breadcrumb :data="[
 				    'Dasbor' => route('dashboard.index'),
-				    'Master Standar' => route('dashboard.master.standards.index'),
+				    'Dokumen Mutu' => route('dashboard.master.standards.index'),
 				    'Tambah Data' => null,
 				]" />
 			</div>

@@ -30,7 +30,7 @@
 	                'route' => route('dashboard.master.programs.index'),
 	            ],
 	            (object) [
-	                'label' => 'Standar',
+	                'label' => 'Dokumen Mutu',
 	                'route' => route('dashboard.master.standards.index'),
 	            ],
 	            (object) [

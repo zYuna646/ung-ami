@@ -1,5 +1,5 @@
 @extends('layouts.app', [
-    'title' => 'Master Standar',
+    'title' => 'Dokumen Mutu',
 ])
 @push('styles')
 	<link rel="stylesheet" href="https://cdn.datatables.net/2.1.3/css/dataTables.dataTables.min.css">
@@ -8,10 +8,10 @@
 	<x-main.section>
 		<div class="flex flex-col justify-between gap-5 rounded-lg border border-slate-100 bg-white p-6 shadow-sm sm:flex-row sm:items-center">
 			<div>
-				<h1 class="text-lg font-bold">Master Standar</h1>
+				<h1 class="text-lg font-bold">Dokumen Mutu</h1>
 				<x-main.breadcrumb :data="[
 				    'Dasbor' => route('dashboard.index'),
-				    'Master Standar' => null,
+				    'Dokumen Mutu' => null,
 				]" />
 			</div>
 			<div>
