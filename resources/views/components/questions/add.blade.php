@@ -11,11 +11,11 @@
 				</button>
 			</div>
 			<div class="p-4">
-				<form action="{{ route('dashboard.master.questions.store') }}" method="POST" class="flex flex-col gap-5">
+				<form action="{{ route('dashboard.master.periodes.instruments.indicators.questions.store', [$periode->uuid, $instrument->uuid, $indicator->uuid]) }}" method="POST" class="flex flex-col gap-5">
 					@csrf
-					<input type="hidden" name="indicator_id" value="{{ $indicatorId }}">
-					<x-form.input name="code" label="Kode" placeholder="Isi kode" />
-					<x-form.input name="text" label="Pertanyaan" placeholder="Isi pertanyaan" />
+					<input type="hidden" name="indicator_id" value="{{ $indicator->id }}">
+					<x-form.input name="code" label="Kode" placeholder="Kode" />
+					<x-form.input name="text" label="Pertanyaan" placeholder="Pertanyaan" />
 					<x-form.choices name="units[]" label="Area Audit" placeholder="Pilih Area Audit" :multiple="true" :options="$units->map(function ($unit) {
 					    return (object) [
 					        'label' => $unit->unit_name,

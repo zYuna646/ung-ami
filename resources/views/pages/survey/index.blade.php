@@ -30,7 +30,7 @@
 				</div>
 			@else
 				@foreach ($filteredInstruments as $instrument)
-					<a href="{{ route('survey.show', $instrument->uuid) }}" class="flex cursor-pointer flex-col gap-x-4 gap-y-2 rounded-lg border border-slate-100 bg-white p-8 shadow-sm transition-colors hover:border-color-info-500 lg:col-span-4">
+					<a href="{{ auth()->user()->isAuditor() ? route('survey.audit_results', $instrument->uuid) : route('survey.show', $instrument->uuid) }}" class="flex cursor-pointer flex-col gap-x-4 gap-y-2 rounded-lg border border-slate-100 bg-white p-8 shadow-sm transition-colors hover:border-color-info-500 lg:col-span-4">
 						<div class="flex max-w-lg flex-col gap-y-2">
 							<p class="text-base font-bold">{{ $instrument->name }}</p>
 							<div class="flex flex-col gap-y-2">

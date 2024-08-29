@@ -1,5 +1,5 @@
 <div id="add-indicator" x-data="{ addIndicatorModal: false }">
-	<x-button @click="addIndicatorModal = true" color="info">
+	<x-button @click="addIndicatorModal = true" color="info" size="{{ $size ?? 'md' }}">
 		Tambah Indikator
 	</x-button>
 	<div x-cloak x-show="addIndicatorModal" class="fixed left-0 right-0 top-0 z-50 flex h-full w-full items-center justify-center bg-black/50">
@@ -11,10 +11,10 @@
 				</button>
 			</div>
 			<div class="p-4">
-				<form action="{{ route('dashboard.master.indicators.store') }}" method="POST" class="flex flex-col gap-5">
+				<form action="{{ route('dashboard.master.periodes.instruments.indicators.store', [$periode->uuid, $instrument->uuid]) }}" method="POST" class="flex flex-col gap-5">
 					@csrf
-					<x-form.input name="name" label="Indikator" placeholder="Isi indikator" />
-					<input type="hidden" name="instrument_id" value="{{ $instrumentId }}">
+					<x-form.input name="name" label="Indikator" placeholder="Indikator" />
+					<input type="hidden" name="instrument_id" value="{{ $instrument->id }}">
 					<div class="flex justify-end gap-2">
 						<x-button @click="addIndicatorModal = false" color="default">Batal</x-button>
 						<x-button type="submit" color="info">Submit</x-button>

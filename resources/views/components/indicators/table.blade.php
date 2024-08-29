@@ -18,11 +18,8 @@
 					</td>
 					<td>
 						<div class="flex flex-col gap-2 sm:flex-row">
-							<x-button :href="route('dashboard.master.indicators.show', $indicator->uuid)" color="info" size="sm">
-								Detail
-							</x-button>
-							<x-indicators.edit :$indicator size="sm" />
-							<x-button.delete :action="route('dashboard.master.indicators.destroy', $indicator->uuid)" color="danger" size="sm">
+							<x-indicators.edit :$periode :$instrument :$indicator size="sm" />
+							<x-button.delete :action="route('dashboard.master.periodes.instruments.indicators.destroy', [$periode->uuid, $instrument->uuid, $indicator->uuid])" color="danger" size="sm">
 								<p>Anda akan menghapus data berikut: </p>
 								<dl class="max-w-md divide-y divide-gray-200 text-gray-900">
 									<div class="flex flex-col pb-3">

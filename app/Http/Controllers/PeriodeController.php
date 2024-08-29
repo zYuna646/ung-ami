@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePeriodeRequest;
 use App\Http\Requests\UpdatePeriodeRequest;
 use App\Models\Auditor;
+use App\Models\MasterInstrument;
 use App\Models\Periode;
 use App\Models\Standard;
 use App\Models\Unit;
@@ -22,10 +23,9 @@ class PeriodeController extends Controller
     public function create()
     {
         $standards = Standard::get();
-        $units = Unit::get();
         $auditors = Auditor::get();
 
-        return view('pages.dashboard.master.periodes.create', compact('standards', 'auditors', 'units'));
+        return view('pages.dashboard.master.periodes.create', compact('standards', 'auditors'));
     }
 
     public function store(StorePeriodeRequest $request)
@@ -33,9 +33,8 @@ class PeriodeController extends Controller
         try {
             $data = $request->validated();
             $periode = Periode::create($data);
-            $periode->units()->attach($request->units);
 
-            return redirect()->back()->with('success', 'Data berhasil ditambahkan.');
+            return redirect()->route('dashboard.master.periodes.show', $periode->uuid)->with('success', 'Data berhasil ditambahkan.');
         } catch (\Throwable $th) {
             logger()->error($th->getMessage());
 
@@ -51,8 +50,10 @@ class PeriodeController extends Controller
         })->reject(function ($auditor) use ($periode) {
             return $periode->auditor_members->contains($auditor);
         });
+        $units = Unit::get();
+        $masterInstruments = MasterInstrument::get();
 
-        return view('pages.dashboard.master.periodes.show', compact('periode', 'availableToBeMember'));
+        return view('pages.dashboard.master.periodes.show', compact('periode', 'availableToBeMember', 'units', 'masterInstruments'));
     }
 
     public function edit(Periode $periode)
@@ -62,9 +63,8 @@ class PeriodeController extends Controller
         $availableToBeChief = $auditors->reject(function ($auditor) use ($periode) {
             return $periode->auditor_members->contains($auditor);
         });
-        $units = Unit::get();
 
-        return view('pages.dashboard.master.periodes.edit', compact('periode', 'standards', 'availableToBeChief', 'units'));
+        return view('pages.dashboard.master.periodes.edit', compact('periode', 'standards', 'availableToBeChief'));
     }
 
     public function update(UpdatePeriodeRequest $request, Periode $periode)
@@ -72,7 +72,6 @@ class PeriodeController extends Controller
         try {
             $data = $request->validated();
             $periode->update($data);
-            $periode->units()->sync($request->units);
 
             return redirect()->back()->with('success', 'Data berhasil diperbarui.');
         } catch (\Throwable $th) {
@@ -95,7 +94,7 @@ class PeriodeController extends Controller
         }
     }
 
-    public function add_member(Request $request, Periode $periode)
+    public function addMember(Request $request, Periode $periode)
     {
         try {
             $request->validate([
@@ -122,7 +121,7 @@ class PeriodeController extends Controller
         }
     }
 
-    public function delete_member(Periode $periode, Auditor $auditor)
+    public function deleteMember(Periode $periode, Auditor $auditor)
     {
         try {
             $isMember = $periode->auditor_members->contains($auditor);

@@ -54,7 +54,7 @@
       </x-button> --}}
 			<x-button type="submit" color="info">
 				Simpan Penilaian
-				<i class="fas fa-arrow-right ms-2"></i>
+				<i class="fa-solid fa-floppy-disk ms-2"></i>
 			</x-button>
 		</div>
 	</div>

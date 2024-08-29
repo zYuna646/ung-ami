@@ -14,8 +14,18 @@ class StoreInstrumentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
+            'master_instrument_id' => 'required',
             'periode_id' => 'required',
+            'units' => 'required',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'periode_id.required' => 'Periode wajib dipilih.',
+            'master_instrument_id.required' => 'Instrumen wajib diisi.',
+            'units.required' => 'Unit wajib diisi.',
         ];
     }
 }

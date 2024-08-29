@@ -35,7 +35,7 @@
 			</div>
 		</div>
 	</x-main.section>
-	<x-main.section class="grid grid-cols-1 gap-6 sm:grid-cols-3">
+	<x-main.section class="grid grid-cols-1 gap-6 sm:grid-cols-3 items-start">
 		<x-main.card>
 			<x-main.list :items="[
 			    (object) [
@@ -49,10 +49,6 @@
 			    (object) [
 			        'label' => 'Standar',
 			        'value' => $periode->standard->name,
-			    ],
-			    (object) [
-			        'label' => 'Area',
-			        'value' => $periode->units->pluck('unit_name')->implode(', '),
 			    ],
 			    (object) [
 			        'label' => 'Tipe',
@@ -85,14 +81,17 @@
 					<h5 class="text-lg font-bold">Daftar Anggota Auditor</h5>
 					<x-auditors.add-member :auditors="$availableToBeMember" :$periode />
 				</div>
-				<x-auditors.table-members :auditors="$periode->auditor_members" :$periode />
+				@php
+					$auditors = $periode->auditor_members->prepend($periode->chief_auditor);
+				@endphp
+				<x-auditors.table-members :auditors="$auditors" :periode="$periode" />
 			</x-main.card>
 			<x-main.card>
 				<div class="mb-3 flex flex-col items-start gap-3 sm:flex-row sm:justify-between">
 					<h5 class="text-lg font-bold">Daftar Instrumen</h5>
-					<x-instruments.add :periode-id="$periode->id" />
+					<x-instruments.add :$periode :$units :$masterInstruments />
 				</div>
-				<x-instruments.table :instruments="$periode->instruments" />
+				<x-instruments.table :$periode />
 			</x-main.card>
 		</div>
 	</x-main.section>

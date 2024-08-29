@@ -33,6 +33,26 @@ class Instrument extends Model
         return $this->belongsTo(Periode::class);
     }
 
+    public function units()
+    {
+        return $this->belongsToMany(Unit::class, 'instrument_unit');
+    }
+
+    public function faculties()
+    {
+        return $this->belongsToMany(Faculty::class, 'instrument_faculty');
+    }
+
+    public function departments()
+    {
+        return $this->belongsToMany(Department::class, 'instrument_department');
+    }
+
+    public function programs()
+    {
+        return $this->belongsToMany(Program::class, 'instrument_program');
+    }
+
     public function indicators()
     {
         return $this->hasMany(Indicator::class);

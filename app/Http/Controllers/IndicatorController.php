@@ -11,26 +11,7 @@ use Illuminate\Http\Request;
 
 class IndicatorController extends Controller
 {
-    public function index(Request $request)
-    {
-        $periodes = Periode::get();
-        $instruments = Instrument::get();
-        $indicators = Indicator::get();
-
-        if (!$request->has('periode_id')) {
-            $latestPeriode = Periode::latest()->first();
-            $latestInstrument = Instrument::where('periode_id', $latestPeriode->id)->latest()->first();
-    
-            return redirect()->route('dashboard.master.indicators.index', [
-                'periode_id' => $latestPeriode->id,
-                'instrument_id' => $latestInstrument->id ?? null,
-            ]);
-        }
-
-        return view('pages.dashboard.master.indicators.index', compact('indicators', 'instruments', 'periodes'));
-    }
-
-    public function store(StoreIndicatorRequest $request)
+    public function store(StoreIndicatorRequest $request, Periode $periode, Instrument $instrument)
     {
         try {
             $data = $request->validated();
@@ -44,12 +25,7 @@ class IndicatorController extends Controller
         }
     }
 
-    public function show(Indicator $indicator)
-    {
-        return view('pages.dashboard.master.indicators.show', compact('indicator'));
-    }
-
-    public function update(UpdateIndicatorRequest $request, Indicator $indicator)
+    public function update(UpdateIndicatorRequest $request, Periode $periode, Instrument $instrument, Indicator $indicator)
     {
         try {
             $data = $request->validated();
@@ -63,7 +39,7 @@ class IndicatorController extends Controller
         }
     }
 
-    public function destroy(Indicator $indicator)
+    public function destroy(Periode $periode, Instrument $instrument, Indicator $indicator)
     {
         try {
             $indicator->delete();
