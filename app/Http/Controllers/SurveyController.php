@@ -6,6 +6,7 @@ use App\Helpers\ModelHelper;
 use App\Http\Requests\SubmitAuditResultsRequest;
 use App\Http\Requests\SubmitComplianceResultsRequest;
 use App\Http\Requests\SubmitNoncomplianceResultsRequest;
+use App\Http\Requests\SubmitPTKsRequest;
 use App\Http\Requests\SubmitSurveyRequest;
 use App\Models\Department;
 use App\Models\Faculty;
@@ -245,7 +246,7 @@ class SurveyController extends Controller
         return view('pages.survey.noncompliance-results', compact('instrument', 'showInstrument', 'questions'));
     }
 
-    public function storeNoncomplianceResults(SubmitNoncomplianceResultsRequest $request, Instrument $instrument) 
+    public function storeNoncomplianceResults(SubmitNoncomplianceResultsRequest $request, Instrument $instrument)
     {
         try {
             $model = ModelHelper::getModelByRequest($request);
@@ -276,9 +277,63 @@ class SurveyController extends Controller
         }
     }
 
-    public function showPTK(Instrument $instrument)
+    public function showPTK(Request $request, Instrument $instrument)
     {
-        return view('pages.survey.ptk', compact('instrument'));
+        $model = ModelHelper::getModelByRequest($request);
+
+        $showInstrument = isset($model->user);
+        $questions = [];
+        if ($showInstrument) {
+            foreach ($instrument->questions as $key => $question) {
+                $response = $model->PTKs->firstWhere('question_id', $question->id);
+                $auditResult = $model->auditResults->firstWhere('question_id', $question->id);
+                if ($auditResult?->compliance == 'Tidak Sesuai') {
+                    $questions[$key] = $question;
+                    $questions[$key]->response = (object) [
+                        'recommendations' => optional($response)->recommendations,
+                        'improvement_plan' => optional($response)->improvement_plan,
+                        'completion_schedule' => optional($response)->completion_schedule,
+                        'monitoring_mechanism' => optional($response)->monitoring_mechanism,
+                        'responsible_party' => optional($response)->responsible_party,
+                    ];
+                }
+            }
+        }
+
+        return view('pages.survey.ptk', compact('instrument', 'showInstrument', 'questions'));
+    }
+
+    public function storePTK(SubmitPTKsRequest $request, Instrument $instrument)
+    {
+        try {
+            $model = ModelHelper::getModelByRequest($request);
+
+            foreach ($instrument->questions as $question) {
+                $auditResult = $model->auditResults->firstWhere('question_id', $question->id);
+                if ($auditResult?->compliance == 'Tidak Sesuai') {
+                    $data = [
+                        'recommendations' => $request->recommendations[$question->id],
+                        'improvement_plan' => $request->improvement_plan[$question->id],
+                        'completion_schedule' => $request->completion_schedule[$question->id],
+                        'monitoring_mechanism' => $request->monitoring_mechanism[$question->id],
+                        'responsible_party' => $request->responsible_party[$question->id],
+                    ];
+
+                    $model->PTKs()->updateOrCreate(
+                        [
+                            'question_id' => $question->id,
+                        ],
+                        $data
+                    );
+                }
+            }
+
+            return redirect()->back()->with('success', 'Survei berhasil disimpan.');
+        } catch (\Throwable $th) {
+            logger()->error($th->getMessage());
+
+            return back()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan survei.']);
+        }
     }
 
     public function showPTP(Instrument $instrument)
