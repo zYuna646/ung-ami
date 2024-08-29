@@ -103,15 +103,9 @@ class SurveyController extends Controller
 
     public function showAuditResults(Request $request, Instrument $instrument)
     {
-        if ($request->unit == 'Fakultas' && $request->faculty) {
-            $model = Faculty::where('faculty_name', $request->faculty)->first();
-        } elseif ($request->unit == 'Jurusan' && $request->department) {
-            $model = Department::where('department_name', $request->department)->first();
-        } elseif ($request->unit == 'Program Studi' && $request->program) {
-            $model = Program::where('program_name', $request->program)->first();
-        } else {
-            $model = Unit::where('unit_name', $request->unit)->first();
-        }
+        $this->authorize('submitAuditResults', $instrument);
+
+        $model = ModelHelper::getModelByRequest($request);
 
         $showInstrument = isset($model->user);
         if ($showInstrument) {
@@ -136,15 +130,9 @@ class SurveyController extends Controller
     public function storeAuditResults(SubmitAuditResultsRequest $request, Instrument $instrument)
     {
         try {
-            if ($request->unit == 'Fakultas') {
-                $model = Faculty::where('faculty_name', $request->faculty)->first();
-            } elseif ($request->unit == 'Jurusan') {
-                $model = Department::where('department_name', $request->department)->first();
-            } elseif ($request->unit == 'Program Studi') {
-                $model = Program::where('program_name', $request->program)->first();
-            } else {
-                $model = Unit::where('unit_name', $request->unit)->first();
-            }
+            $this->authorize('submitAuditResults', $instrument);
+
+            $model = ModelHelper::getModelByRequest($request);
 
             foreach ($instrument->questions as $question) {
                 $data = [
@@ -172,6 +160,8 @@ class SurveyController extends Controller
 
     public function showComplianceResults(Request $request, Instrument $instrument)
     {
+        $this->authorize('submitComplianceResults', $instrument);
+
         $model = ModelHelper::getModelByRequest($request);
 
         $showInstrument = isset($model->user);
@@ -196,6 +186,8 @@ class SurveyController extends Controller
     public function storeComplianceResults(SubmitComplianceResultsRequest $request, Instrument $instrument)
     {
         try {
+            $this->authorize('submitComplianceResults', $instrument);
+
             $model = ModelHelper::getModelByRequest($request);
 
             foreach ($instrument->questions as $question) {
@@ -225,6 +217,8 @@ class SurveyController extends Controller
 
     public function showNoncomplianceResults(Request $request, Instrument $instrument)
     {
+        $this->authorize('submitNoncomplianceResults', $instrument);
+
         $model = ModelHelper::getModelByRequest($request);
 
         $showInstrument = isset($model->user);
@@ -250,6 +244,8 @@ class SurveyController extends Controller
     public function storeNoncomplianceResults(SubmitNoncomplianceResultsRequest $request, Instrument $instrument)
     {
         try {
+            $this->authorize('submitNoncomplianceResults', $instrument);
+
             $model = ModelHelper::getModelByRequest($request);
 
             foreach ($instrument->questions as $question) {
@@ -280,6 +276,8 @@ class SurveyController extends Controller
 
     public function showPTK(Request $request, Instrument $instrument)
     {
+        $this->authorize('submitPTK', $instrument);
+
         $model = ModelHelper::getModelByRequest($request);
 
         $showInstrument = isset($model->user);
@@ -307,6 +305,8 @@ class SurveyController extends Controller
     public function storePTK(SubmitPTKsRequest $request, Instrument $instrument)
     {
         try {
+            $this->authorize('submitPTK', $instrument);
+
             $model = ModelHelper::getModelByRequest($request);
 
             foreach ($instrument->questions as $question) {
@@ -339,6 +339,8 @@ class SurveyController extends Controller
 
     public function showPTP(Request $request, Instrument $instrument)
     {
+        $this->authorize('submitPTP', $instrument);
+
         $model = ModelHelper::getModelByRequest($request);
 
         $showInstrument = isset($model->user);
@@ -365,6 +367,8 @@ class SurveyController extends Controller
     public function storePTP(SubmitPTPsRequest $request, Instrument $instrument)
     {
         try {
+            $this->authorize('submitPTP', $instrument);
+
             $model = ModelHelper::getModelByRequest($request);
 
             foreach ($instrument->questions as $question) {

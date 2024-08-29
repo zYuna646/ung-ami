@@ -73,4 +73,29 @@ class InstrumentPolicy
     {
         return $user->isAuditee();
     }
+
+    public function submitAuditResults(User $user, Instrument $instrument): bool
+    {
+        return $user->isAuditor();
+    }
+
+    public function submitComplianceResults(User $user, Instrument $instrument): bool
+    {
+        return $user->isAuditor();
+    }
+
+    public function submitNoncomplianceResults(User $user, Instrument $instrument): bool
+    {
+        return $user->isAuditor();
+    }
+
+    public function submitPTK(User $user, Instrument $instrument): bool
+    {
+        return $user->isAuditor();
+    }
+
+    public function submitPTP(User $user, Instrument $instrument): bool
+    {
+        return $user->isAuditor();
+    }
 }
