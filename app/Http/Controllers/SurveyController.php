@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ModelHelper;
 use App\Http\Requests\SubmitAuditResultsRequest;
+use App\Http\Requests\SubmitComplianceResultsRequest;
 use App\Http\Requests\SubmitSurveyRequest;
 use App\Models\Department;
 use App\Models\Faculty;
@@ -165,9 +167,57 @@ class SurveyController extends Controller
         }
     }
 
-    public function showComplianceResults(Instrument $instrument)
+    public function showComplianceResults(Request $request, Instrument $instrument)
     {
-        return view('pages.survey.compliance-results', compact('instrument'));
+        $model = ModelHelper::getModelByRequest($request);
+
+        $showInstrument = isset($model->user);
+        $questions = [];
+        if ($showInstrument) {
+            foreach ($instrument->questions as $key => $question) {
+                $response = $model->complianceResults->firstWhere('question_id', $question->id);
+                $auditResult = $model->auditResults->firstWhere('question_id', $question->id);
+                if ($auditResult->compliance == 'Sesuai') {
+                    $questions[$key] = $question;
+                    $questions[$key]->response = (object) [
+                        'description' => optional($response)->description,
+                        'success_factors' => optional($response)->success_factors,
+                    ];
+                }
+            }
+        }
+
+        return view('pages.survey.compliance-results', compact('instrument', 'showInstrument', 'questions'));
+    }
+
+    public function storeComplianceResults(SubmitComplianceResultsRequest $request, Instrument $instrument)
+    {
+        try {
+            $model = ModelHelper::getModelByRequest($request);
+
+            foreach ($instrument->questions as $question) {
+                $auditResult = $model->auditResults->firstWhere('question_id', $question->id);
+                if ($auditResult->compliance == 'Sesuai') {
+                    $data = [
+                        'description' => $request->description[$question->id],
+                        'success_factors' => $request->success_factors[$question->id],
+                    ];
+    
+                    $model->complianceResults()->updateOrCreate(
+                        [
+                            'question_id' => $question->id,
+                        ],
+                        $data
+                    );
+                }
+            }
+
+            return redirect()->back()->with('success', 'Survei berhasil disimpan.');
+        } catch (\Throwable $th) {
+            logger()->error($th->getMessage());
+
+            return back()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan survei.']);
+        }
     }
 
     public function showNoncomplianceResults(Instrument $instrument)

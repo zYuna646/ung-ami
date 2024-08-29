@@ -29,9 +29,13 @@ Route::get('/survey/{instrument}', [SurveyController::class, 'show'])->name('sur
 Route::get('/survey/{instrument}/audit-results', [SurveyController::class, 'showAuditResults'])->name('survey.audit_results');
 Route::post('/survey/{instrument}/audit-results', [SurveyController::class, 'storeAuditResults'])->name('survey.audit_results.store');
 Route::get('/survey/{instrument}/compliance-results', [SurveyController::class, 'showComplianceResults'])->name('survey.compliance_results');
+Route::post('/survey/{instrument}/compliance-results', [SurveyController::class, 'storeComplianceResults'])->name('survey.compliance_results.store');
 Route::get('/survey/{instrument}/noncompliance-results', [SurveyController::class, 'showNoncomplianceResults'])->name('survey.noncompliance_results');
+Route::post('/survey/{instrument}/noncompliance-results', [SurveyController::class, 'storeNoncomplianceResults'])->name('survey.noncompliance_results.store');
 Route::get('/survey/{instrument}/ptk', [SurveyController::class, 'showPTK'])->name('survey.ptk');
+Route::post('/survey/{instrument}/ptk', [SurveyController::class, 'storePTK'])->name('survey.ptk.store');
 Route::get('/survey/{instrument}/ptp', [SurveyController::class, 'showPTP'])->name('survey.ptp');
+Route::post('/survey/{instrument}/ptp', [SurveyController::class, 'storePTP'])->name('survey.ptp.store');
 Route::post('/survey/{instrument}', [SurveyController::class, 'store'])->name('survey.store');
 Route::prefix('dashboard')->name('dashboard.')->middleware(['web', 'auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('index');

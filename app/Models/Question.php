@@ -38,4 +38,9 @@ class Question extends Model
     {
         return $this->belongsToMany(Unit::class, 'question_unit');
     }
+
+    public function auditResults()
+    {
+        return $this->hasMany(AuditResult::class);
+    }
 }

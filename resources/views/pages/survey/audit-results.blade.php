@@ -25,11 +25,11 @@
         </div>
       </div>
     </x-main.card>
-		<section class="grid grid-cols-1 gap-6 sm:grid-cols-3 items-start">
+		<div class="grid grid-cols-1 gap-6 sm:grid-cols-3 items-start">
 			<x-survey.detail :$instrument />
 			<div class="col-span-2">
 				<x-survey.form2 :$instrument :$showInstrument />
 			</div>
-		</section>
+		</div>
 	</section>
 @endsection
