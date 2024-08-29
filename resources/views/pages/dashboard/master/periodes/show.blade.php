@@ -35,7 +35,7 @@
 			</div>
 		</div>
 	</x-main.section>
-	<x-main.section class="grid grid-cols-1 gap-6 sm:grid-cols-3">
+	<x-main.section class="grid grid-cols-1 gap-6 sm:grid-cols-3 items-start">
 		<x-main.card>
 			<x-main.list :items="[
 			    (object) [

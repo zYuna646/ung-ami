@@ -6,20 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('compliance_results', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('question_id')->constrained()->onDelete('cascade');
+            $table->text('description');
+            $table->text('success_factors');
+            $table->morphs('auditable');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('compliance_results');

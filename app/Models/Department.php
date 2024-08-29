@@ -44,4 +44,9 @@ class Department extends Model
     {
         return $this->hasMany(Program::class);
     }
+
+    public function auditResults()
+    {
+        return $this->morphMany(AuditResult::class, 'auditable');
+    }
 }

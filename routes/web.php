@@ -27,8 +27,11 @@ Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('aut
 Route::get('/survey', [SurveyController::class, 'index'])->name('survey.index');
 Route::get('/survey/{instrument}', [SurveyController::class, 'show'])->name('survey.show');
 Route::get('/survey/{instrument}/audit-results', [SurveyController::class, 'showAuditResults'])->name('survey.audit_results');
+Route::post('/survey/{instrument}/audit-results', [SurveyController::class, 'storeAuditResults'])->name('survey.audit_results.store');
 Route::get('/survey/{instrument}/compliance-results', [SurveyController::class, 'showComplianceResults'])->name('survey.compliance_results');
 Route::get('/survey/{instrument}/noncompliance-results', [SurveyController::class, 'showNoncomplianceResults'])->name('survey.noncompliance_results');
+Route::get('/survey/{instrument}/ptk', [SurveyController::class, 'showPTK'])->name('survey.ptk');
+Route::get('/survey/{instrument}/ptp', [SurveyController::class, 'showPTP'])->name('survey.ptp');
 Route::post('/survey/{instrument}', [SurveyController::class, 'store'])->name('survey.store');
 Route::prefix('dashboard')->name('dashboard.')->middleware(['web', 'auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('index');

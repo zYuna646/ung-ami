@@ -15,7 +15,7 @@ class InstrumentPolicy
 
     public function view(User $user, Instrument $instrument): bool
     {
-        return $instrument->periode->units->contains(function ($unit) use ($user) {
+        return $instrument->units->contains(function ($unit) use ($user) {
             $userInUnit = $unit->user && $unit->user->id === $user->id;
             $userMatchesUnit = !$unit->user && (
                 ($unit->unit_name === 'Fakultas' && $user->isFaculty()) ||
@@ -27,9 +27,6 @@ class InstrumentPolicy
         });
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
     public function create(User $user): bool
     {
         //
@@ -74,6 +71,6 @@ class InstrumentPolicy
 
     public function viewSurvey(User $user, Instrument $instrument): bool
     {
-        return $user->isAuditee() || $user->isAuditor();
+        return $user->isAuditee();
     }
 }

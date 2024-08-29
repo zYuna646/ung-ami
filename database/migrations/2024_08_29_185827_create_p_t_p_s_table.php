@@ -8,12 +8,13 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('noncompliance_results', function (Blueprint $table) {
+        Schema::create('p_t_p_s', function (Blueprint $table) {
             $table->id();
             $table->foreignId('question_id')->constrained()->onDelete('cascade');
-            $table->text('description');
-            $table->string('category');
-            $table->text('barriers');
+            $table->string('recommendations');
+            $table->string('improvement_plan');
+            $table->string('completion_schedule');
+            $table->string('responsible_party');
             $table->morphs('auditable');
             $table->timestamps();
         });
@@ -21,6 +22,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('noncompliance_results');
+        Schema::dropIfExists('p_t_p_s');
     }
 };

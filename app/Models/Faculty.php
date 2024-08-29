@@ -38,4 +38,9 @@ class Faculty extends Model
     {
         return $this->hasMany(Department::class);
     }
+
+    public function auditResults()
+    {
+        return $this->morphMany(AuditResult::class, 'auditable');
+    }
 }

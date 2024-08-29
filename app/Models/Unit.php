@@ -32,4 +32,9 @@ class Unit extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function auditResults()
+    {
+        return $this->morphMany(AuditResult::class, 'auditable');
+    }
 }

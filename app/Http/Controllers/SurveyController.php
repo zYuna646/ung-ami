@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SubmitAuditResultsRequest;
 use App\Http\Requests\SubmitSurveyRequest;
+use App\Models\Department;
+use App\Models\Faculty;
 use App\Models\Instrument;
 use App\Models\Periode;
+use App\Models\Program;
 use App\Models\SurveyResponse;
+use App\Models\Unit;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -89,5 +94,94 @@ class SurveyController extends Controller
 
             return back()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan survei.']);
         }
+    }
+
+    public function showAuditResults(Request $request, Instrument $instrument)
+    {
+        if ($request->unit == 'Fakultas' && $request->faculty) {
+            $model = Faculty::where('faculty_name', $request->faculty)->first();
+        } elseif ($request->unit == 'Jurusan' && $request->department) {
+            $model = Department::where('department_name', $request->department)->first();
+        } elseif ($request->unit == 'Program Studi' && $request->program) {
+            $model = Program::where('program_name', $request->program)->first();
+        } else {
+            $model = Unit::where('unit_name', $request->unit)->first();
+        }
+
+        $showInstrument = isset($model->user);
+        if ($showInstrument) {
+            $questions = $instrument->indicators->flatMap->questions;
+            foreach ($instrument->indicators as $key1 => $indicator) {
+                foreach ($indicator->questions as $key2 => $question) {
+                    $response = $model->auditResults->firstWhere('question_id', $question->id);
+
+                    $instrument->indicators[$key1]->questions[$key2]->response = (object) [
+                        'description' => optional($response)->description,
+                        'amount_target' => optional($response)->amount_target,
+                        'existence' => optional($response)->existence,
+                        'compliance' => optional($response)->compliance,
+                    ];
+                }
+            }
+        }
+
+        return view('pages.survey.audit-results', compact('instrument', 'showInstrument'));
+    }
+
+    public function storeAuditResults(SubmitAuditResultsRequest $request, Instrument $instrument)
+    {
+        try {
+            if ($request->unit == 'Fakultas') {
+                $model = Faculty::where('faculty_name', $request->faculty)->first();
+            } elseif ($request->unit == 'Jurusan') {
+                $model = Department::where('department_name', $request->department)->first();
+            } elseif ($request->unit == 'Program Studi') {
+                $model = Program::where('program_name', $request->program)->first();
+            } else {
+                $model = Unit::where('unit_name', $request->unit)->first();
+            }
+
+            foreach ($instrument->questions as $question) {
+                $data = [
+                    'description' => $request->description[$question->id],
+                    'amount_target' => $request->amount_target[$question->id],
+                    'existence' => $request->existence[$question->id],
+                    'compliance' => $request->compliance[$question->id],
+                ];
+
+                $model->auditResults()->updateOrCreate(
+                    [
+                        'question_id' => $question->id,
+                    ],
+                    $data
+                );
+            }
+
+            return redirect()->back()->with('success', 'Survei berhasil disimpan.');
+        } catch (\Throwable $th) {
+            logger()->error($th->getMessage());
+
+            return back()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan survei.']);
+        }
+    }
+
+    public function showComplianceResults(Instrument $instrument)
+    {
+        return view('pages.survey.compliance-results', compact('instrument'));
+    }
+
+    public function showNoncomplianceResults(Instrument $instrument)
+    {
+        return view('pages.survey.noncompliance-results', compact('instrument'));
+    }
+
+    public function showPTK(Instrument $instrument)
+    {
+        return view('pages.survey.ptk', compact('instrument'));
+    }
+
+    public function showPTP(Instrument $instrument)
+    {
+        return view('pages.survey.ptp', compact('instrument'));
     }
 }

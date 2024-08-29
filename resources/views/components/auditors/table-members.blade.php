@@ -12,9 +12,11 @@
 				<tr>
 					<td>{{ $loop->iteration }}</td>
 					<td>
-						{{ $auditor->user->name }}
+						<a class="text-blue-500 underline" href="{{ route('dashboard.users.auditors.edit', $auditor->uuid) }}">
+							{{ $auditor->user->name }}
+						</a>
 						@if ($auditor->id == $periode->chief_auditor_id)
-							(Ketua)
+							<span class="ms-2">(Ketua)</span>
 						@endif
 					</td>
 					<td>

@@ -39,4 +39,9 @@ class Program extends Model
     {
         return $this->belongsTo(Department::class);
     }
+
+    public function auditResults()
+    {
+        return $this->morphMany(AuditResult::class, 'auditable');
+    }
 }
