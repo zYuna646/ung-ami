@@ -15,6 +15,18 @@ class UpdateInstrumentRequest extends FormRequest
     {
         return [
             'name' => 'required',
+            'units' => 'required',
+            'faculties' => 'nullable',
+            'departments' => 'nullable',
+            'programs' => 'nullable',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Instrumen wajib diisi.',
+            'units.required' => 'Unit wajib diisi.',
         ];
     }
 }

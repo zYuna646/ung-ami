@@ -11,10 +11,21 @@
 				</button>
 			</div>
 			<div class="p-4">
-				<form action="{{ route('dashboard.master.instruments.store') }}" method="POST" class="flex flex-col gap-5">
+				<form action="{{ route('dashboard.master.periodes.instruments.store', $periode->uuid) }}" method="POST" class="flex flex-col gap-5">
 					@csrf
-					<x-form.input name="name" label="Instrumen" placeholder="Isi instrumen" />
-					<input type="hidden" name="periode_id" value="{{ $periodeId }}">
+					<input type="hidden" name="periode_id" value="{{ $periode->id }}">
+					<x-form.select name="master_instrument_id" label="Instrumen" :options="$masterInstruments->map(function ($instrument) {
+					    return (object) [
+					        'label' => $instrument->instrument,
+					        'value' => $instrument->id,
+					    ];
+					})" />
+					<x-form.choices name="units[]" label="Area" placeholder="Pilih Area" :multiple="true" :options="$units->map(function ($unit) {
+					    return (object) [
+					        'label' => $unit->unit_name,
+					        'value' => $unit->id,
+					    ];
+					})" />
 					<div class="flex justify-end gap-2">
 						<x-button @click="addInstrumentModal = false" color="default">Batal</x-button>
 						<x-button type="submit" color="info">Submit</x-button>

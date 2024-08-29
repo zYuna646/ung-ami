@@ -27,12 +27,6 @@
 				        'value' => $standard->id,
 				    ];
 				})" />
-				<x-form.choices name="units[]" label="Area" placeholder="Pilih Area" :multiple="true" :options="$units->map(function ($unit) {
-				    return (object) [
-				        'label' => $unit->unit_name,
-				        'value' => $unit->id,
-				    ];
-				})" />
 				<x-form.input name="tipe" label="Tipe" placeholder="Isi tipe" />
 				<x-form.select name="chief_auditor_id" label="Ketua Auditor" :options="$auditors->map(function ($auditor) {
 				    return (object) [
@@ -40,6 +34,7 @@
 				        'value' => $auditor->id,
 				    ];
 				})" />
+				<x-form.input name="code" label="Kode Dokumen" placeholder="Isi Kode Dokumen" />
 				<div>
 					<x-button type="submit" color="info">
 						Submit

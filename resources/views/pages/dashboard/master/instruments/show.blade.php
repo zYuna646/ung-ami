@@ -11,13 +11,13 @@
 				<h1 class="text-lg font-bold">Detail Instrumen</h1>
 				<x-main.breadcrumb :data="[
 				    'Dasbor' => route('dashboard.index'),
-				    'Master Survei' => route('dashboard.master.periodes.index'),
-				    $instrument->periode->formatted_start_date . ' - ' . $instrument->periode->formatted_end_date => route('dashboard.master.periodes.show', $instrument->periode->uuid),
-				    $instrument->name => null,
+				    'Master Instrumen' => route('dashboard.master.instruments.index'),
+				    $instrument->instrument => null,
 				]" />
 			</div>
 			<div class="flex gap-3">
-				<x-instruments.edit :$instrument />
+				<x-master.instruments.edit :$instrument />
+				<x-master.instruments.delete :$instrument />
 			</div>
 		</div>
 	</x-main.section>
@@ -26,58 +26,44 @@
 			<x-main.card>
 				<x-main.list :items="[
 				    (object) [
-				        'label' => 'Tahun',
-				        'value' => $instrument->periode->year,
-				    ],
-				    (object) [
-				        'label' => 'Periode',
-				        'value' => $instrument->periode->formatted_start_date . ' - ' . $instrument->periode->formatted_end_date,
-				    ],
-				    (object) [
-				        'label' => 'Standar',
-				        'value' => $instrument->periode->standard->name,
-				    ],
-				    (object) [
-				        'label' => 'Area',
-				        'value' => $instrument->periode->units->pluck('unit_name')->implode(', '),
-				    ],
-				    (object) [
-				        'label' => 'Tipe',
-				        'value' => $instrument->periode->tipe,
-				    ],
-				    (object) [
-				        'label' => 'Ketua Auditor',
-				        'value' => $instrument->periode->chief_auditor->user->name,
-				    ],
-				    (object) [
-				        'label' => 'Anggota Auditor',
-				        'values' =>
-				            count($instrument->periode->auditor_members) > 0
-				                ? $instrument->periode->auditor_members->map(function ($auditor) {
-				                    return (object) [
-				                        'value' => $auditor->user->name,
-				                    ];
-				                })
-				                : [
-				                    (object) [
-				                        'value' => '-',
-				                    ],
-				                ],
-				    ],
-				    (object) [
 				        'label' => 'Instrumen',
-				        'value' => $instrument->name,
+				        'value' => $instrument->instrument,
+				    ],
+						(object) [
+				        'label' => 'Jumlah Indikator',
+				        'value' => $instrument->indicators->count(),
+				    ],
+						(object) [
+				        'label' => 'Jumlah Pertanyaan',
+				        'value' => $instrument->questions->count(),
 				    ],
 				]" />
 			</x-main.card>
 		</div>
-		<div class="col-span-2 flex-col gap-6">
+		<div class="col-span-2 flex-col space-y-6">
 			<x-main.card>
 				<div class="mb-3 flex flex-col items-start gap-3 sm:flex-row sm:justify-between">
 					<h5 class="text-lg font-bold">Daftar Indikator</h5>
-					<x-indicators.add :instrument-id="$instrument->id" />
+					<x-master.indicators.add :instrument-id="$instrument->id" />
 				</div>
-				<x-indicators.table :indicators="$instrument->indicators" />
+				<x-master.indicators.table :indicators="$instrument->indicators" />
+			</x-main.card>
+			<x-main.card>
+				<div class="mb-3 flex flex-col items-start gap-3 sm:flex-row sm:justify-between">
+					<h5 class="text-lg font-bold">Daftar Pertanyaan</h5>
+					@isset($indicator)
+						<x-master.questions.add :indicator-id="$indicator->id" />
+					@endisset
+				</div>
+				<div x-data>
+					<x-form.select name="indicator" placeholder="Pilih Indikator" :value="request('indicator')" class="mb-4" :options="$instrument->indicators->map(function ($indicator) {
+					    return (object) [
+					        'label' => $indicator->indicator,
+					        'value' => $indicator->uuid,
+					    ];
+					})" @change="window.location.href = '{{ url()->current() }}?indicator=' + $event.target.value" />
+				</div>
+				<x-master.questions.table :$questions />
 			</x-main.card>
 		</div>
 	</x-main.section>

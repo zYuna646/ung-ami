@@ -17,17 +17,13 @@ return new class extends Migration
             $table->foreignId('standard_id')->constrained('standards')->onDelete('restrict');
             $table->string('tipe');
             $table->foreignId('chief_auditor_id')->constrained('auditors')->onDelete('restrict');
+            $table->string('code');
             $table->timestamps();
         });
 
         Schema::create('auditor_members', function (Blueprint $table) {
             $table->foreignId('periode_id')->constrained('periodes')->onDelete('cascade');
             $table->foreignId('auditor_id')->constrained('auditors')->onDelete('cascade');
-        });
-
-        Schema::create('periode_unit', function (Blueprint $table) {
-            $table->foreignId('periode_id')->constrained('periodes')->onDelete('cascade');
-            $table->foreignId('unit_id')->constrained('units')->onDelete('cascade');
         });
     }
 

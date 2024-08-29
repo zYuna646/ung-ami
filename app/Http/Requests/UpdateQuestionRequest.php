@@ -20,4 +20,13 @@ class UpdateQuestionRequest extends FormRequest
             'units.*' => 'exists:units,id',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'code.required' => 'Kode wajib diisi.',
+            'text.required' => 'Pertanyaan wajib diisi.',
+            'units.required' => 'Unit wajib diisi.',
+        ];
+    }
 }

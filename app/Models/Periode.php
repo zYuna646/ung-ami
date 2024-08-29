@@ -18,6 +18,7 @@ class Periode extends Model
         'standard_id',
         'tipe',
         'chief_auditor_id',
+        'code',
     ];
 
     public function getRouteKeyName(): string
@@ -56,11 +57,6 @@ class Periode extends Model
     public function auditor_members()
     {
         return $this->belongsToMany(Auditor::class, 'auditor_members');
-    }
-
-    public function units()
-    {
-        return $this->belongsToMany(Unit::class, 'periode_unit');
     }
 
     public function instruments()

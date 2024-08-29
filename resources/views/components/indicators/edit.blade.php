@@ -11,7 +11,7 @@
 				</button>
 			</div>
 			<div class="p-4">
-				<form action="{{ route('dashboard.master.indicators.update', $indicator->uuid) }}" method="POST" class="flex flex-col gap-5">
+				<form action="{{ route('dashboard.master.periodes.instruments.indicators.update', [$periode->uuid, $instrument->uuid, $indicator->uuid]) }}" method="POST" class="flex flex-col gap-5">
 					@csrf
 					@method('PUT')
 					<x-form.input name="name" label="Indikator" placeholder="Isi indikator" :value="$indicator->name" />

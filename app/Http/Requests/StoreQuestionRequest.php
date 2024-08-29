@@ -21,4 +21,14 @@ class StoreQuestionRequest extends FormRequest
             'units.*' => 'exists:units,id',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'code.required' => 'Kode wajib diisi.',
+            'text.required' => 'Pertanyaan wajib diisi.',
+            'indicator_id.required' => 'Indikator wajib diisi.',
+            'units.required' => 'Unit wajib diisi.',
+        ];
+    }
 }

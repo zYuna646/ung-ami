@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreQuestionRequest;
 use App\Http\Requests\UpdateQuestionRequest;
+use App\Models\Indicator;
+use App\Models\Instrument;
+use App\Models\Periode;
 use App\Models\Question;
 
 class QuestionController extends Controller
@@ -23,17 +26,12 @@ class QuestionController extends Controller
         }
     }
 
-    public function show(Question $question)
+    public function edit(Periode $periode, Instrument $instrument, Indicator $indicator, Question $question)
     {
-        return view('pages.dashboard.master.questions.show', compact('question'));
+        return view('pages.dashboard.master.periodes.questions-edit', compact('periode', 'instrument', 'indicator', 'question'));
     }
 
-    public function edit(Question $question)
-    {
-        return view('pages.dashboard.master.questions.edit', compact('question'));
-    }
-
-    public function update(UpdateQuestionRequest $request, Question $question)
+    public function update(UpdateQuestionRequest $request, Periode $periode, Instrument $instrument, Indicator $indicator, Question $question)
     {
         try {
             $data = $request->validated();
@@ -48,7 +46,7 @@ class QuestionController extends Controller
         }
     }
 
-    public function destroy(Question $question)
+    public function destroy(Periode $periode, Instrument $instrument, Indicator $indicator, Question $question)
     {
         try {
             $question->delete();
