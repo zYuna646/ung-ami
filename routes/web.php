@@ -28,6 +28,7 @@ Route::get('/survey', [SurveyController::class, 'index'])->name('survey.index');
 Route::get('/survey/{instrument}', [SurveyController::class, 'show'])->name('survey.show');
 Route::get('/survey/{instrument}/audit-results', [SurveyController::class, 'showAuditResults'])->name('survey.audit_results');
 Route::post('/survey/{instrument}/audit-results', [SurveyController::class, 'storeAuditResults'])->name('survey.audit_results.store');
+Route::get('/survey/{instrument}/audit-results/export', [SurveyController::class, 'exportAuditResults'])->name('survey.audit_results.export');
 Route::get('/survey/{instrument}/compliance-results', [SurveyController::class, 'showComplianceResults'])->name('survey.compliance_results');
 Route::post('/survey/{instrument}/compliance-results', [SurveyController::class, 'storeComplianceResults'])->name('survey.compliance_results.store');
 Route::get('/survey/{instrument}/noncompliance-results', [SurveyController::class, 'showNoncomplianceResults'])->name('survey.noncompliance_results');

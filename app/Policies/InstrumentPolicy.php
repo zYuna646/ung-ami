@@ -71,7 +71,7 @@ class InstrumentPolicy
 
     public function viewSurvey(User $user, Instrument $instrument): bool
     {
-        return $user->isAuditee();
+        return $user->isAuditee() || $user->isAuditor();
     }
 
     public function submitAuditResults(User $user, Instrument $instrument): bool

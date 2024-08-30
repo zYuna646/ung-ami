@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AuditResultsExport;
 use App\Helpers\ModelHelper;
 use App\Http\Requests\SubmitAuditResultsRequest;
 use App\Http\Requests\SubmitComplianceResultsRequest;
@@ -18,6 +19,7 @@ use App\Models\SurveyResponse;
 use App\Models\Unit;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SurveyController extends Controller
 {
@@ -38,14 +40,21 @@ class SurveyController extends Controller
         return view('pages.survey.index', compact('instruments', 'periodes'));
     }
 
-    public function show(Instrument $instrument)
+    public function show(Request $request, Instrument $instrument)
     {
         $this->authorize('viewSurvey', $instrument);
 
         $questions = $instrument->indicators->flatMap->questions;
 
+        if (auth()->user()->isAuditor()) {
+            $model = ModelHelper::getModelByRequest($request);
+            $userId = $model?->user_id;
+        } else {
+            $userId = auth()->id();
+        }
+
         $responses = SurveyResponse::where('instrument_id', $instrument->id)
-            ->where('user_id', auth()->id())
+            ->where('user_id', $userId)
             ->whereIn('question_id', $questions->pluck('id'))
             ->get()
             ->keyBy('question_id');
@@ -156,6 +165,30 @@ class SurveyController extends Controller
 
             return back()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan survei.']);
         }
+    }
+
+    public function exportAuditResults(Request $request, Instrument $instrument)
+    {
+        $this->authorize('submitAuditResults', $instrument);
+
+        $model = ModelHelper::getModelByRequest($request);
+
+        $showInstrument = isset($model->user);
+        $questions = [];
+        if ($showInstrument) {
+            foreach ($instrument->questions as $key => $question) {
+                $response = $model->auditResults->firstWhere('question_id', $question->id);
+                $questions[$key] = $question;
+                $questions[$key]->response = (object) [
+                    'description' => optional($response)->description,
+                    'amount_target' => optional($response)->amount_target,
+                    'existence' => optional($response)->existence,
+                    'compliance' => optional($response)->compliance,
+                ];
+            }
+        }
+
+        return Excel::download(new AuditResultsExport($instrument, $questions), 'Hasil Audit Lapangan.xlsx');
     }
 
     public function showComplianceResults(Request $request, Instrument $instrument)
