@@ -11,6 +11,11 @@
 	@endphp
 
 	<li class="me-2">
+		<a href="{{ route('survey.show', [$instrument->uuid] + $queryParams) }}" class="{{ request()->routeIs('survey.show') ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600' }} inline-block rounded-t-lg p-4">
+			Survei Auditi
+		</a>
+	</li>
+	<li class="me-2">
 		<a href="{{ route('survey.audit_results', [$instrument->uuid] + $queryParams) }}" class="{{ request()->routeIs('survey.audit_results') ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600' }} inline-block rounded-t-lg p-4">
 			Hasil Audit Lapangan
 		</a>
