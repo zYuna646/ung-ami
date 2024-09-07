@@ -2,18 +2,18 @@
 
 namespace App\Policies;
 
-use App\Models\Auditor;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class AuditorPolicy
+class TeamPolicy
 {
     public function viewAny(User $user): bool
     {
         return $user->isAdmin();
     }
 
-    public function view(User $user, Auditor $auditor): bool
+    public function view(User $user, Team $team): bool
     {
         return $user->isAdmin();
     }
@@ -23,22 +23,22 @@ class AuditorPolicy
         return $user->isAdmin();
     }
 
-    public function update(User $user, Auditor $auditor): bool
+    public function update(User $user, Team $team): bool
     {
         return $user->isAdmin();
     }
 
-    public function delete(User $user, Auditor $auditor): bool
-    {
-        return $user->isAdmin() && $auditor->chief_teams->isEmpty();
-    }
-
-    public function restore(User $user, Auditor $auditor): bool
+    public function delete(User $user, Team $team): bool
     {
         return $user->isAdmin();
     }
 
-    public function forceDelete(User $user, Auditor $auditor): bool
+    public function restore(User $user, Team $team): bool
+    {
+        return $user->isAdmin();
+    }
+
+    public function forceDelete(User $user, Team $team): bool
     {
         return $user->isAdmin();
     }

@@ -9,7 +9,7 @@
 				<x-main.breadcrumb :data="[
 				    'Dasbor' => route('dashboard.index'),
 				    'Master Survei' => route('dashboard.master.periodes.index'),
-				    $periode->formatted_start_date . ' - ' . $periode->formatted_end_date => route('dashboard.master.periodes.show', $periode->uuid),
+				    $periode->periode_name => route('dashboard.master.periodes.show', $periode->uuid),
 				    'Edit' => null,
 				]" />
 			</div>
@@ -20,6 +20,7 @@
 			<form action="{{ route('dashboard.master.periodes.update', $periode->uuid) }}" method="POST" class="flex flex-col gap-5">
 				@csrf
 				@method('PUT')
+				<x-form.input name="periode_name" label="Nama Periode" placeholder="Isi nama periode" :value="$periode->periode_name" />
 				<x-form.input type="number" name="year" label="Tahun" placeholder="Isi tahun" min="1999" max="2099" step="1" :value="$periode->year" />
 				<x-form.input type="date" name="start_date" label="Tanggal Mulai" :value="$periode->start_date" />
 				<x-form.input type="date" name="end_date" label="Tanggal Selesai" :value="$periode->end_date" />
@@ -30,10 +31,10 @@
 				    ];
 				})" />
 				<x-form.input name="tipe" label="Tipe" placeholder="Isi tipe" :value="$periode->tipe" />
-				<x-form.select name="chief_auditor_id" label="Ketua Auditor" :value="$periode->chief_auditor_id" :options="$availableToBeChief->map(function ($auditor) {
+				<x-form.select name="team_id" label="Tim Auditor" :value="$periode->team_id" :options="$teams->map(function ($team) {
 				    return (object) [
-				        'label' => $auditor->user->name,
-				        'value' => $auditor->id,
+				        'label' => $team->chief->user->name . ' (Ketua)',
+				        'value' => $team->id,
 				    ];
 				})" />
 				<x-form.input name="code" label="Kode Dokumen" placeholder="Isi Kode Dokumen" :value="$periode->code" />

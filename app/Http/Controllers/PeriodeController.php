@@ -8,6 +8,7 @@ use App\Models\Auditor;
 use App\Models\MasterInstrument;
 use App\Models\Periode;
 use App\Models\Standard;
+use App\Models\Team;
 use App\Models\Unit;
 use Illuminate\Http\Request;
 
@@ -23,9 +24,9 @@ class PeriodeController extends Controller
     public function create()
     {
         $standards = Standard::get();
-        $auditors = Auditor::get();
+        $teams = Team::get();
 
-        return view('pages.dashboard.master.periodes.create', compact('standards', 'auditors'));
+        return view('pages.dashboard.master.periodes.create', compact('standards', 'teams'));
     }
 
     public function store(StorePeriodeRequest $request)
@@ -45,26 +46,19 @@ class PeriodeController extends Controller
     public function show(Periode $periode)
     {
         $auditors = Auditor::all();
-        $availableToBeMember = $auditors->reject(function ($auditor) use ($periode) {
-            return $auditor->id === $periode->chief_auditor_id;
-        })->reject(function ($auditor) use ($periode) {
-            return $periode->auditor_members->contains($auditor);
-        });
         $units = Unit::get();
         $masterInstruments = MasterInstrument::get();
 
-        return view('pages.dashboard.master.periodes.show', compact('periode', 'availableToBeMember', 'units', 'masterInstruments'));
+        return view('pages.dashboard.master.periodes.show', compact('periode', 'units', 'masterInstruments'));
     }
 
     public function edit(Periode $periode)
     {
         $standards = Standard::get();
         $auditors = Auditor::all();
-        $availableToBeChief = $auditors->reject(function ($auditor) use ($periode) {
-            return $periode->auditor_members->contains($auditor);
-        });
+        $teams = Team::get();
 
-        return view('pages.dashboard.master.periodes.edit', compact('periode', 'standards', 'availableToBeChief'));
+        return view('pages.dashboard.master.periodes.edit', compact('periode', 'standards', 'teams'));
     }
 
     public function update(UpdatePeriodeRequest $request, Periode $periode)
@@ -89,7 +83,7 @@ class PeriodeController extends Controller
             return redirect()->route('dashboard.master.periodes.index')->with('success', 'Data berhasil dihapus.');
         } catch (\Throwable $th) {
             logger()->error($th->getMessage());
-            
+
             return redirect()->back()->withErrors(['error' => 'Terjadi kesalahan.'])->withInput();
         }
     }

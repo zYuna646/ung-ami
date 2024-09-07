@@ -28,9 +28,10 @@
 					<thead>
 						<tr>
 							<th>No.</th>
+							<th>Nama</th>
 							<th>Periode</th>
 							<th>Tahun</th>
-							<th>Ketua</th>
+							<th>Ketua Tim Auditor</th>
 							<th>Aksi</th>
 						</tr>
 					</thead>
@@ -38,9 +39,10 @@
 						@foreach ($periodes as $periode)
 							<tr>
 								<td>{{ $loop->iteration }}</td>
+								<td>{{ $periode->periode_name }}</td>
 								<td>{{ $periode->formatted_start_date }} - {{ $periode->formatted_end_date }}</td>
 								<td>{{ $periode->year }}</td>
-								<td>{{ $periode->chief_auditor->user->name }}</td>
+								<td>{{ $periode->team->chief->user->name }}</td>
 								<td>
 									<div class="inline-flex gap-x-2">
 										<x-button :href="route('dashboard.master.periodes.show', $periode->uuid)" color="info" size="sm">

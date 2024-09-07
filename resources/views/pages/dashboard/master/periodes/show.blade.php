@@ -12,7 +12,7 @@
 				<x-main.breadcrumb :data="[
 				    'Dasbor' => route('dashboard.index'),
 				    'Master Survei' => route('dashboard.master.periodes.index'),
-				    $periode->formatted_start_date . ' - ' . $periode->formatted_end_date => null,
+				    $periode->periode_name => null,
 				]" />
 			</div>
 			<div class="flex gap-3">
@@ -35,9 +35,13 @@
 			</div>
 		</div>
 	</x-main.section>
-	<x-main.section class="grid grid-cols-1 gap-6 sm:grid-cols-3 items-start">
+	<x-main.section class="grid grid-cols-1 items-start gap-6 sm:grid-cols-3">
 		<x-main.card>
 			<x-main.list :items="[
+			    (object) [
+			        'label' => 'Nama',
+			        'value' => $periode->periode_name,
+			    ],
 			    (object) [
 			        'label' => 'Tahun',
 			        'value' => $periode->year,
@@ -56,13 +60,13 @@
 			    ],
 			    (object) [
 			        'label' => 'Ketua Auditor',
-			        'value' => $periode->chief_auditor->user->name,
+			        'value' => $periode->team->chief->user->name,
 			    ],
 			    (object) [
 			        'label' => 'Anggota Auditor',
 			        'values' =>
-			            count($periode->auditor_members) > 0
-			                ? $periode->auditor_members->map(function ($auditor) {
+			            count($periode->team->members) > 0
+			                ? $periode->team->members->map(function ($auditor) {
 			                    return (object) [
 			                        'value' => $auditor->user->name,
 			                    ];
@@ -76,16 +80,18 @@
 			]" />
 		</x-main.card>
 		<div class="col-span-2 grid gap-6">
-			<x-main.card>
+			{{-- <x-main.card>
 				<div class="mb-3 flex flex-col items-start gap-3 sm:flex-row sm:justify-between">
 					<h5 class="text-lg font-bold">Daftar Anggota Auditor</h5>
-					<x-auditors.add-member :auditors="$availableToBeMember" :$periode />
+					<x-button :href="route('dashboard.users.teams.edit', $periode->team->uuid)" color="success" size="sm">
+						Edit
+					</x-button>
 				</div>
 				@php
-					$auditors = $periode->auditor_members->prepend($periode->chief_auditor);
+					$auditors = $periode->team->members->prepend($periode->team->chief);
 				@endphp
 				<x-auditors.table-members :auditors="$auditors" :periode="$periode" />
-			</x-main.card>
+			</x-main.card> --}}
 			<x-main.card>
 				<div class="mb-3 flex flex-col items-start gap-3 sm:flex-row sm:justify-between">
 					<h5 class="text-lg font-bold">Daftar Instrumen</h5>

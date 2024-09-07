@@ -27,7 +27,8 @@ class SubmitPTKsRequest extends FormRequest
 
         foreach ($this->instrument->questions as $question) {
             $auditResult = $this->model->auditResults->firstWhere('question_id', $question->id);
-            if ($auditResult && $auditResult->compliance == 'Tidak Sesuai') {
+            $noncomplianceResult = $this->model->noncomplianceResults->firstWhere('question_id', $question->id);
+            if ($auditResult && $auditResult->compliance == 'Tidak Sesuai' && $noncomplianceResult?->category == 'KTS') {
                 $rules["recommendations.$question->id"] = 'required';
                 $rules["improvement_plan.$question->id"] = 'required';
                 $rules["completion_schedule.$question->id"] = 'required';

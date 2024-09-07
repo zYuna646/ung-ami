@@ -32,13 +32,13 @@ class Auditor extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function chief_periodes()
+    public function chief_teams()
     {
-        return $this->hasMany(Periode::class, 'chief_auditor_id');
+        return $this->hasMany(Team::class, 'chief_auditor_id');
     }
 
-    public function member_periodes()
+    public function member_teams()
     {
-        return $this->belongsToMany(Periode::class, 'auditor_members');
+        return $this->belongsToMany(Team::class, 'auditor_team');
     }
 }

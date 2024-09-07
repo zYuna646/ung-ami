@@ -319,7 +319,8 @@ class SurveyController extends Controller
             foreach ($instrument->questions as $key => $question) {
                 $response = $model->PTKs->firstWhere('question_id', $question->id);
                 $auditResult = $model->auditResults->firstWhere('question_id', $question->id);
-                if ($auditResult?->compliance == 'Tidak Sesuai') {
+                $noncomplianceResult = $model->noncomplianceResults->firstWhere('question_id', $question->id);
+                if ($auditResult?->compliance == 'Tidak Sesuai' && $noncomplianceResult?->category == 'KTS') {
                     $questions[$key] = $question;
                     $questions[$key]->response = (object) [
                         'recommendations' => optional($response)->recommendations,
@@ -344,7 +345,8 @@ class SurveyController extends Controller
 
             foreach ($instrument->questions as $question) {
                 $auditResult = $model->auditResults->firstWhere('question_id', $question->id);
-                if ($auditResult?->compliance == 'Tidak Sesuai') {
+                $noncomplianceResult = $model->noncomplianceResults->firstWhere('question_id', $question->id);
+                if ($auditResult?->compliance == 'Tidak Sesuai' && $noncomplianceResult?->category == 'KTS') {
                     $data = [
                         'recommendations' => $request->recommendations[$question->id],
                         'improvement_plan' => $request->improvement_plan[$question->id],

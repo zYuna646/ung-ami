@@ -9,7 +9,7 @@
 				<x-main.breadcrumb :data="[
 				    'Dasbor' => route('dashboard.index'),
 				    'Master Jurusan' => route('dashboard.master.departments.index'),
-				    $department->name => null,
+				    $department->department_name => null,
 				    'Edit' => null,
 				]" />
 			</div>

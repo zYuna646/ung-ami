@@ -36,11 +36,6 @@ class DepartmentController extends Controller
             DB::beginTransaction();
 
             $data = $request->validated();
-            $user = User::create([
-                'name' => "Ketua Jurusan {$request->department_name}",
-                'email' => strtolower(str_replace(' ', '.', $request->department_name)) . '@amiung.com',
-            ]);
-            $data['user_id'] = $user->id;
             Department::create($data);
 
             DB::commit();
@@ -76,7 +71,6 @@ class DepartmentController extends Controller
     public function destroy(Department $department)
     {
         try {
-            $department->user->delete();
             $department->delete();
 
             return redirect()->route('dashboard.master.departments.index')->with('success', 'Data berhasil dihapus.');

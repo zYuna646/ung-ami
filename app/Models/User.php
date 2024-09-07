@@ -76,7 +76,7 @@ class User extends Authenticatable
 
     public function isAuditee(): bool
     {
-        return isset($this->unit) || isset($this->faculty) || isset($this->department) || isset($this->program);
+        return isset($this->unit) || isset($this->faculty) || isset($this->program);
     }
 
     public function unit()

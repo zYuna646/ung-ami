@@ -50,7 +50,7 @@
 									<span>
 										<i class="fas fa-user-tie"></i>
 									</span>
-									<p><span class="font-semibold">Auditor Ketua:</span> {{ $instrument->periode->chief_auditor->user->name }}</p>
+									<p><span class="font-semibold">Auditor Ketua:</span> {{ $instrument->periode->team->chief->user->name }}</p>
 								</div>
 							</div>
 						</div>

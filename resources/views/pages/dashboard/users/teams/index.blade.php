@@ -1,5 +1,5 @@
 @extends('layouts.app', [
-    'title' => 'Master Jurusan',
+    'title' => 'Tim Auditor',
 ])
 @push('styles')
 	<link rel="stylesheet" href="https://cdn.datatables.net/2.1.3/css/dataTables.dataTables.min.css">
@@ -8,14 +8,14 @@
 	<x-main.section>
 		<div class="flex flex-col justify-between gap-5 rounded-lg border border-slate-100 bg-white p-6 shadow-sm sm:flex-row sm:items-center">
 			<div>
-				<h1 class="text-lg font-bold">Master Jurusan</h1>
+				<h1 class="text-lg font-bold">Tim Auditor</h1>
 				<x-main.breadcrumb :data="[
 				    'Dasbor' => route('dashboard.index'),
-				    'Master Jurusan' => null,
+				    'Tim Auditor' => null,
 				]" />
 			</div>
 			<div>
-				<x-button :href="route('dashboard.master.departments.create')" color="info">
+				<x-button :href="route('dashboard.users.teams.create')" color="info">
 					Tambah Data
 				</x-button>
 			</div>
@@ -28,31 +28,39 @@
 					<thead>
 						<tr>
 							<th>No.</th>
-							<th>Nama</th>
+							<th>Ketua</th>
+							<th>Anggota</th>
 							<th>Aksi</th>
 						</tr>
 					</thead>
 					<tbody>
-						@foreach ($departments as $department)
+						@foreach ($teams as $team)
 							<tr>
 								<td>{{ $loop->iteration }}</td>
-								<td>{{ $department->department_name }}</td>
+								<td>{{ $team->chief->user->name }}</td>
+								<td>
+									<ul>
+										@foreach ($team->members as $member)
+											<li>{{ $member->user->name }}</li>
+										@endforeach
+									</ul>
+								</td>
 								<td>
 									<div class="inline-flex gap-x-2">
-										@can('delete', $department)
-											<x-button :href="route('dashboard.master.departments.edit', $department->uuid)" color="success" size="sm">
-												Edit
-											</x-button>
-											<x-button.delete :action="route('dashboard.master.departments.destroy', $department->uuid)" size="sm">
+										<x-button :href="route('dashboard.users.teams.edit', $team->uuid)" color="success" size="sm">
+											Edit
+										</x-button>
+										@can('delete', $team)
+											<x-button.delete :action="route('dashboard.users.teams.destroy', $team->uuid)" size="sm">
 												<p>Anda akan menghapus data berikut: </p>
 												<dl class="max-w-md divide-y divide-gray-200 text-gray-900">
 													<div class="flex flex-col pb-3">
 														<dt class="mb-1 text-gray-500">ID</dt>
-														<dd class="font-semibold">{{ $department->uuid }}</dd>
+														<dd class="font-semibold">{{ $team->uuid }}</dd>
 													</div>
 													<div class="flex flex-col pt-3">
-														<dt class="mb-1 text-gray-500">Jurusan</dt>
-														<dd class="font-semibold">{{ $department->department_name }}</dd>
+														<dt class="mb-1 text-gray-500">Ketua</dt>
+														<dd class="font-semibold">{{ $team->chief->user->name }}</dd>
 													</div>
 												</dl>
 											</x-button.delete>
