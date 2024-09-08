@@ -12,12 +12,13 @@ class Periode extends Model
     use HasFactory;
 
     protected $fillable = [
+        'periode_name',
         'year',
         'start_date',
         'end_date',
         'standard_id',
         'tipe',
-        'chief_auditor_id',
+        'team_id',
         'code',
     ];
 
@@ -49,14 +50,9 @@ class Periode extends Model
         return $this->belongsTo(Standard::class);
     }
 
-    public function chief_auditor()
+    public function team()
     {
-        return $this->belongsTo(Auditor::class, 'chief_auditor_id');
-    }
-
-    public function auditor_members()
-    {
-        return $this->belongsToMany(Auditor::class, 'auditor_members');
+        return $this->belongsTo(Team::class);
     }
 
     public function instruments()

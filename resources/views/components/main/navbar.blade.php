@@ -47,14 +47,18 @@
 	        'show' => auth()->check() && auth()->user()->isAdmin(),
 	        'label' => 'Pengguna',
 	        'subMenu' => [
-	            (object) [
-	                'label' => 'Auditor',
-	                'route' => route('dashboard.users.auditors.index'),
-	            ],
-	            (object) [
-	                'label' => 'Auditi',
-	                'route' => route('dashboard.users.auditees.index'),
-	            ],
+						(object) [
+							'label' => 'Auditi',
+							'route' => route('dashboard.users.auditees.index'),
+						],
+						(object) [
+								'label' => 'Auditor',
+								'route' => route('dashboard.users.auditors.index'),
+						],
+						(object) [
+								'label' => 'Tim Auditor',
+								'route' => route('dashboard.users.teams.index'),
+						],
 	        ],
 	    ],
 	];

@@ -39,19 +39,19 @@ class DepartmentSeeder extends Seeder
                 $dataExists = Department::where('department_name', $department->department_name)->exists();
 
                 if (!$dataExists) {
-                    $user = User::firstOrCreate(
-                        ['name' => "Ketua Jurusan {$department->department_name}"],
-                        [
-                            'email' => strtolower(str_replace(' ', '.', $department->department_name)) . '@amiung.com',
-                        ]
-                    );
+                    // $user = User::firstOrCreate(
+                    //     ['name' => "Ketua Jurusan {$department->department_name}"],
+                    //     [
+                    //         'email' => strtolower(str_replace(' ', '.', $department->department_name)) . '@amiung.com',
+                    //     ]
+                    // );
 
                     $faculty = Faculty::where('faculty_name', $department->faculty_name)->first();
 
                     Department::create([
                         'department_name' => $department->department_name,
                         'is_deletable' => $department->is_deletable ?? true,
-                        'user_id' => $user->id ?? null,
+                        // 'user_id' => $user->id ?? null,
                         'faculty_id' => $faculty->id ?? null,
                     ]);
                 }

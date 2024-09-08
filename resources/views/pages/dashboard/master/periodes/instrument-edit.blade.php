@@ -12,7 +12,7 @@
 				<x-main.breadcrumb :data="[
 				    'Dasbor' => route('dashboard.index'),
 				    'Master Survei' => route('dashboard.master.periodes.index'),
-				    $periode->formatted_start_date . ' - ' . $periode->formatted_end_date => route('dashboard.master.periodes.show', $periode->uuid),
+				    $periode->periode_name => route('dashboard.master.periodes.show', $periode->uuid),
 				    $instrument->name => route('dashboard.master.periodes.instruments.show', [$periode->uuid, $instrument->uuid]),
 				    'Edit' => null,
 				]" />

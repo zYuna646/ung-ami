@@ -14,12 +14,13 @@ class StorePeriodeRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'periode_name' => 'required',
             'year' => 'required|numeric|min:1998|max:2099',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
             'standard_id' => 'required',
             'tipe' => 'required',
-            'chief_auditor_id' => 'required',
+            'team_id' => 'required',
             'code' => 'required',
         ];
     }
@@ -27,6 +28,7 @@ class StorePeriodeRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'periode_name.required' => 'Nama Periode wajib diisi.',
             'year.required' => 'Tahun wajib diisi.',
             'year.numeric' => 'Tahun harus berupa angka.',
             'year.min' => 'Tahun minimal adalah 1998.',
@@ -37,7 +39,7 @@ class StorePeriodeRequest extends FormRequest
             'end_date.date' => 'Tanggal selesai harus berupa format tanggal yang valid.',
             'standard_id.required' => 'Standar wajib dipilih.',
             'tipe.required' => 'Tipe wajib diisi.',
-            'chief_auditor_id.required' => 'Ketua auditor wajib dipilih.',
+            'team_id.required' => 'Ketua auditor wajib dipilih.',
             'code.required' => 'Kode dokumen wajib diisi.',
         ];
     }

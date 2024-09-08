@@ -13,7 +13,7 @@ return new class extends Migration
             $table->uuid('uuid')->unique();
             $table->string('department_name')->unique();
             $table->boolean('is_deletable')->default(true);
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
+            // $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->foreignId('faculty_id')->constrained('faculties')->onDelete('cascade');
             $table->timestamps();
         });

@@ -18,6 +18,7 @@
 		<x-main.card>
 			<form action="{{ route('dashboard.master.periodes.store') }}" method="POST" class="flex flex-col gap-5">
 				@csrf
+				<x-form.input name="periode_name" label="Nama Periode" placeholder="Isi nama periode" />
 				<x-form.input type="number" name="year" label="Tahun" placeholder="Isi tahun" min="1999" max="2099" step="1" />
 				<x-form.input type="date" name="start_date" label="Tanggal Mulai" />
 				<x-form.input type="date" name="end_date" label="Tanggal Selesai" />
@@ -28,10 +29,10 @@
 				    ];
 				})" />
 				<x-form.input name="tipe" label="Tipe" placeholder="Isi tipe" />
-				<x-form.select name="chief_auditor_id" label="Ketua Auditor" :options="$auditors->map(function ($auditor) {
+				<x-form.select name="team_id" label="Tim Auditor" :options="$teams->map(function ($team) {
 				    return (object) [
-				        'label' => $auditor->user->name,
-				        'value' => $auditor->id,
+				        'label' => $team->chief->user->name . ' (Ketua)',
+				        'value' => $team->id,
 				    ];
 				})" />
 				<x-form.input name="code" label="Kode Dokumen" placeholder="Isi Kode Dokumen" />

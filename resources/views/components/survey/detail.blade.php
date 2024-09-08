@@ -25,8 +25,8 @@
 			<p><span class="font-semibold">Auditor:</span></p>
 		</div>
 		<ul class="space-y-2">
-			<li><span class="font-semibold">Ketua:</span> {{ $instrument->periode->chief_auditor->user->name }}</li>
-			<li><span class="font-semibold">Anggota:</span> {{ $instrument->periode->auditor_members->pluck('user.name')->implode(' - ') }}</li>
+			<li><span class="font-semibold">Ketua:</span> {{ $instrument->periode->team->chief->user->name }}</li>
+			<li><span class="font-semibold">Anggota:</span> {{ $instrument->periode->team->members->pluck('user.name')->implode(' - ') }}</li>
 		</ul>
 	</div>
 </x-main.card>

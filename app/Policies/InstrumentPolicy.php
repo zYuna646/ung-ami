@@ -15,15 +15,19 @@ class InstrumentPolicy
 
     public function view(User $user, Instrument $instrument): bool
     {
-        return $instrument->units->contains(function ($unit) use ($user) {
+        return $instrument->units->contains(function ($unit) use ($user, $instrument) {
             $userInUnit = $unit->user && $unit->user->id === $user->id;
+
             $userMatchesUnit = !$unit->user && (
                 ($unit->unit_name === 'Fakultas' && $user->isFaculty()) ||
                 ($unit->unit_name === 'Jurusan' && $user->isDepartment()) ||
                 ($unit->unit_name === 'Program Studi' && $user->isProgram())
             );
 
-            return $userInUnit || $userMatchesUnit || $user->isAuditor();
+            $isChiefAuditor = $instrument->periode->team->chief === $user->auditor;
+            $isMemberAuditor = $instrument->periode->team->members->contains($user->auditor);
+
+            return $userInUnit || $userMatchesUnit || $isChiefAuditor || $isMemberAuditor;
         });
     }
 

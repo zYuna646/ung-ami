@@ -17,6 +17,7 @@ use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\StandardController;
 use App\Http\Controllers\SurveyController;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -67,6 +68,7 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['web', 'auth'])->gro
         Route::resource('/questions', MasterQuestionController::class)->only('store', 'update', 'destroy')->names('questions');
     });
     Route::prefix('users')->name('users.')->group(function () {
+        Route::resource('/teams', TeamController::class)->except('show')->names('teams');
         Route::resource('/auditors', AuditorController::class)->except('show')->names('auditors');
         Route::resource('/auditees', AuditeeController::class)->except('show')->names('auditees')->parameters(['auditees' => 'user']);
     });

@@ -12,7 +12,7 @@
 				<x-main.breadcrumb :data="[
 				    'Dasbor' => route('dashboard.index'),
 				    'Master Survei' => route('dashboard.master.periodes.index'),
-				    $periode->formatted_start_date . ' - ' . $periode->formatted_end_date => route('dashboard.master.periodes.show', $periode->uuid),
+				    $periode->periode_name => route('dashboard.master.periodes.show', $periode->uuid),
 				    $instrument->name => null,
 				]" />
 			</div>
@@ -27,6 +27,10 @@
 	<x-main.section class="grid grid-cols-1 gap-6 sm:grid-cols-3">
 		<x-main.card>
 			<x-main.list :items="[
+			    (object) [
+			        'label' => 'Nama',
+			        'value' => $periode->periode_name,
+			    ],
 			    (object) [
 			        'label' => 'Tahun',
 			        'value' => $periode->year,
@@ -45,13 +49,13 @@
 			    ],
 			    (object) [
 			        'label' => 'Ketua Auditor',
-			        'value' => $periode->chief_auditor->user->name,
+			        'value' => $periode->team->chief->user->name,
 			    ],
 			    (object) [
 			        'label' => 'Anggota Auditor',
 			        'values' =>
-			            count($periode->auditor_members) > 0
-			                ? $periode->auditor_members->map(function ($auditor) {
+			            count($periode->team->members) > 0
+			                ? $periode->team->members->map(function ($auditor) {
 			                    return (object) [
 			                        'value' => $auditor->user->name,
 			                    ];
@@ -70,7 +74,7 @@
 			        'label' => 'Area',
 			        'value' => $instrument->units->pluck('unit_name')->implode(', '),
 			    ],
-					(object) [
+			    (object) [
 			        'label' => 'Indikator',
 			        'value' => $indicator->name ?? '-',
 			    ],

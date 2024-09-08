@@ -23,10 +23,10 @@ class UnitSeeder extends Seeder
                 'unit_name' => 'Fakultas',
                 'is_deletable' => false
             ],
-            (object) [
-                'unit_name' => 'Jurusan',
-                'is_deletable' => false
-            ],
+            // (object) [
+            //     'unit_name' => 'Jurusan',
+            //     'is_deletable' => false
+            // ],
             (object) [
                 'unit_name' => 'Program Studi',
                 'is_deletable' => false

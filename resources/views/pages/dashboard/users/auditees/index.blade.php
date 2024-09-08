@@ -25,17 +25,13 @@
 				        'value' => 'faculty',
 				    ],
 				    (object) [
-				        'label' => 'Jurusan',
-				        'value' => 'department',
-				    ],
-				    (object) [
 				        'label' => 'Program Studi',
 				        'value' => 'program',
 				    ],
 				]" />
-				<x-button :href="route('dashboard.users.auditees.create')" color="info">
+				{{-- <x-button :href="route('dashboard.users.auditees.create')" color="info">
 					Tambah Data
-				</x-button>
+				</x-button> --}}
 			</div>
 		</div>
 	</x-main.section>
