@@ -79,6 +79,32 @@ class User extends Authenticatable
         return isset($this->unit) || isset($this->faculty) || isset($this->program);
     }
 
+    public function entityId()
+    {
+        if (isset($this->unit)) {
+            return $this->unit->id;
+        } else if (isset($this->faculty)) {
+            return $this->faculty->id;
+        } else if (isset($this->program)) {
+            return $this->program->id;
+        } else {
+            return 'Unknown';
+        }
+    }
+
+    public function entityType()
+    {
+        if (isset($this->unit)) {
+            return 'Unit';
+        } else if (isset($this->faculty)) {
+            return 'Faculty';
+        } else if (isset($this->program)) {
+            return 'Program';
+        } else {
+            return 'Unknown';
+        }
+    }
+
     public function unit()
     {
         return $this->hasOne(Unit::class);

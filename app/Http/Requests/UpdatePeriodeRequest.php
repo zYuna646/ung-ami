@@ -20,7 +20,6 @@ class UpdatePeriodeRequest extends FormRequest
             'end_date' => 'required|date',
             'standard_id' => 'required',
             'tipe' => 'required',
-            'team_id' => 'required',
             'code' => 'required'
         ];
     }
@@ -39,7 +38,6 @@ class UpdatePeriodeRequest extends FormRequest
             'end_date.date' => 'Tanggal selesai harus berupa format tanggal yang valid.',
             'standard_id.required' => 'Standar wajib dipilih.',
             'tipe.required' => 'Tipe wajib diisi.',
-            'team_id.required' => 'Ketua auditor wajib dipilih.',
             'code.required' => 'Kode dokumen wajib diisi.',
         ];
     }

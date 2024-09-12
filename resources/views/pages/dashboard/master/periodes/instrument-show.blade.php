@@ -47,25 +47,25 @@
 			        'label' => 'Tipe',
 			        'value' => $periode->tipe,
 			    ],
-			    (object) [
-			        'label' => 'Ketua Auditor',
-			        'value' => $periode->team->chief->user->name,
-			    ],
-			    (object) [
-			        'label' => 'Anggota Auditor',
-			        'values' =>
-			            count($periode->team->members) > 0
-			                ? $periode->team->members->map(function ($auditor) {
-			                    return (object) [
-			                        'value' => $auditor->user->name,
-			                    ];
-			                })
-			                : [
-			                    (object) [
-			                        'value' => '-',
-			                    ],
-			                ],
-			    ],
+			    // (object) [
+			    //     'label' => 'Ketua Auditor',
+			    //     'value' => $periode->team->chief->user->name,
+			    // ],
+			    // (object) [
+			    //     'label' => 'Anggota Auditor',
+			    //     'values' =>
+			    //         count($periode->team->members) > 0
+			    //             ? $periode->team->members->map(function ($auditor) {
+			    //                 return (object) [
+			    //                     'value' => $auditor->user->name,
+			    //                 ];
+			    //             })
+			    //             : [
+			    //                 (object) [
+			    //                     'value' => '-',
+			    //                 ],
+			    //             ],
+			    // ],
 			    (object) [
 			        'label' => 'Instrumen',
 			        'value' => $instrument->name,
@@ -81,6 +81,12 @@
 			]" />
 		</x-main.card>
 		<div class="col-span-2 grid gap-6">
+			<x-main.card>
+				<div class="mb-3 flex flex-col items-start gap-3 sm:flex-row sm:justify-between">
+					<h5 class="text-lg font-bold">Area Survei & Tim Pelaksana</h5>
+				</div>
+				<x-areas.table :$instrument :$areas :$teams />
+			</x-main.card>
 			<x-main.card>
 				<div class="mb-3 flex flex-col items-start gap-3 sm:flex-row sm:justify-between">
 					<h5 class="text-lg font-bold">Daftar Indikator</h5>

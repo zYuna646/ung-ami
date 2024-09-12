@@ -18,15 +18,22 @@
 			</span>
 			<p><span class="font-semibold">Periode:</span> {{ $instrument->periode->formatted_start_date . ' - ' . $instrument->periode->formatted_end_date }}</p>
 		</div>
-		<div class="inline-flex items-center gap-x-2">
+		{{-- <div class="inline-flex items-center gap-x-2">
 			<span>
 				<i class="fas fa-user-tie"></i>
 			</span>
 			<p><span class="font-semibold">Auditor:</span></p>
 		</div>
 		<ul class="space-y-2">
-			<li><span class="font-semibold">Ketua:</span> {{ $instrument->periode->team->chief->user->name }}</li>
-			<li><span class="font-semibold">Anggota:</span> {{ $instrument->periode->team->members->pluck('user.name')->implode(' - ') }}</li>
-		</ul>
+			@php
+				$data = $instrument
+				    ->entityTeams()
+				    ->where('entity_id', auth()->user()->entityId())
+				    ->where('entity_type', auth()->user()->entityType())
+				    ->first();
+			@endphp
+			<li><span class="font-semibold">Ketua:</span> {{ $data->team->chief->user->name }}</li>
+			<li><span class="font-semibold">Anggota:</span> {{ $data->team->members->pluck('user.name')->implode(' - ') }}</li>
+		</ul> --}}
 	</div>
 </x-main.card>

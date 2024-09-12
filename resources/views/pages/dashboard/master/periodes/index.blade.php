@@ -31,7 +31,6 @@
 							<th>Nama</th>
 							<th>Periode</th>
 							<th>Tahun</th>
-							<th>Ketua Tim Auditor</th>
 							<th>Aksi</th>
 						</tr>
 					</thead>
@@ -42,7 +41,6 @@
 								<td>{{ $periode->periode_name }}</td>
 								<td>{{ $periode->formatted_start_date }} - {{ $periode->formatted_end_date }}</td>
 								<td>{{ $periode->year }}</td>
-								<td>{{ $periode->team->chief->user->name }}</td>
 								<td>
 									<div class="inline-flex gap-x-2">
 										<x-button :href="route('dashboard.master.periodes.show', $periode->uuid)" color="info" size="sm">

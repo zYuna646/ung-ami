@@ -1,13 +1,13 @@
 <ul class="flex flex-wrap">
 	@php
-		$queryParams = ['unit' => request('unit')];
-		if (request('faculty')) {
-		    $queryParams['faculty'] = request('faculty');
-		} elseif (request('department')) {
-		    $queryParams['department'] = request('department');
-		} elseif (request('program')) {
-		    $queryParams['program'] = request('program');
-		}
+		$queryParams = ['area' => request('area')];
+		// if (request('faculty')) {
+		//     $queryParams['faculty'] = request('faculty');
+		// } elseif (request('department')) {
+		//     $queryParams['department'] = request('department');
+		// } elseif (request('program')) {
+		//     $queryParams['program'] = request('program');
+		// }
 	@endphp
 
 	<li class="me-2">

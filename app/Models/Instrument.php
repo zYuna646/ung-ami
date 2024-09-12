@@ -62,4 +62,23 @@ class Instrument extends Model
     {
         return $this->hasManyThrough(Question::class, Indicator::class);
     }
+
+    public function entityTeams()
+    {
+        return $this->hasMany(InstrumentEntityTeam::class);
+    }
+
+    public function areas()
+    {
+        return $this->units
+            ->concat($this->faculties)
+            ->concat($this->programs)
+            ->filter(function ($item) {
+                return $item->user !== null;
+            })
+            ->map(function ($item) {
+                return $item->setAttribute('model_type', class_basename($item));
+            })
+            ->values();
+    }
 }

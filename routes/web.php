@@ -55,6 +55,7 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['web', 'auth'])->gro
         Route::get('/periodes/{periode}/instruments/{instrument}', [InstrumentController::class, 'show'])->name('periodes.instruments.show');
         Route::get('/periodes/{periode}/instruments/{instrument}/edit', [InstrumentController::class, 'edit'])->name('periodes.instruments.edit');
         Route::put('/periodes/{periode}/instruments/{instrument}', [InstrumentController::class, 'update'])->name('periodes.instruments.update');
+        Route::put('/periodes/{periode}/instruments/{instrument}/area', [InstrumentController::class, 'updateArea'])->name('periodes.instruments.update.area');
         Route::delete('/periodes/{periode}/instruments/{instrument}', [InstrumentController::class, 'destroy'])->name('periodes.instruments.destroy');
         Route::post('/periodes/{periode}/instruments/{instrument}/indicators', [IndicatorController::class, 'store'])->name('periodes.instruments.indicators.store');
         Route::put('/periodes/{periode}/instruments/{instrument}/indicators/{indicator}', [IndicatorController::class, 'update'])->name('periodes.instruments.indicators.update');

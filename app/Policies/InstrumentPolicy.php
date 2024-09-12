@@ -8,64 +8,57 @@ use Illuminate\Auth\Access\Response;
 
 class InstrumentPolicy
 {
-    public function viewAny(User $user): bool
-    {
-        //
-    }
-
     public function view(User $user, Instrument $instrument): bool
     {
-        return $instrument->units->contains(function ($unit) use ($user, $instrument) {
-            $userInUnit = $unit->user && $unit->user->id === $user->id;
+        $areas = $instrument->units
+            ->concat($instrument->faculties)
+            ->concat($instrument->programs)
+            ->filter(function ($item) {
+                return $item->user !== null;
+            })
+            ->map(function ($item) {
+                return $item->setAttribute('model_type', class_basename($item));
+            })
+            ->values();
 
-            $userMatchesUnit = !$unit->user && (
-                ($unit->unit_name === 'Fakultas' && $user->isFaculty()) ||
-                ($unit->unit_name === 'Jurusan' && $user->isDepartment()) ||
-                ($unit->unit_name === 'Program Studi' && $user->isProgram())
-            );
+        if ($user->isAuditee()) {
+            return $instrument->units->contains(function ($unit) use ($user, $instrument) {
+                $userInUnit = $unit->user && $unit->user->id === $user->id;
 
-            $isChiefAuditor = $instrument->periode->team->chief === $user->auditor;
-            $isMemberAuditor = $instrument->periode->team->members->contains($user->auditor);
+                $userMatchesUnit = !$unit?->user && (
+                    ($unit?->unit_name === 'Fakultas' && $user->isFaculty()) ||
+                    ($unit?->unit_name === 'Jurusan' && $user->isDepartment()) ||
+                    ($unit?->unit_name === 'Program Studi' && $user->isProgram())
+                );
 
-            return $userInUnit || $userMatchesUnit || $isChiefAuditor || $isMemberAuditor;
-        });
-    }
+                $data = $instrument->entityTeams()
+                    ->where('entity_id', $user->entityId())
+                    ->where('entity_type', $user->entityType())
+                    ->first();
 
-    public function create(User $user): bool
-    {
-        //
-    }
+                return isset($data->team) && ($userInUnit || $userMatchesUnit);
+            });
+        }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Instrument $instrument): bool
-    {
-        //
-    }
+        if ($user->isAuditor()) {
+            foreach ($areas as $area) {
+                $data = $instrument->entityTeams()
+                    ->where('entity_id', $area->id)
+                    ->where('entity_type', $area->model_type)
+                    ->first();
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Instrument $instrument): bool
-    {
-        //
-    }
+                if ($data && $data->team) {
+                    $isChiefAuditor = $data->team->chief == $user->auditor;
+                    $isMemberAuditor = $data->team->members->contains($user->auditor);
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Instrument $instrument): bool
-    {
-        //
-    }
+                    if ($isChiefAuditor || $isMemberAuditor) {
+                        return true;
+                    }
+                }
+            }
+        }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Instrument $instrument): bool
-    {
-        //
+        return false;
     }
 
     public function viewAnySurvey(User $user): bool

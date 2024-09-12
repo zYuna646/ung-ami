@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Helpers\ModelHelper;
 use App\Models\Department;
 use App\Models\Faculty;
 use App\Models\Program;
@@ -19,21 +20,13 @@ class SubmitComplianceResultsRequest extends FormRequest
 
     public function prepareForValidation()
     {
-        if ($this->unit == 'Fakultas') {
-            $this->model = Faculty::where('faculty_name', $this->faculty)->first();
-        } elseif ($this->unit == 'Jurusan') {
-            $this->model = Department::where('department_name', $this->department)->first();
-        } elseif ($this->unit == 'Program Studi') {
-            $this->model = Program::where('program_name', $this->program)->first();
-        } else {
-            $this->model = Unit::where('unit_name', $this->unit)->first();
-        }
+        $this->model = ModelHelper::getModelByRequest($this);
     }
 
     public function rules(): array
     {
         $rules = [
-            'unit' => 'required'
+            'area' => 'required'
         ];
 
         foreach ($this->instrument->questions as $question) {
@@ -50,7 +43,7 @@ class SubmitComplianceResultsRequest extends FormRequest
     public function messages(): array
     {
         $messages = [
-            'unit.required' => 'Pilih Auditi'
+            'area.required' => 'Pilih Auditi'
         ];
 
         foreach ($this->instrument->questions as $question) {

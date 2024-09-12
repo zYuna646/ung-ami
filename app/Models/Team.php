@@ -36,4 +36,9 @@ class Team extends Model
     {
         return $this->belongsToMany(Auditor::class, 'auditor_team');
     }
+
+    public function instrumentEntities()
+    {
+        return $this->hasMany(InstrumentEntityTeam::class);
+    }
 }
