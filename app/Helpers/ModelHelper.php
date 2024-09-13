@@ -35,4 +35,28 @@ class ModelHelper
                 return Unit::find($id);  // Default to Unit if no other type matches
         }
     }
+
+    public static function getModelByArea($area)
+    {
+        // If the area parameter is not set or doesn't follow the expected format, return null
+        if (!$area || !preg_match('/^(\d+)([A-Za-z]+)$/', $area, $matches)) {
+            return null;
+        }
+
+        // Split the area into the id and the model type
+        $id = $matches[1];           // The numeric part (e.g., 5 or 1)
+        $modelType = $matches[2];     // The model type part (e.g., Unit, Faculty, etc.)
+
+        // Switch case based on the model type
+        switch ($modelType) {
+            case 'Faculty':
+                return Faculty::find($id);
+            case 'Program':
+                return Program::find($id);
+            case 'Department':
+                return Department::find($id);
+            default:
+                return Unit::find($id);  // Default to Unit if no other type matches
+        }
+    }
 }

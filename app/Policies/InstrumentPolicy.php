@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Constants\AuditStatus;
 use App\Models\Instrument;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -71,28 +72,82 @@ class InstrumentPolicy
         return $user->isAuditee() || $user->isAuditor();
     }
 
+    public function showAuditResults(User $user, Instrument $instrument): bool
+    {
+        return $user->isAuditor();
+    }
+
     public function submitAuditResults(User $user, Instrument $instrument): bool
+    {
+        $status = $instrument->auditStatus(request('area'));
+        return $user->isAuditor() && ($status == AuditStatus::PENDING || $status == AuditStatus::REJECTED);
+    }
+
+    public function showComplianceResults(User $user, Instrument $instrument): bool
     {
         return $user->isAuditor();
     }
 
     public function submitComplianceResults(User $user, Instrument $instrument): bool
     {
+        $status = $instrument->auditStatus(request('area'));
+        return $user->isAuditor() && ($status == AuditStatus::PENDING || $status == AuditStatus::REJECTED);
+    }
+
+    public function showNoncomplianceResults(User $user, Instrument $instrument): bool
+    {
         return $user->isAuditor();
     }
 
     public function submitNoncomplianceResults(User $user, Instrument $instrument): bool
+    {
+        $status = $instrument->auditStatus(request('area'));
+        return $user->isAuditor() && ($status == AuditStatus::PENDING || $status == AuditStatus::REJECTED);
+    }
+
+    public function showPTK(User $user, Instrument $instrument): bool
     {
         return $user->isAuditor();
     }
 
     public function submitPTK(User $user, Instrument $instrument): bool
     {
+        $status = $instrument->auditStatus(request('area'));
+        return $user->isAuditor() && ($status == AuditStatus::PENDING || $status == AuditStatus::REJECTED);
+    }
+
+    public function showPTP(User $user, Instrument $instrument): bool
+    {
         return $user->isAuditor();
     }
 
     public function submitPTP(User $user, Instrument $instrument): bool
     {
-        return $user->isAuditor();
+        $status = $instrument->auditStatus(request('area'));
+        return $user->isAuditor() && ($status == AuditStatus::PENDING || $status == AuditStatus::REJECTED);
+    }
+
+    public function processAudit(User $user, Instrument $instrument): bool
+    {
+        $status = $instrument->auditStatus(request('area'));
+        return $user->isAuditor() && ($status == AuditStatus::PENDING || $status == AuditStatus::REJECTED);
+    }
+
+    public function rejectAudit(User $user, Instrument $instrument): bool
+    {
+        $status = $instrument->auditStatus(request('area') ?? $user->entityId() . $user->entityType());
+        return $user->isAuditee() && $status == AuditStatus::PROCESS;
+    }
+
+    public function completeAudit(User $user, Instrument $instrument): bool
+    {
+        $status = $instrument->auditStatus(request('area') ?? $user->entityId() . $user->entityType());
+        return $user->isAuditee() && $status == AuditStatus::PROCESS;
+    }
+
+    public function showReport(User $user, Instrument $instrument): bool
+    {
+        $status = $instrument->auditStatus(request('area') ?? $user->entityId() . $user->entityType());
+        return $status == AuditStatus::COMPLETE;
     }
 }

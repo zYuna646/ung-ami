@@ -88,10 +88,12 @@
 			</x-main.card>
 		@endif
 		<div class="flex justify-end gap-3">
-			<x-button type="submit" color="info">
-				Simpan
-				<i class="fa-solid fa-floppy-disk ms-2"></i>
-			</x-button>
+			@can('submitAuditResults', $instrument)
+				<x-button type="submit" color="info">
+					Simpan
+					<i class="fa-solid fa-floppy-disk ms-2"></i>
+				</x-button>
+			@endcan
 		</div>
 	</div>
 </form>

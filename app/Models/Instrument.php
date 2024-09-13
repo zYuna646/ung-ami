@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Constants\AuditStatus;
+use App\Helpers\ModelHelper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Ramsey\Uuid\Uuid;
@@ -80,5 +82,12 @@ class Instrument extends Model
                 return $item->setAttribute('model_type', class_basename($item));
             })
             ->values();
+    }
+
+    public function auditStatus($area)
+    {
+        $model = ModelHelper::getModelByArea($area);
+        $data = $model?->auditStatus()?->where('instrument_id', $this->id)?->first();
+        return $data?->status ?? AuditStatus::PENDING;
     }
 }

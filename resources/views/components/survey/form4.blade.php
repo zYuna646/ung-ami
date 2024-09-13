@@ -39,14 +39,14 @@
 						<div>
 							{{-- Keberadaan --}}
 							<x-form.select name="category[{{ $question->id }}]" placeholder="Pilih Kategori" :value="old($categoryFieldName) ?? $question->response->category" :options="[
-									(object) [
-											'label' => 'OBS',
-											'value' => 'OBS',
-									],
-									(object) [
-											'label' => 'KTS',
-											'value' => 'KTS',
-									],
+							    (object) [
+							        'label' => 'OBS',
+							        'value' => 'OBS',
+							    ],
+							    (object) [
+							        'label' => 'KTS',
+							        'value' => 'KTS',
+							    ],
 							]" :inputClass="$errors->has($categoryFieldName) ? 'border-red-700' : ''" />
 							@error($categoryFieldName)
 								<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
@@ -64,10 +64,12 @@
 			</x-main.card>
 		@endif
 		<div class="flex justify-end gap-3">
-			<x-button type="submit" color="info">
-				Simpan
-				<i class="fa-solid fa-floppy-disk ms-2"></i>
-			</x-button>
+			@can('submitNoncomplianceResults', $instrument)
+				<x-button type="submit" color="info">
+					Simpan
+					<i class="fa-solid fa-floppy-disk ms-2"></i>
+				</x-button>
+			@endcan
 		</div>
 	</div>
 </form>

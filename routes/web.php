@@ -39,6 +39,10 @@ Route::post('/survey/{instrument}/ptk', [SurveyController::class, 'storePTK'])->
 Route::get('/survey/{instrument}/ptp', [SurveyController::class, 'showPTP'])->name('survey.ptp');
 Route::post('/survey/{instrument}/ptp', [SurveyController::class, 'storePTP'])->name('survey.ptp.store');
 Route::post('/survey/{instrument}', [SurveyController::class, 'store'])->name('survey.store');
+Route::post('/survey/{instrument}/process', [SurveyController::class, 'processAudit'])->name('survey.process');
+Route::post('/survey/{instrument}/reject', [SurveyController::class, 'rejectAudit'])->name('survey.reject');
+Route::post('/survey/{instrument}/complete', [SurveyController::class, 'completeAudit'])->name('survey.complete');
+Route::get('/survey/{instrument}/report', [SurveyController::class, 'showReport'])->name('survey.report');
 Route::prefix('dashboard')->name('dashboard.')->middleware(['web', 'auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

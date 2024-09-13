@@ -23,6 +23,11 @@
 					<h1 class="text-lg font-semibold uppercase">Audit Lapangan</h1>
 					<p class="text-xl uppercase text-slate-500">Permintaan Tindakan Peningkatan</p>
 				</div>
+				<div>
+					@can('processAudit', $instrument)
+						<x-survey.process :$instrument />
+					@endcan
+				</div>
 			</div>
 		</x-main.card>
 		<div class="grid grid-cols-1 items-start gap-6 sm:grid-cols-3">
