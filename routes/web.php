@@ -43,6 +43,8 @@ Route::post('/survey/{instrument}/process', [SurveyController::class, 'processAu
 Route::post('/survey/{instrument}/reject', [SurveyController::class, 'rejectAudit'])->name('survey.reject');
 Route::post('/survey/{instrument}/complete', [SurveyController::class, 'completeAudit'])->name('survey.complete');
 Route::get('/survey/{instrument}/report', [SurveyController::class, 'showReport'])->name('survey.report');
+Route::get('/survey/{instrument}/report/preview', [SurveyController::class, 'previewReport'])->name('survey.report.preview');
+Route::get('/survey/{instrument}/report/download', [SurveyController::class, 'downloadReport'])->name('survey.report.download');
 Route::prefix('dashboard')->name('dashboard.')->middleware(['web', 'auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

@@ -43,14 +43,7 @@
 				</x-main.card>
 				<x-main.card>
 					<h5 class="mb-3 font-semibold">Berita Acara</h5>
-					@if ($auditStatus->meeting_report_url)
-						<iframe src="{{ $auditStatus->meeting_report_url }}" width="100%" height="600px">
-							This browser does not support PDFs. Please download the PDF to view it:
-							<a href="{{ $auditStatus->meeting_report_url }}">Download PDF</a>
-						</iframe>
-					@else
-						<p>No meeting report available.</p>
-					@endif
+					<img src="{{ $auditStatus->meeting_report_url }}" alt="Berita Acara" class="w-full">
 				</x-main.card>
 				<x-main.card>
 					<h5 class="mb-3 font-semibold">Dokumentasi Kegiatan</h5>

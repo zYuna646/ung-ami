@@ -25,11 +25,11 @@
 	    ],
 	    (object) [
 	        'label' => 'Auditi',
-	        'value' => $auditee->faculty_name ? 'Fakultas ' . $auditee->faculty_name : ($auditee->program_name ? 'Program ' . $auditee->program_name : $auditee->unit_name),
+	        'value' => $auditee?->faculty_name ? 'Fakultas ' . $auditee?->faculty_name : ($auditee?->program_name ? 'Program ' . $auditee?->program_name : $auditee?->unit_name ?? '-'),
 	    ],
 	    (object) [
 	        'label' => 'Status',
-	        'value' => $instrument->auditStatus($area),
+	        'value' => isset($auditee) ? $instrument->auditStatus($area) : '-',
 	    ],
 	]" />
 </x-main.card>

@@ -493,7 +493,7 @@ class SurveyController extends Controller
                 $data
             );
 
-            return redirect()->route('survey.report')->with('success', 'Survei berhasil dikonfirmasi.');
+            return redirect()->route('survey.report', $instrument->uuid)->with('success', 'Survei berhasil dikonfirmasi.');
         } catch (\Throwable $th) {
             logger()->error($th->getMessage());
 
