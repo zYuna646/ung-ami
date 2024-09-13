@@ -31,12 +31,6 @@
 				    ];
 				})" />
 				<x-form.input name="tipe" label="Tipe" placeholder="Isi tipe" :value="$periode->tipe" />
-				<x-form.select name="team_id" label="Tim Auditor" :value="$periode->team_id" :options="$teams->map(function ($team) {
-				    return (object) [
-				        'label' => $team->chief->user->name . ' (Ketua)',
-				        'value' => $team->id,
-				    ];
-				})" />
 				<x-form.input name="code" label="Kode Dokumen" placeholder="Isi Kode Dokumen" :value="$periode->code" />
 				<div>
 					<x-button type="submit" color="info">

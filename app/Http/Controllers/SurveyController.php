@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\AuditStatus;
 use App\Exports\AuditResultsExport;
 use App\Helpers\ModelHelper;
+use App\Http\Requests\CompleteAuditRequest;
 use App\Http\Requests\SubmitAuditResultsRequest;
 use App\Http\Requests\SubmitComplianceResultsRequest;
 use App\Http\Requests\SubmitNoncomplianceResultsRequest;
@@ -112,7 +114,7 @@ class SurveyController extends Controller
 
     public function showAuditResults(Request $request, Instrument $instrument)
     {
-        $this->authorize('submitAuditResults', $instrument);
+        $this->authorize('showAuditResults', $instrument);
 
         $model = ModelHelper::getModelByRequest($request);
 
@@ -193,7 +195,7 @@ class SurveyController extends Controller
 
     public function showComplianceResults(Request $request, Instrument $instrument)
     {
-        $this->authorize('submitComplianceResults', $instrument);
+        $this->authorize('showComplianceResults', $instrument);
 
         $model = ModelHelper::getModelByRequest($request);
 
@@ -250,7 +252,7 @@ class SurveyController extends Controller
 
     public function showNoncomplianceResults(Request $request, Instrument $instrument)
     {
-        $this->authorize('submitNoncomplianceResults', $instrument);
+        $this->authorize('showNoncomplianceResults', $instrument);
 
         $model = ModelHelper::getModelByRequest($request);
 
@@ -309,7 +311,7 @@ class SurveyController extends Controller
 
     public function showPTK(Request $request, Instrument $instrument)
     {
-        $this->authorize('submitPTK', $instrument);
+        $this->authorize('showPTK', $instrument);
 
         $model = ModelHelper::getModelByRequest($request);
 
@@ -374,7 +376,7 @@ class SurveyController extends Controller
 
     public function showPTP(Request $request, Instrument $instrument)
     {
-        $this->authorize('submitPTP', $instrument);
+        $this->authorize('showPTP', $instrument);
 
         $model = ModelHelper::getModelByRequest($request);
 
@@ -431,5 +433,81 @@ class SurveyController extends Controller
 
             return back()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan survei.']);
         }
+    }
+
+    public function processAudit(Request $request, Instrument $instrument)
+    {
+        try {
+            $this->authorize('processAudit', $instrument);
+            $model = ModelHelper::getModelByRequest($request);
+            $data = [
+                'status' => AuditStatus::PROCESS,
+                'auditor_id' => auth()->user()->auditor->id,
+            ];
+            $model->auditStatus()->updateOrCreate(
+                ['instrument_id' => $instrument->id],
+                $data
+            );
+
+            return redirect()->back()->with('success', 'Survei berhasil diteruskan.');
+        } catch (\Throwable $th) {
+            logger()->error($th->getMessage());
+
+            return back()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan survei.']);
+        }
+    }
+
+    public function rejectAudit(Request $request, Instrument $instrument)
+    {
+        try {
+            $this->authorize('rejectAudit', $instrument);
+            $model = ModelHelper::getModelByArea($request->area);
+            $data = [
+                'status' => AuditStatus::REJECTED,
+            ];
+            $model->auditStatus()->updateOrCreate(
+                ['instrument_id' => $instrument->id],
+                $data
+            );
+
+            return redirect()->back()->with('success', 'Survei telah ditolak.');
+        } catch (\Throwable $th) {
+            logger()->error($th->getMessage());
+
+            return back()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan survei.']);
+        }
+    }
+
+    public function completeAudit(CompleteAuditRequest $request, Instrument $instrument)
+    {
+        try {
+            $this->authorize('completeAudit', $instrument);
+            $model = ModelHelper::getModelByArea($request->area);
+            $data = [
+                'status' => AuditStatus::COMPLETE,
+                'meeting_report' => basename($request->file('meeting_report')->store('public/audits')),
+                'activity_evidence' => basename($request->file('activity_evidence')->store('public/audits')),
+            ];
+            $model->auditStatus()->updateOrCreate(
+                ['instrument_id' => $instrument->id],
+                $data
+            );
+
+            return redirect()->route('survey.report', $instrument->uuid)->with('success', 'Survei berhasil dikonfirmasi.');
+        } catch (\Throwable $th) {
+            logger()->error($th->getMessage());
+
+            return back()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan survei.']);
+        }
+    }
+
+    public function showReport(Request $request, Instrument $instrument)
+    {
+        $this->authorize('showReport', $instrument);
+
+        $model = ModelHelper::getModelByArea($request->area ?? auth()->user()->entityId() . auth()->user()->entityType());
+        $auditStatus = $model->auditStatus()->where('instrument_id', $instrument->id)->first();
+
+        return view('pages.survey.report', compact('instrument', 'auditStatus'));
     }
 }

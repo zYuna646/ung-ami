@@ -5,8 +5,8 @@
 	</x-main.card>
 	<div class="space-y-5">
 		@if ($showInstrument)
-			<x-main.card>
-				@foreach ($questions as $question)
+			@forelse ($questions as $question)
+				<x-main.card>
 					<div class="space-y-3">
 						<div>
 							<h3 class="font-semibold">Butir Pertanyaan</h3>
@@ -55,8 +55,14 @@
 						</div>
 						<p class="text-right text-sm text-gray-600">{{ $question->code }}</p>
 					</div>
-				@endforeach
-			</x-main.card>
+				</x-main.card>
+			@empty
+				<x-main.card>
+					<div class="col-span-12 py-8 text-center">
+						<p class="text-slate-600">No indicators or questions available.</p>
+					</div>
+				</x-main.card>
+			@endforelse
 		@else
 			<x-main.card>
 				<div class="col-span-12 py-8 text-center">
@@ -65,10 +71,12 @@
 			</x-main.card>
 		@endif
 		<div class="flex justify-end gap-3">
-			<x-button type="submit" color="info">
-				Simpan
-				<i class="fa-solid fa-floppy-disk ms-2"></i>
-			</x-button>
+			@can('submitPTP', $instrument)
+				<x-button type="submit" color="info">
+					Simpan
+					<i class="fa-solid fa-floppy-disk ms-2"></i>
+				</x-button>
+			@endcan
 		</div>
 	</div>
 </form>

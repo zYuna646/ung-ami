@@ -16,7 +16,6 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->foreignId('standard_id')->constrained('standards')->onDelete('restrict');
-            $table->foreignId('team_id')->constrained('teams')->onDelete('restrict');
             $table->string('tipe');
             $table->string('code');
             $table->timestamps();

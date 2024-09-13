@@ -57,41 +57,10 @@
 			    (object) [
 			        'label' => 'Tipe',
 			        'value' => $periode->tipe,
-			    ],
-			    (object) [
-			        'label' => 'Ketua Auditor',
-			        'value' => $periode->team->chief->user->name,
-			    ],
-			    (object) [
-			        'label' => 'Anggota Auditor',
-			        'values' =>
-			            count($periode->team->members) > 0
-			                ? $periode->team->members->map(function ($auditor) {
-			                    return (object) [
-			                        'value' => $auditor->user->name,
-			                    ];
-			                })
-			                : [
-			                    (object) [
-			                        'value' => '-',
-			                    ],
-			                ],
-			    ],
+			    ]
 			]" />
 		</x-main.card>
 		<div class="col-span-2 grid gap-6">
-			{{-- <x-main.card>
-				<div class="mb-3 flex flex-col items-start gap-3 sm:flex-row sm:justify-between">
-					<h5 class="text-lg font-bold">Daftar Anggota Auditor</h5>
-					<x-button :href="route('dashboard.users.teams.edit', $periode->team->uuid)" color="success" size="sm">
-						Edit
-					</x-button>
-				</div>
-				@php
-					$auditors = $periode->team->members->prepend($periode->team->chief);
-				@endphp
-				<x-auditors.table-members :auditors="$auditors" :periode="$periode" />
-			</x-main.card> --}}
 			<x-main.card>
 				<div class="mb-3 flex flex-col items-start gap-3 sm:flex-row sm:justify-between">
 					<h5 class="text-lg font-bold">Daftar Instrumen</h5>

@@ -14,7 +14,7 @@ class SubmitAuditResultsRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'unit' => 'required'
+            'area' => 'required'
         ];
 
         foreach ($this->instrument->questions as $question) {
@@ -30,7 +30,7 @@ class SubmitAuditResultsRequest extends FormRequest
     public function messages(): array
     {
         $messages = [
-            'unit.required' => 'Pilih Auditi'
+            'area.required' => 'Pilih Auditi'
         ];
 
         foreach ($this->instrument->questions as $question) {

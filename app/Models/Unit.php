@@ -57,4 +57,9 @@ class Unit extends Model
     {
         return $this->morphMany(PTP::class, 'auditable');
     }
+
+    public function auditStatus()
+    {
+        return $this->morphMany(AuditStatus::class, 'auditable');
+    }
 }

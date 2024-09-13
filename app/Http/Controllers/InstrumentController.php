@@ -8,10 +8,12 @@ use App\Models\Department;
 use App\Models\Faculty;
 use App\Models\Indicator;
 use App\Models\Instrument;
+use App\Models\InstrumentEntityTeam;
 use App\Models\MasterInstrument;
 use App\Models\Periode;
 use App\Models\Program;
 use App\Models\Question;
+use App\Models\Team;
 use App\Models\Unit;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -60,13 +62,23 @@ class InstrumentController extends Controller
     {
         $questions = [];
         $indicator = null;
-
+        $areas = $instrument->units
+            ->concat($instrument->faculties)
+            ->concat($instrument->programs)
+            ->filter(function ($item) {
+                return $item->user !== null;
+            })
+            ->map(function ($item) {
+                return $item->setAttribute('model_type', class_basename($item));
+            })
+            ->values();
         if ($request->has('indicator')) {
             $indicator = Indicator::where('uuid', $request->indicator)->first();
             $questions = $indicator->questions ?? [];
         }
+        $teams = Team::latest()->get();
 
-        return view('pages.dashboard.master.periodes.instrument-show', compact('periode', 'instrument', 'indicator', 'questions'));
+        return view('pages.dashboard.master.periodes.instrument-show', compact('periode', 'instrument', 'indicator', 'questions', 'areas', 'teams'));
     }
 
     public function edit(Periode $periode, Instrument $instrument)
@@ -119,5 +131,38 @@ class InstrumentController extends Controller
 
             return redirect()->back()->withErrors(['error' => 'Terjadi kesalahan.'])->withInput();
         }
+    }
+
+    public function updateArea(Request $request, Periode $periode, Instrument $instrument)
+    {
+        // Validate the request
+        $request->validate([
+            'model_type' => 'required|string',
+            'id' => 'required|integer',
+            'team_id' => 'required|exists:teams,id',
+        ]);
+
+        // Determine the model type and update the pivot table
+        $modelClass = 'App\\Models\\' . $request->input('model_type');
+        if (!class_exists($modelClass)) {
+            abort(404, 'Model type not found');
+        }
+
+        $entityId = $request->input('id');
+        $teamId = $request->input('team_id');
+
+        // Update or create the record in the pivot table
+        InstrumentEntityTeam::updateOrCreate(
+            [
+                'instrument_id' => $instrument->id,
+                'entity_id' => $entityId,
+                'entity_type' => class_basename($modelClass),
+            ],
+            ['team_id' => $teamId]
+        );
+
+        // Redirect or return a response
+        return redirect()->route('dashboard.master.periodes.instruments.show', [$periode->uuid, $instrument->uuid])
+            ->with('success', 'Area updated successfully');
     }
 }

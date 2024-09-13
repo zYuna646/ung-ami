@@ -46,12 +46,19 @@
 									</span>
 									<p><span class="font-semibold">Tipe Audit:</span> {{ $instrument->periode->tipe }}</p>
 								</div>
-								<div class="inline-flex items-center gap-x-2 text-xs">
+								{{-- <div class="inline-flex items-center gap-x-2 text-xs">
 									<span>
 										<i class="fas fa-user-tie"></i>
 									</span>
-									<p><span class="font-semibold">Auditor Ketua:</span> {{ $instrument->periode->team->chief->user->name }}</p>
-								</div>
+									@php
+										$data = $instrument
+										    ->entityTeams()
+										    ->where('entity_id', auth()->user()->entityId())
+										    ->where('entity_type', auth()->user()->entityType())
+										    ->first();
+									@endphp
+									<p><span class="font-semibold">Auditor Ketua:</span> {{ $data->team->chief->user->name }}</p>
+								</div> --}}
 							</div>
 						</div>
 					</a>

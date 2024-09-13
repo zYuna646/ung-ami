@@ -50,11 +50,6 @@ class Periode extends Model
         return $this->belongsTo(Standard::class);
     }
 
-    public function team()
-    {
-        return $this->belongsTo(Team::class);
-    }
-
     public function instruments()
     {
         return $this->hasMany(Instrument::class);

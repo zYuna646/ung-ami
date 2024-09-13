@@ -39,6 +39,12 @@ Route::post('/survey/{instrument}/ptk', [SurveyController::class, 'storePTK'])->
 Route::get('/survey/{instrument}/ptp', [SurveyController::class, 'showPTP'])->name('survey.ptp');
 Route::post('/survey/{instrument}/ptp', [SurveyController::class, 'storePTP'])->name('survey.ptp.store');
 Route::post('/survey/{instrument}', [SurveyController::class, 'store'])->name('survey.store');
+Route::post('/survey/{instrument}/process', [SurveyController::class, 'processAudit'])->name('survey.process');
+Route::post('/survey/{instrument}/reject', [SurveyController::class, 'rejectAudit'])->name('survey.reject');
+Route::post('/survey/{instrument}/complete', [SurveyController::class, 'completeAudit'])->name('survey.complete');
+Route::get('/survey/{instrument}/report', [SurveyController::class, 'showReport'])->name('survey.report');
+Route::get('/survey/{instrument}/report/preview', [SurveyController::class, 'previewReport'])->name('survey.report.preview');
+Route::get('/survey/{instrument}/report/download', [SurveyController::class, 'downloadReport'])->name('survey.report.download');
 Route::prefix('dashboard')->name('dashboard.')->middleware(['web', 'auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -55,6 +61,7 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['web', 'auth'])->gro
         Route::get('/periodes/{periode}/instruments/{instrument}', [InstrumentController::class, 'show'])->name('periodes.instruments.show');
         Route::get('/periodes/{periode}/instruments/{instrument}/edit', [InstrumentController::class, 'edit'])->name('periodes.instruments.edit');
         Route::put('/periodes/{periode}/instruments/{instrument}', [InstrumentController::class, 'update'])->name('periodes.instruments.update');
+        Route::put('/periodes/{periode}/instruments/{instrument}/area', [InstrumentController::class, 'updateArea'])->name('periodes.instruments.update.area');
         Route::delete('/periodes/{periode}/instruments/{instrument}', [InstrumentController::class, 'destroy'])->name('periodes.instruments.destroy');
         Route::post('/periodes/{periode}/instruments/{instrument}/indicators', [IndicatorController::class, 'store'])->name('periodes.instruments.indicators.store');
         Route::put('/periodes/{periode}/instruments/{instrument}/indicators/{indicator}', [IndicatorController::class, 'update'])->name('periodes.instruments.indicators.update');

@@ -1,3 +1,6 @@
+@php
+	use App\Constants\AuditStatus;
+@endphp
 <form action="{{ route('survey.store', $instrument->uuid) }}" method="POST">
 	@csrf
 	@if (auth()->user()->isAuditor())
@@ -55,12 +58,17 @@
 				</div>
 			</div>
 		@endforeach
+		@php
+			$area = auth()->user()->entityId() . auth()->user()->entityType();
+		@endphp
 		<div class="flex justify-end gap-3">
 			@if (auth()->user()->isAuditee())
-				<x-button type="submit" color="info">
-					Simpan Penilaian
-					<i class="fa-solid fa-floppy-disk ms-2"></i>
-				</x-button>
+				@if ($instrument->auditStatus($area) == AuditStatus::PENDING || $instrument->auditStatus($area) == AuditStatus::REJECTED)
+					<x-button type="submit" color="info">
+						Simpan Penilaian
+						<i class="fa-solid fa-floppy-disk ms-2"></i>
+					</x-button>
+				@endif
 			@endif
 		</div>
 	</div>

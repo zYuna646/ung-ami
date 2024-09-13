@@ -14,16 +14,22 @@
 		</section>
 	@endif
 	<section class="mx-auto grid w-full max-w-screen-xl gap-5 p-5 pt-7">
-		@if (auth()->user()->isAuditor())
-			<div class="border-b border-gray-200 text-center text-sm font-medium text-gray-500">
-				<x-tabs.audit :$instrument />
-			</div>
-		@endif
+		<div class="border-b border-gray-200 text-center text-sm font-medium text-gray-500">
+			<x-tabs.audit :$instrument />
+		</div>
 		<x-main.card>
 			<div class="flex flex-col items-start justify-between gap-y-2 sm:flex-row sm:items-center">
 				<div>
 					<h1 class="text-lg font-semibold uppercase">Audit Dokumen</h1>
 					<p class="text-xl uppercase text-slate-500">{{ $instrument->name }}</p>
+				</div>
+				<div class="flex justify-end gap-3">
+					@can('rejectAudit', $instrument)
+						<x-survey.reject :$instrument />
+					@endcan
+					@can('completeAudit', $instrument)
+						<x-survey.complete :$instrument />
+					@endcan
 				</div>
 			</div>
 		</x-main.card>
