@@ -29,19 +29,6 @@
 			<x-survey.detail :$instrument />
 			<div class="col-span-2 space-y-6">
 				<x-main.card>
-					<h5 class="mb-3 font-semibold">Laporan AMI</h5>
-					<div class="space-x-3">
-						<x-button href="#" color="success">
-							Pratinjau
-							<i class="fa-solid fa-eye ms-2"></i>
-						</x-button>
-						<x-button href="#" color="success">
-							Unduh
-							<i class="fa-solid fa-download ms-2"></i>
-						</x-button>
-					</div>
-				</x-main.card>
-				<x-main.card>
 					<h5 class="mb-3 font-semibold">Berita Acara</h5>
 					<img src="{{ $auditStatus->meeting_report_url }}" alt="Berita Acara" class="w-full">
 				</x-main.card>

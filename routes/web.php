@@ -15,6 +15,7 @@ use App\Http\Controllers\MasterQuestionController;
 use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StandardController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TeamController;
@@ -43,8 +44,16 @@ Route::post('/survey/{instrument}/process', [SurveyController::class, 'processAu
 Route::post('/survey/{instrument}/reject', [SurveyController::class, 'rejectAudit'])->name('survey.reject');
 Route::post('/survey/{instrument}/complete', [SurveyController::class, 'completeAudit'])->name('survey.complete');
 Route::get('/survey/{instrument}/report', [SurveyController::class, 'showReport'])->name('survey.report');
-Route::get('/survey/{instrument}/report/preview', [SurveyController::class, 'previewReport'])->name('survey.report.preview');
-Route::get('/survey/{instrument}/report/download', [SurveyController::class, 'downloadReport'])->name('survey.report.download');
+// Route::get('/survey/{instrument}/report/preview', [SurveyController::class, 'previewReport'])->name('survey.report.preview');
+// Route::get('/survey/{instrument}/report/download', [SurveyController::class, 'downloadReport'])->name('survey.report.download');
+Route::get('/report', [ReportController::class, 'index'])->name('report.index');
+Route::get('/report/bab1/{periode}/{program}', [ReportController::class, 'bab1'])->name('report.bab1');
+Route::get('/report/bab2/{periode}/{program}', [ReportController::class, 'bab2'])->name('report.bab2');
+Route::get('/report/bab3/{periode}/{program}', [ReportController::class, 'bab3'])->name('report.bab3');
+Route::get('/report/bab4/{periode}/{program}', [ReportController::class, 'bab4'])->name('report.bab4');
+Route::get('/report/bab5/{periode}/{program}', [ReportController::class, 'bab5'])->name('report.bab5');
+Route::get('/report/lampiran/{periode}/{program}', [ReportController::class, 'lampiran'])->name('report.lampiran');
+Route::get('/report/full/{periode}/{program}', [ReportController::class, 'full'])->name('report.full');
 Route::prefix('dashboard')->name('dashboard.')->middleware(['web', 'auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

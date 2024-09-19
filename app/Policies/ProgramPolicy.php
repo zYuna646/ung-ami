@@ -42,4 +42,9 @@ class ProgramPolicy
     {
         return $user->isAdmin() && $program->is_deletable;
     }
+
+    public function viewAnyReport(User $user): bool
+    {
+        return $user->isAuditor() || $user->isProgram();
+    }
 }
