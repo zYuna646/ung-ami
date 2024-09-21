@@ -69,4 +69,21 @@ class Program extends Model
     {
         return $this->morphMany(AuditStatus::class, 'auditable');
     }
+
+    public function instruments()
+    {
+        return $this->belongsToMany(Instrument::class, 'instrument_program');
+    }
+
+    public function periodes()
+    {
+        return $this->hasManyThrough(
+            Periode::class,
+            Instrument::class,
+            'id',
+            'id',
+            'id',
+            'periode_id'
+        );
+    }
 }

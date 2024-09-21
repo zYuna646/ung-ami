@@ -510,4 +510,11 @@ class SurveyController extends Controller
 
         return view('pages.survey.report', compact('instrument', 'auditStatus'));
     }
+
+    public function previewReport(Request $request, Instrument $instrument)
+    {
+        $this->authorize('showReport', $instrument);
+
+        //
+    }
 }

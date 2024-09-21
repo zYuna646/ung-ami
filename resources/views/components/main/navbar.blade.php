@@ -5,7 +5,7 @@
 	        'route' => auth()->check() ? route('dashboard.index') : route('home.index'),
 	    ],
 	    (object) [
-					'show' => auth()->check() && (auth()->user()->isAuditee() || auth()->user()->isAuditor()),
+	        'show' => auth()->check() && (auth()->user()->isAuditee() || auth()->user()->isAuditor()),
 	        'label' => 'Survei',
 	        'route' => route('survey.index'),
 	    ],
@@ -33,7 +33,7 @@
 	                'label' => 'Dokumen Mutu',
 	                'route' => route('dashboard.master.standards.index'),
 	            ],
-							(object) [
+	            (object) [
 	                'label' => 'Instrumen',
 	                'route' => route('dashboard.master.instruments.index'),
 	            ],
@@ -47,19 +47,24 @@
 	        'show' => auth()->check() && auth()->user()->isAdmin(),
 	        'label' => 'Pengguna',
 	        'subMenu' => [
-						(object) [
-							'label' => 'Auditi',
-							'route' => route('dashboard.users.auditees.index'),
-						],
-						(object) [
-								'label' => 'Auditor',
-								'route' => route('dashboard.users.auditors.index'),
-						],
-						(object) [
-								'label' => 'Tim Auditor',
-								'route' => route('dashboard.users.teams.index'),
-						],
+	            (object) [
+	                'label' => 'Auditi',
+	                'route' => route('dashboard.users.auditees.index'),
+	            ],
+	            (object) [
+	                'label' => 'Auditor',
+	                'route' => route('dashboard.users.auditors.index'),
+	            ],
+	            (object) [
+	                'label' => 'Tim Auditor',
+	                'route' => route('dashboard.users.teams.index'),
+	            ],
 	        ],
+	    ],
+	    (object) [
+	        'show' => auth()->check() && (auth()->user()->isAuditee() || auth()->user()->isAuditor()),
+	        'label' => 'Laporan',
+	        'route' => route('report.index'),
 	    ],
 	];
 @endphp

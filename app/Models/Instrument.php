@@ -70,6 +70,17 @@ class Instrument extends Model
         return $this->hasMany(InstrumentEntityTeam::class);
     }
 
+    public function entityTeam($entityId, $entityType)
+    {
+        $entity = $this->entityTeams()->where([
+            'instrument_id' => $this->id,
+            'entity_id' => $entityId,
+            'entity_type' => $entityType
+        ])->first();
+
+        return $entity?->team;
+    }
+
     public function areas()
     {
         return $this->units
@@ -82,6 +93,24 @@ class Instrument extends Model
                 return $item->setAttribute('model_type', class_basename($item));
             })
             ->values();
+    }
+
+    public function auditees()
+    {
+        $data = [];
+
+        foreach ($this->units as $unit) {
+            if ($unit->unit_name == 'Program Studi') {
+                $data[] = 'Dekan';
+                $data[] = 'Kaprodi';
+            }
+
+            if (!in_array($unit->unit_name, ['Fakultas', 'Jurusan', 'Program Studi'])) {
+                $data[] = 'Kepala ' . $unit->unit_name;
+            }
+        }
+
+        return collect($data);
     }
 
     public function auditStatus($area)
