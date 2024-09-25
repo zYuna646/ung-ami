@@ -47,6 +47,7 @@ Route::get('/survey/{instrument}/report', [SurveyController::class, 'showReport'
 // Route::get('/survey/{instrument}/report/preview', [SurveyController::class, 'previewReport'])->name('survey.report.preview');
 // Route::get('/survey/{instrument}/report/download', [SurveyController::class, 'downloadReport'])->name('survey.report.download');
 Route::get('/report', [ReportController::class, 'index'])->name('report.index');
+Route::post('/report/upload/{periode}/{program}', [ReportController::class, 'upload'])->name('report.upload');
 Route::get('/report/bab1/{periode}/{program}', [ReportController::class, 'bab1'])->name('report.bab1');
 Route::get('/report/bab2/{periode}/{program}', [ReportController::class, 'bab2'])->name('report.bab2');
 Route::get('/report/bab3/{periode}/{program}', [ReportController::class, 'bab3'])->name('report.bab3');

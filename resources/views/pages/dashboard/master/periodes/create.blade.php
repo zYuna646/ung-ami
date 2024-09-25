@@ -22,12 +22,12 @@
 				<x-form.input type="number" name="year" label="Tahun" placeholder="Isi tahun" min="1999" max="2099" step="1" />
 				<x-form.input type="date" name="start_date" label="Tanggal Mulai" />
 				<x-form.input type="date" name="end_date" label="Tanggal Selesai" />
-				<x-form.select name="standard_id" label="Standar" :options="$standards->map(function ($standard) {
+				{{-- <x-form.select name="standard_id" label="Standar" :options="$standards->map(function ($standard) {
 				    return (object) [
 				        'label' => $standard->name,
 				        'value' => $standard->id,
 				    ];
-				})" />
+				})" /> --}}
 				<x-form.input name="tipe" label="Tipe" placeholder="Isi tipe" />
 				<x-form.input name="code" label="Kode Dokumen" placeholder="Isi Kode Dokumen" />
 				<div>

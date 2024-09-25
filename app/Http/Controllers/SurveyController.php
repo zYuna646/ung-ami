@@ -214,6 +214,7 @@ class SurveyController extends Controller
                 }
             }
         }
+        $showInstrument = count($questions) > 0;
 
         return view('pages.survey.compliance-results', compact('instrument', 'showInstrument', 'questions'));
     }
@@ -272,6 +273,7 @@ class SurveyController extends Controller
                 }
             }
         }
+        $showInstrument = count($questions) > 0;
 
         return view('pages.survey.noncompliance-results', compact('instrument', 'showInstrument', 'questions'));
     }
@@ -325,6 +327,8 @@ class SurveyController extends Controller
                 if ($auditResult?->compliance == 'Tidak Sesuai' && $noncomplianceResult?->category == 'KTS') {
                     $questions[$key] = $question;
                     $questions[$key]->response = (object) [
+                        'description' => optional($auditResult)->description,
+                        'barriers' => optional($noncomplianceResult)->barriers,
                         'recommendations' => optional($response)->recommendations,
                         'improvement_plan' => optional($response)->improvement_plan,
                         'completion_schedule' => optional($response)->completion_schedule,
@@ -334,6 +338,7 @@ class SurveyController extends Controller
                 }
             }
         }
+        $showInstrument = count($questions) > 0;
 
         return view('pages.survey.ptk', compact('instrument', 'showInstrument', 'questions'));
     }
@@ -386,9 +391,12 @@ class SurveyController extends Controller
             foreach ($instrument->questions as $key => $question) {
                 $response = $model->PTPs->firstWhere('question_id', $question->id);
                 $auditResult = $model->auditResults->firstWhere('question_id', $question->id);
+                $complianceResult = $model->complianceResults->firstWhere('question_id', $question->id);
                 if ($auditResult?->compliance == 'Sesuai') {
                     $questions[$key] = $question;
                     $questions[$key]->response = (object) [
+                        'description' => optional($auditResult)->description,
+                        'success_factors' => optional($complianceResult)->success_factors,
                         'recommendations' => optional($response)->recommendations,
                         'improvement_plan' => optional($response)->improvement_plan,
                         'completion_schedule' => optional($response)->completion_schedule,
@@ -397,6 +405,7 @@ class SurveyController extends Controller
                 }
             }
         }
+        $showInstrument = count($questions) > 0;
 
         return view('pages.survey.ptp', compact('instrument', 'showInstrument', 'questions'));
     }
@@ -485,15 +494,15 @@ class SurveyController extends Controller
             $model = ModelHelper::getModelByArea($request->area);
             $data = [
                 'status' => AuditStatus::COMPLETE,
-                'meeting_report' => basename($request->file('meeting_report')->store('public/audits')),
-                'activity_evidence' => basename($request->file('activity_evidence')->store('public/audits')),
+                // 'meeting_report' => basename($request->file('meeting_report')->store('public/audits')),
+                // 'activity_evidence' => basename($request->file('activity_evidence')->store('public/audits')),
             ];
             $model->auditStatus()->updateOrCreate(
                 ['instrument_id' => $instrument->id],
                 $data
             );
 
-            return redirect()->route('survey.report', $instrument->uuid)->with('success', 'Survei berhasil dikonfirmasi.');
+            return redirect()->back()->with('success', 'Survei berhasil dikonfirmasi.');
         } catch (\Throwable $th) {
             logger()->error($th->getMessage());
 

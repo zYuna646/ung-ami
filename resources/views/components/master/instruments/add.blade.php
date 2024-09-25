@@ -13,7 +13,13 @@
 			<div class="p-4">
 				<form action="{{ route('dashboard.master.instruments.store') }}" method="POST" class="flex flex-col gap-5">
 					@csrf
-					<x-form.input name="instrument" label="Instrumen" placeholder="Isi instrumen" />
+					<x-form.select name="instrument" label="Instrumen" :options="$standards->map(function ($standard) {
+					    return (object) [
+					        'label' => $standard->name,
+					        'value' => $standard->name,
+					    ];
+					})" />
+					{{-- <x-form.input name="instrument" label="Instrumen" placeholder="Isi instrumen" /> --}}
 					<div class="flex justify-end gap-2">
 						<x-button @click="addInstrumentModal = false" color="default">Batal</x-button>
 						<x-button type="submit" color="info">Submit</x-button>

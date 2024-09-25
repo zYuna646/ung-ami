@@ -15,7 +15,7 @@
 				]" />
 			</div>
 			<div class="flex gap-3">
-				<x-master.instruments.add />
+				<x-master.instruments.add :$standards />
 			</div>
 		</div>
 	</x-main.section>

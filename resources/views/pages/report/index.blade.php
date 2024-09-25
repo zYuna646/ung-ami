@@ -20,14 +20,69 @@
 									Tahun {{ $periode->year }}
 								</p>
 							</div>
-							<div class="flex basis-1/2 items-start justify-end">
+							<div class="flex basis-1/2 items-start justify-end gap-3">
+								@if (auth()->user()->isAuditor())
+									<div x-data="{ addFilesModal: false }">
+										<x-button @click="addFilesModal = true" color="info" size="sm">
+											Unggah
+											<i class="fa-solid fa-upload ms-2"></i>
+										</x-button>
+										<div x-cloak x-show="addFilesModal" class="fixed left-0 right-0 top-0 z-50 flex h-full w-full items-center justify-center bg-black/50">
+											<div class="relative w-full max-w-2xl rounded-lg bg-white p-6 shadow-lg">
+												<div class="flex items-center justify-between border-b pb-4">
+													<h3 class="text-lg font-bold">Unggah</h3>
+													<button type="button" @click="addFilesModal = false" class="text-gray-400 hover:text-gray-900">
+														<i class="fas fa-times"></i>
+													</button>
+												</div>
+												<div class="p-4">
+													<form action="{{ route('report.upload', [$periode->uuid, $program->uuid]) }}" method="POST" class="flex flex-col gap-5" enctype="multipart/form-data">
+														@csrf
+														<input type="hidden" name="periode_id" value="{{ $periode->id }}">
+														@php
+															$auditReport = $program
+															    ->auditReports()
+															    ->where('periode_id', $periode->id)
+															    ->get()
+															    ->last();
+
+															$evidences = json_decode($auditReport?->pivot?->activity_evidences);
+														@endphp
+														<x-form.input type="file" name="meeting_report" label="Unggah Berita Acara" />
+														<div>
+															@isset($auditReport->pivot->meeting_report)
+																<a href="{{ asset('storage/audits/' . $auditReport->pivot->meeting_report) }}" target="_blank" class="text-xs text-blue-500 underline">{{ $auditReport->pivot->meeting_report }}</a>
+															@else
+																<p class="text-xs text-red-400">Berita acara belum diunggah.</p>
+															@endisset
+														</div>
+														<x-form.input type="file" name="activity_evidences[]" label="Unggah Bukti Kegiatan" multiple />
+														<div class="flex flex-col">
+															@if (isset($evidences) && count($evidences) > 0)
+																@foreach ($evidences as $evidence)
+																	<a href="{{ asset('storage/audits/' . $evidence) }}" target="_blank" class="text-xs text-blue-500 underline">{{ $evidence }}</a>
+																@endforeach
+															@else
+																<p class="text-xs text-red-400">Bukti kegiatan belum diunggah.</p>
+															@endif
+														</div>
+														<div class="flex justify-end gap-2">
+															<x-button @click="addFilesModal = false" color="default">Batal</x-button>
+															<x-button type="submit" color="info">Submit</x-button>
+														</div>
+													</form>
+												</div>
+											</div>
+										</div>
+									</div>
+								@endif
 								<div x-data="{ open: false }" class="relative">
 									<x-button @click="open = !open" color="info" size="sm">
 										Unduh
 										<i class="fa-solid fa-chevron-down ms-2"></i>
 									</x-button>
 
-									<div x-show="open" @click.away="open = false" class="absolute right-0 z-10 mt-2 w-32 rounded-md bg-white shadow-lg">
+									<div x-cloak x-show="open" @click.away="open = false" class="absolute right-0 z-10 mt-2 w-32 rounded-md bg-white shadow-lg">
 										<ul class="py-1">
 											<li>
 												<a href="{{ route('report.bab1', [$periode->uuid, $program->uuid]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">

@@ -44,11 +44,11 @@
 			</a>
 		</li>
 	@endcan
-	@can('showReport', $instrument)
+	{{-- @can('showReport', $instrument)
 		<li class="me-2">
 			<a href="{{ route('survey.report', [$instrument->uuid] + $queryParams) }}" class="{{ request()->routeIs('survey.report') ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600' }} inline-block rounded-t-lg p-4">
 				Laporan
 			</a>
 		</li>
-	@endcan
+	@endcan --}}
 </ul>

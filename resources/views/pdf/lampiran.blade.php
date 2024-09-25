@@ -101,9 +101,35 @@
 	</head>
 
 	<body>
-		<h5 class="heading-1">LAMPIRAN</h5>
+		@php
+			$auditReport = $program
+			    ->auditReports()
+			    ->where('periode_id', $periode->id)
+			    ->get()
+			    ->last();
 
-		
+			$evidences = json_decode($auditReport?->pivot?->activity_evidences);
+		@endphp
+		<div style="page-break-inside: avoid;">
+			<h5 class="heading-1" style="margin-bottom: 0;">LAMPIRAN</h5>
+			@isset($auditReport->pivot->meeting_report)
+				<p class="heading-2" style="text-align: center; margin-bottom: 20px;">BERITA ACARA</p>
+				<img style="width: 100%; height: auto; max-height: 88%; max-width: 100%;" src="{{ public_path('storage/audits/' . $auditReport->pivot->meeting_report) }}" />
+			@else
+				<p style="color: red;">Berita acara belum diunggah.</p>
+			@endisset
+		</div>
+
+		<div>
+			@if (isset($evidences) && count($evidences) > 0)
+				<p class="heading-2" style="text-align: center; margin-bottom: 20px;">DOKUMENTASI KEGIATAN</p>
+				@foreach ($evidences as $evidence)
+					<img style="width: 100%; height: auto;" src="{{ public_path('storage/audits/' . $evidence) }}" />
+				@endforeach
+			@else
+				<p style="color: red;">Bukti kegiatan belum diunggah.</p>
+			@endif
+		</div>
 	</body>
 
 </html>
