@@ -15,8 +15,9 @@
 				<form action="{{ route('survey.complete', $instrument->uuid) }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-5">
 					@csrf
 					<input type="hidden" name="area" value="{{ auth()->user()->entityId() . auth()->user()->entityType() }}">
-					<x-form.input type="file" name="meeting_report" label="Unggah Berita Acara" />
-					<x-form.input type="file" name="activity_evidence" label="Unggah Bukti Kegiatan" />
+					<p>Konfirmasi Survei</p>
+					{{-- <x-form.input type="file" name="meeting_report" label="Unggah Berita Acara" />
+					<x-form.input type="file" name="activity_evidence" label="Unggah Bukti Kegiatan" /> --}}
 					<div class="flex justify-end gap-2">
 						<x-button @click="completeInstrumentModal = false" color="default">Batal</x-button>
 						<x-button type="submit" color="success">Konfirmasi</x-button>

@@ -30,7 +30,7 @@ class StandardPolicy
 
     public function delete(User $user, Standard $standard): bool
     {
-        return $user->isAdmin() && $standard->periodes->isEmpty();
+        return $user->isAdmin();
     }
 
     public function restore(User $user, Standard $standard): bool

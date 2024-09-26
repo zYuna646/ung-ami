@@ -18,7 +18,7 @@ class UpdatePeriodeRequest extends FormRequest
             'year' => 'required|numeric|min:1998|max:2099',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
-            'standard_id' => 'required',
+            // 'standard_id' => 'required',
             'tipe' => 'required',
             'code' => 'required'
         ];
@@ -36,7 +36,7 @@ class UpdatePeriodeRequest extends FormRequest
             'start_date.date' => 'Tanggal mulai harus berupa format tanggal yang valid.',
             'end_date.required' => 'Tanggal selesai wajib diisi.',
             'end_date.date' => 'Tanggal selesai harus berupa format tanggal yang valid.',
-            'standard_id.required' => 'Standar wajib dipilih.',
+            // 'standard_id.required' => 'Standar wajib dipilih.',
             'tipe.required' => 'Tipe wajib diisi.',
             'code.required' => 'Kode dokumen wajib diisi.',
         ];

@@ -6,6 +6,7 @@ use App\Http\Requests\StoreMasterInstrumentRequest;
 use App\Http\Requests\UpdateMasterInstrumentRequest;
 use App\Models\MasterIndicator;
 use App\Models\MasterInstrument;
+use App\Models\Standard;
 use Illuminate\Http\Request;
 
 class MasterInstrumentController extends Controller
@@ -18,8 +19,9 @@ class MasterInstrumentController extends Controller
     public function index()
     {
         $instruments = MasterInstrument::get();
+        $standards = Standard::get();
 
-        return view('pages.dashboard.master.instruments.index', compact('instruments'));
+        return view('pages.dashboard.master.instruments.index', compact('instruments', 'standards'));
     }
 
     public function store(StoreMasterInstrumentRequest $request)
@@ -46,7 +48,9 @@ class MasterInstrumentController extends Controller
             $questions = $indicator->questions ?? [];
         }
 
-        return view('pages.dashboard.master.instruments.show', compact('instrument', 'questions', 'indicator'));
+        $standards = Standard::get();
+
+        return view('pages.dashboard.master.instruments.show', compact('instrument', 'questions', 'indicator', 'standards'));
     }
 
     public function update(UpdateMasterInstrumentRequest $request, MasterInstrument $instrument)
@@ -71,7 +75,7 @@ class MasterInstrumentController extends Controller
             return redirect()->route('dashboard.master.instruments.index')->with('success', 'Data berhasil dihapus.');
         } catch (\Throwable $th) {
             logger()->error($th->getMessage());
-            
+
             return redirect()->back()->withErrors(['error' => 'Terjadi kesalahan.'])->withInput();
         }
     }

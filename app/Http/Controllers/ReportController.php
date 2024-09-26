@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UploadAuditReport;
 use App\Models\Periode;
 use App\Models\Program;
 use Illuminate\Http\Request;
@@ -29,6 +30,31 @@ class ReportController extends Controller
         }
 
         return view('pages.report.index', compact('periodes', 'programs', 'program', 'programPeriodes'));
+    }
+
+    public function upload(UploadAuditReport $request, Periode $periode, Program $program)
+    {
+        try {
+            $fileNames = [];
+
+            if ($request->hasFile('activity_evidences')) {
+                foreach ($request->file('activity_evidences') as $file) {
+                    $name = basename($file->store('public/audits'));
+                    $fileNames[] = $name;
+                }
+            }
+
+            $program->auditReports()->attach($periode->id, [
+                'meeting_report' => basename($request->file('meeting_report')->store('public/audits')),
+                'activity_evidences' => json_encode($fileNames), // Save as JSON
+            ]);
+
+            return redirect()->back()->with('success', 'File berhasil diunggah.');
+        } catch (\Exception $e) {
+            logger()->error($e->getMessage());
+
+            return back()->withErrors(['error' => 'Terjadi kesalahan.']);
+        }
     }
 
     public function bab1(Periode $periode, Program $program)

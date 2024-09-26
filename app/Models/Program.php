@@ -86,4 +86,9 @@ class Program extends Model
             'periode_id'
         );
     }
+
+    public function auditReports()
+    {
+        return $this->belongsToMany(Periode::class, 'audit_reports')->withPivot('meeting_report', 'activity_evidences');
+    }
 }

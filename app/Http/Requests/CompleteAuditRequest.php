@@ -14,8 +14,8 @@ class CompleteAuditRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'meeting_report' => 'required|file|mimes:jpg,jpeg,png|max:10240',
-            'activity_evidence' => 'required|file|mimes:jpg,jpeg,png|max:10240',
+            // 'meeting_report' => 'required|file|mimes:jpg,jpeg,png|max:10240',
+            // 'activity_evidence' => 'required|file|mimes:jpg,jpeg,png|max:10240',
         ];
     }
 

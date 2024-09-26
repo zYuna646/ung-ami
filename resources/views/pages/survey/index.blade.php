@@ -11,7 +11,7 @@
 			<div>
 				<x-form.select name="periode" placeholder="Pilih Periode" :value="request('periode')" :options="$periodes->map(function ($periode) {
 				    return (object) [
-				        'label' => $periode->formatted_start_date . ' - ' . $periode->formatted_end_date,
+				        'label' => $periode->periode_name,
 				        'value' => $periode->uuid,
 				    ];
 				})" x-data="" @change="window.location.href = '{{ route('survey.index') }}' + '?periode=' + $event.target.value" />
@@ -38,7 +38,7 @@
 									<span>
 										<i class="fas fa-book"></i>
 									</span>
-									<p><span class="font-semibold">Standar:</span> {{ $instrument->periode->standard->name }}</p>
+									<p><span class="font-semibold">Area:</span> {{ $instrument->units->pluck('unit_name')->implode(', ') }}</p>
 								</div>
 								<div class="inline-flex items-center gap-x-2 text-xs">
 									<span>

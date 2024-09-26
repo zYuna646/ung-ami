@@ -51,10 +51,6 @@
 			        'value' => $periode->formatted_start_date . ' - ' . $periode->formatted_end_date,
 			    ],
 			    (object) [
-			        'label' => 'Standar',
-			        'value' => $periode->standard->name,
-			    ],
-			    (object) [
 			        'label' => 'Tipe',
 			        'value' => $periode->tipe,
 			    ]

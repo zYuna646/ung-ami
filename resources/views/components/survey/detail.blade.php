@@ -17,7 +17,7 @@
 	    ],
 	    (object) [
 	        'label' => 'Standar',
-	        'value' => $instrument->periode->standard->name,
+	        'value' => $instrument->name,
 	    ],
 	    (object) [
 	        'label' => 'Tipe',

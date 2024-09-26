@@ -15,7 +15,7 @@ return new class extends Migration
             $table->year('year');
             $table->date('start_date');
             $table->date('end_date');
-            $table->foreignId('standard_id')->constrained('standards')->onDelete('restrict');
+            // $table->foreignId('standard_id')->constrained('standards')->onDelete('restrict');
             $table->string('tipe');
             $table->string('code');
             $table->timestamps();
