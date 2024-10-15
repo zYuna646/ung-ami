@@ -11,7 +11,7 @@
 			<div>
 				<x-form.select name="periode" placeholder="Pilih Periode" :value="request('periode')" :options="$periodes->map(function ($periode) {
 				    return (object) [
-				        'label' => $periode->periode_name,
+				        'label' => $periode->formatted_start_date . ' - ' . $periode->formatted_end_date,
 				        'value' => $periode->uuid,
 				    ];
 				})" x-data="" @change="window.location.href = '{{ route('survey.index') }}' + '?periode=' + $event.target.value" />
