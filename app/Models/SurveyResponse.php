@@ -15,6 +15,7 @@ class SurveyResponse extends Model
         'question_id',
         'availability',
         'notes',
+        'evidence',
     ];
 
     public function instrument()
