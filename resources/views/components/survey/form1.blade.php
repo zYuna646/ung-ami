@@ -33,6 +33,7 @@
 						<th class="border px-4 py-2" colspan="2">Butir Pertanyaan</th>
 						<th class="border px-4 py-2">Ketersediaan Dokumen</th>
 						<th class="border px-4 py-2">Catatan</th>
+						<th class="border px-4 py-2">Bukti</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -60,6 +61,13 @@
 											<a class="text-blue-500 underline" href="{{ $question->response->notes }}" target="_blank">Tautan</a>
 										@endif
 									</td>
+									<td class="border px-4 py-2 align-top">
+										@if (isset($question->response?->evidence))
+											<a class="text-blue-500 underline" href="{{ asset('storage/evidences/'. $question->response->evidence) }}" target="_blank">Lihat</a>
+										@else
+											-
+										@endif
+									</td>
 								</tr>
 							@endcan
 						@endforeach
@@ -71,7 +79,7 @@
 
 	@if (auth()->user()->isAuditee())
 		<div x-show="tab === 'form'" class="space-y-5">
-			<form action="{{ route('survey.store', $instrument->uuid) }}" method="POST">
+			<form action="{{ route('survey.store', $instrument->uuid) }}" method="POST" enctype="multipart/form-data">
 				@csrf
 				@foreach ($instrument->indicators as $key => $indicator)
 					<div class="rounded-lg border border-slate-100 bg-white shadow-sm">
@@ -81,7 +89,7 @@
 						<div class="space-y-5 p-6">
 							@foreach ($indicator->questions as $question)
 								@can('view', $question)
-									<div class="space-y-3">
+									<div class="space-y-3" x-data="{ availability: '{{ old("availability.$question->id") ?? $question->response->availability }}' }">
 										<div>
 											<h3 class="font-semibold">Butir Pertanyaan</h3>
 											<p class="mb-1 text-lg">{{ $question->text }}</p>
@@ -91,9 +99,10 @@
 										@php
 											$availabilityFieldName = "availability.{$question->id}";
 											$notesFieldName = "notes.{$question->id}";
+											$evidenceFieldName = "evidence.{$question->id}";
 										@endphp
 
-										<x-form.select name="availability[{{ $question->id }}]" placeholder="Pilih Ketersediaan Dokumen" :value="old($availabilityFieldName) ?? $question->response->availability" :disabled="auth()->user()->isAuditor()" :options="[
+										<x-form.select x-model="availability" name="availability[{{ $question->id }}]" placeholder="Pilih Ketersediaan Dokumen" :value="old($availabilityFieldName) ?? $question->response->availability" :disabled="auth()->user()->isAuditor()" :options="[
 										    (object) [
 										        'label' => 'Tersedia',
 										        'value' => 'Tersedia',
@@ -106,6 +115,13 @@
 										@error($availabilityFieldName)
 											<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
 										@enderror
+
+										<div x-show="availability === 'Tersedia'" class="mt-3">
+											<x-form.input name="evidence[{{ $question->id }}]" type="file" :inputClass="$errors->has($evidenceFieldName) ? 'border-red-700' : ''" :value="old($evidenceFieldName) ?? $question->response->evidence" :disabled="auth()->user()->isAuditor()" />
+											@error($evidenceFieldName)
+												<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
+											@enderror
+										</div>
 
 										<x-form.textarea name="notes[{{ $question->id }}]" placeholder="Catatan" :inputClass="$errors->has($notesFieldName) ? 'border-red-700' : ''" :value="old($notesFieldName) ?? $question->response->notes" :disabled="auth()->user()->isAuditor()" />
 										@if (filter_var($question->response->notes, FILTER_VALIDATE_URL))

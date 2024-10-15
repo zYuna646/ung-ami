@@ -60,6 +60,40 @@
 									<div>
 										<h3 class="font-semibold">Butir Pertanyaan</h3>
 										<p class="mb-1 text-lg">{{ $question->text }}</p>
+										<div class="mb-1">
+											<table class="w-full table-auto border-collapse text-xs">
+												<thead>
+													<tr class="bg-gray-100">
+														<th colspan="3" class="border px-4 py-2">Jawaban Auditi</th>
+													</tr>
+													<tr class="bg-gray-100">
+														<th class="border px-4 py-2">Ketersediaan Dokumen</th>
+														<th class="border px-4 py-2">Catatan</th>
+														<th class="border px-4 py-2">Bukti</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td class="border px-4 py-2 align-top text-center">
+															{{ $question->response->availability ?? 'Belum Diisi' }}
+														</td>
+														<td class="border px-4 py-2 align-top text-center">
+															{{ $question->response->notes ?? 'Tidak ada catatan' }}
+															@if (filter_var($question->response->notes, FILTER_VALIDATE_URL))
+																<a class="text-blue-500 underline" href="{{ $question->response->notes }}" target="_blank">Tautan</a>
+															@endif
+														</td>
+														<td class="border px-4 py-2 align-top text-center">
+															@if (isset($question->response?->evidence))
+																<a class="text-blue-500 underline" href="{{ asset('storage/evidences/'. $question->response->evidence) }}" target="_blank">Lihat</a>
+															@else
+																-
+															@endif
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
 										<p class="text-sm text-gray-600">{{ $question->units->pluck('unit_name')->implode(', ') }}</p>
 									</div>
 

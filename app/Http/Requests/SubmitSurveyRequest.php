@@ -19,6 +19,11 @@ class SubmitSurveyRequest extends FormRequest
             if ($this->user()->can('view', $question)) {
                 $rules["availability.$question->id"] = 'required';
                 $rules["notes.$question->id"] = 'required';
+
+                // Only require 'evidence' if 'availability' is set to 'Tersedia'
+                if ($this->input("availability.$question->id") === 'Tersedia') {
+                    $rules["evidence.$question->id"] = 'required|file';
+                }
             }
         }
 
@@ -33,6 +38,7 @@ class SubmitSurveyRequest extends FormRequest
             if ($this->user()->can('view', $question)) {
                 $messages["availability.$question->id.required"] = "Ketersediaan dokumen untuk pertanyaan '{$question->text}' harus diisi.";
                 $messages["notes.$question->id.required"] = "Catatan untuk pertanyaan '{$question->text}' harus diisi.";
+                $messages["evidence.$question->id.required"] = "Bukti untuk pertanyaan '{$question->text}' harus diisi.";
             }
         }
 

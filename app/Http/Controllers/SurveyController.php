@@ -68,6 +68,7 @@ class SurveyController extends Controller
                 $instrument->indicators[$key1]->questions[$key2]->response = (object) [
                     'availability' => optional($response)->availability,
                     'notes' => optional($response)->notes,
+                    'evidence' => optional($response)->evidence,
                 ];
             }
         }
@@ -82,6 +83,7 @@ class SurveyController extends Controller
         try {
             $availabilityData = $request->input('availability');
             $notesData = $request->input('notes');
+            $evidenceFiles = $request->file('evidence'); // Get the uploaded files
 
             foreach ($instrument->questions as $question) {
                 $questionId = $question->id;
@@ -89,6 +91,14 @@ class SurveyController extends Controller
                 if (isset($availabilityData[$questionId])) {
                     $availability = $availabilityData[$questionId];
                     $notes = $notesData[$questionId] ?? '';
+
+                    // Handle file upload if 'Tersedia' and evidence file is provided
+                    $evidenceFileName = null;
+                    if ($availability === 'Tersedia' && isset($evidenceFiles[$questionId])) {
+                        $file = $evidenceFiles[$questionId];
+                        $evidencePath = $file->store('evidences', 'public'); // Save the file to 'public/evidences'
+                        $evidenceFileName = basename($evidencePath); // Get only the basename
+                    }
 
                     SurveyResponse::updateOrCreate(
                         [
@@ -99,6 +109,7 @@ class SurveyController extends Controller
                         [
                             'availability' => $availability,
                             'notes' => $notes,
+                            'evidence' => $evidenceFileName, // Store only the basename in the database
                         ]
                     );
                 }
@@ -121,11 +132,20 @@ class SurveyController extends Controller
         $showInstrument = isset($model->user);
         if ($showInstrument) {
             $questions = $instrument->indicators->flatMap->questions;
+            $responses = SurveyResponse::where('instrument_id', $instrument->id)
+                ->where('user_id', $model->user_id)
+                ->whereIn('question_id', $questions->pluck('id'))
+                ->get()
+                ->keyBy('question_id');
             foreach ($instrument->indicators as $key1 => $indicator) {
                 foreach ($indicator->questions as $key2 => $question) {
                     $response = $model->auditResults->firstWhere('question_id', $question->id);
+                    $auditeeResponse = $responses->get($question->id);
 
                     $instrument->indicators[$key1]->questions[$key2]->response = (object) [
+                        'availability' => optional($auditeeResponse)->availability,
+                        'notes' => optional($auditeeResponse)->notes,
+                        'evidence' => optional($auditeeResponse)->evidence,
                         'description' => optional($response)->description,
                         'amount_target' => optional($response)->amount_target,
                         'existence' => optional($response)->existence,
