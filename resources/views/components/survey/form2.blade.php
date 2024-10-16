@@ -78,14 +78,15 @@
 															{{ $question->response->availability ?? 'Belum Diisi' }}
 														</td>
 														<td class="border px-4 py-2 align-top text-center">
-															{{ $question->response->notes ?? 'Tidak ada catatan' }}
 															@if (filter_var($question->response->notes, FILTER_VALIDATE_URL))
 																<a class="text-blue-500 underline" href="{{ $question->response->notes }}" target="_blank">Tautan</a>
+															@else
+																{{ $question->response->notes ?? 'Tidak ada catatan' }}
 															@endif
 														</td>
 														<td class="border px-4 py-2 align-top text-center">
-															@if (isset($question->response?->evidence))
-																<a class="text-blue-500 underline" href="{{ asset('storage/evidences/'. $question->response->evidence) }}" target="_blank">Lihat</a>
+															@if (filter_var($question->response->evidence, FILTER_VALIDATE_URL))
+																<a class="text-blue-500 underline" href="{{ $question->response->evidence }}" target="_blank">Tautan</a>
 															@else
 																-
 															@endif
