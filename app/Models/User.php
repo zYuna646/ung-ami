@@ -38,7 +38,7 @@ class User extends Authenticatable
     {
         parent::boot();
         self::creating(function ($model) {
-            $model->password = Hash::make($model->password ?? Str::random(12));
+            $model->password = Hash::make($model->password ?? 'ami.ung');
         });
         self::updating(function ($model) {
             if ($model->isDirty('password') && $model->password) {
