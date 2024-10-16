@@ -56,14 +56,15 @@
 										{{ $question->response->availability ?? 'Belum Diisi' }}
 									</td>
 									<td class="border px-4 py-2 align-top">
-										{{ $question->response->notes ?? 'Tidak ada catatan' }}
 										@if (filter_var($question->response->notes, FILTER_VALIDATE_URL))
 											<a class="text-blue-500 underline" href="{{ $question->response->notes }}" target="_blank">Tautan</a>
+										@else
+											{{ $question->response->notes ?? '-' }}
 										@endif
 									</td>
 									<td class="border px-4 py-2 align-top">
-										@if (isset($question->response?->evidence))
-											<a class="text-blue-500 underline" href="{{ asset('storage/evidences/'. $question->response->evidence) }}" target="_blank">Lihat</a>
+										@if (filter_var($question->response->evidence, FILTER_VALIDATE_URL))
+											<a class="text-blue-500 underline" href="{{ $question->response->evidence }}" target="_blank">Tautan</a>
 										@else
 											-
 										@endif
@@ -117,7 +118,7 @@
 										@enderror
 
 										<div x-show="availability === 'Tersedia'" class="mt-3">
-											<x-form.input name="evidence[{{ $question->id }}]" type="file" :inputClass="$errors->has($evidenceFieldName) ? 'border-red-700' : ''" :value="old($evidenceFieldName) ?? $question->response->evidence" :disabled="auth()->user()->isAuditor()" />
+											<x-form.input name="evidence[{{ $question->id }}]" :inputClass="$errors->has($evidenceFieldName) ? 'border-red-700' : ''" :value="old($evidenceFieldName) ?? $question->response->evidence" :disabled="auth()->user()->isAuditor()" />
 											@error($evidenceFieldName)
 												<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
 											@enderror

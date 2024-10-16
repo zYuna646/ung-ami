@@ -83,7 +83,7 @@ class SurveyController extends Controller
         try {
             $availabilityData = $request->input('availability');
             $notesData = $request->input('notes');
-            $evidenceFiles = $request->file('evidence'); // Get the uploaded files
+            $evidenceData = $request->input('evidence');
 
             foreach ($instrument->questions as $question) {
                 $questionId = $question->id;
@@ -91,14 +91,7 @@ class SurveyController extends Controller
                 if (isset($availabilityData[$questionId])) {
                     $availability = $availabilityData[$questionId];
                     $notes = $notesData[$questionId] ?? '';
-
-                    // Handle file upload if 'Tersedia' and evidence file is provided
-                    $evidenceFileName = null;
-                    if ($availability === 'Tersedia' && isset($evidenceFiles[$questionId])) {
-                        $file = $evidenceFiles[$questionId];
-                        $evidencePath = $file->store('evidences', 'public'); // Save the file to 'public/evidences'
-                        $evidenceFileName = basename($evidencePath); // Get only the basename
-                    }
+                    $evidence = $evidenceData[$questionId] ?? null;
 
                     SurveyResponse::updateOrCreate(
                         [
@@ -109,7 +102,7 @@ class SurveyController extends Controller
                         [
                             'availability' => $availability,
                             'notes' => $notes,
-                            'evidence' => $evidenceFileName, // Store only the basename in the database
+                            'evidence' => $evidence,
                         ]
                     );
                 }
