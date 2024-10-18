@@ -6,7 +6,7 @@
 	    ],
 	    (object) [
 	        'show' => auth()->check() && (auth()->user()->isAuditee() || auth()->user()->isAuditor()),
-	        'label' => 'Survei',
+	        'label' => 'Audit',
 	        'route' => route('survey.index'),
 	    ],
 	    (object) [
