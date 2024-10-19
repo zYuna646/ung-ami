@@ -35,8 +35,8 @@
 			<div class="flex w-full max-w-lg flex-col justify-center gap-y-1">
 				<h1 class="text-2xl font-black text-white lg:text-5xl">AMI <span class="text-color-primary-500">UNG</span></h1>
 				<p class="text-lg font-bold text-white lg:mt-4 lg:text-2xl">Universitas Negeri Gorontalo</p>
-				<p class="text-xs text-white lg:text-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro
-					dolore consequuntur iste hic voluptate sequi saepe a laboriosam magni. Corporis?</p>
+				{{-- <p class="text-xs text-white lg:text-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro
+					dolore consequuntur iste hic voluptate sequi saepe a laboriosam magni. Corporis?</p> --}}
 				{{-- <x-button class="mt-4 w-fit" onclick="window.location.href='{{ route('list_survei') }}'">
         Lihat Survei
       </x-button> --}}

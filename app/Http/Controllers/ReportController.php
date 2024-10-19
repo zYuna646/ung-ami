@@ -26,7 +26,9 @@ class ReportController extends Controller
 
         if ($request->has('program')) {
             $program = Program::where('uuid', $request->program)->first();
-            $programPeriodes = $program->periodes;
+            $programPeriodes = Periode::whereHas('instruments', function ($query) use ($program) {
+                $query->whereIn('id', $program->instruments->pluck('id'));
+            })->get();
         }
 
         return view('pages.report.index', compact('periodes', 'programs', 'program', 'programPeriodes'));
