@@ -74,7 +74,7 @@ class InstrumentPolicy
 
     public function showAuditResults(User $user, Instrument $instrument): bool
     {
-        return $user->isAuditor();
+        return $user->isAuditor() || ($user->isAuditor() && AuditStatus::COMPLETE);
     }
 
     public function submitAuditResults(User $user, Instrument $instrument): bool
@@ -85,7 +85,7 @@ class InstrumentPolicy
 
     public function showComplianceResults(User $user, Instrument $instrument): bool
     {
-        return $user->isAuditor();
+        return $user->isAuditor() || ($user->isAuditor() && AuditStatus::COMPLETE);
     }
 
     public function submitComplianceResults(User $user, Instrument $instrument): bool
@@ -96,7 +96,7 @@ class InstrumentPolicy
 
     public function showNoncomplianceResults(User $user, Instrument $instrument): bool
     {
-        return $user->isAuditor();
+        return $user->isAuditor() || ($user->isAuditor() && AuditStatus::COMPLETE);
     }
 
     public function submitNoncomplianceResults(User $user, Instrument $instrument): bool
@@ -107,7 +107,7 @@ class InstrumentPolicy
 
     public function showPTK(User $user, Instrument $instrument): bool
     {
-        return $user->isAuditor();
+        return $user->isAuditor() || ($user->isAuditor() && AuditStatus::COMPLETE);
     }
 
     public function submitPTK(User $user, Instrument $instrument): bool
@@ -118,7 +118,7 @@ class InstrumentPolicy
 
     public function showPTP(User $user, Instrument $instrument): bool
     {
-        return $user->isAuditor();
+        return $user->isAuditor() || ($user->isAuditor() && AuditStatus::COMPLETE);
     }
 
     public function submitPTP(User $user, Instrument $instrument): bool
