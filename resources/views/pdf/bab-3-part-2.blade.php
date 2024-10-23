@@ -87,7 +87,12 @@
 			diolah dan dianalisis dengan menggunakan statistika sederhana sebagaimana gambar di
 			bawah ini
 		</p>
-		<p>[GAMBAR]</p>
+		<div style="text-align: center;">
+			<img src="{{ public_path('images/report-3-1.png') }}" alt="Gambar" style="width: 250px">
+			<div>
+				<b>Gambar 1. Ketercapain Kriteria</b>
+			</div>
+		</div>
 		<p class="paragraf">
 			Berdasarkan gambar di atas, terlihat bahwa kriteria visi misi dan mahasiswa
 			memiliki persentase terendah yakni sebesar 75%, walaupun demikian, pada umumnya
@@ -100,7 +105,12 @@
 			dan kemahasiswaan. Sedangkan kriteria ketidaksesuaian (KTS) ada 1 yaitu pada kriteria
 			pendidikan.
 		</p>
-		<p>[GAMBAR]</p>
+		<div style="text-align: center;">
+			<img src="{{ public_path('images/report-3-2.png') }}" alt="Gambar" style="width: 250px">
+			<div>
+				<b>Gambar 2. Jenis Ketidaksesuaian</b>
+			</div>
+		</div>
 	</body>
 
 </html>

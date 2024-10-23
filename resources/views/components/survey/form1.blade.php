@@ -118,7 +118,7 @@
 										@enderror
 
 										<div x-show="availability === 'Tersedia'" class="mt-3">
-											<x-form.input name="evidence[{{ $question->id }}]" :inputClass="$errors->has($evidenceFieldName) ? 'border-red-700' : ''" :value="old($evidenceFieldName) ?? $question->response->evidence" :disabled="auth()->user()->isAuditor()" />
+											<x-form.input name="evidence[{{ $question->id }}]" placeholder="https//" :inputClass="$errors->has($evidenceFieldName) ? 'border-red-700' : ''" :value="old($evidenceFieldName) ?? $question->response->evidence" :disabled="auth()->user()->isAuditor()" />
 											@error($evidenceFieldName)
 												<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
 											@enderror
