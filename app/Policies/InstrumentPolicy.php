@@ -72,9 +72,27 @@ class InstrumentPolicy
         return $user->isAuditee() || $user->isAuditor();
     }
 
+    public function submitSurvey(User $user, Instrument $instrument): bool
+    {
+        $area = $user->entityId() . $user->entityType();
+
+        // Get the current date
+        $today = today(); // Assuming you're using Carbon for date handling
+
+        return $user->isAuditee() &&
+            ($instrument->auditStatus($area) == AuditStatus::PENDING ||
+                $instrument->auditStatus($area) == AuditStatus::REJECTED) &&
+            $today->between($instrument->periode->start_date, $instrument->periode->end_date);
+    }
+
     public function showAuditResults(User $user, Instrument $instrument): bool
     {
-        return $user->isAuditor() || ($user->isAuditor() && AuditStatus::COMPLETE);
+        $area = request('area');
+        if ($user->isProgram()) {
+            $area = $user->program->id . 'Program';
+        }
+        $status = $instrument->auditStatus($area);
+        return $user->isAuditor() || ($user->isAuditee() && ($status == AuditStatus::PROCESS || $status == AuditStatus::COMPLETE));
     }
 
     public function submitAuditResults(User $user, Instrument $instrument): bool
@@ -85,7 +103,12 @@ class InstrumentPolicy
 
     public function showComplianceResults(User $user, Instrument $instrument): bool
     {
-        return $user->isAuditor() || ($user->isAuditor() && AuditStatus::COMPLETE);
+        $area = request('area');
+        if ($user->isProgram()) {
+            $area = $user->program->id . 'Program';
+        }
+        $status = $instrument->auditStatus($area);
+        return $user->isAuditor() || ($user->isAuditee() && ($status == AuditStatus::PROCESS || $status == AuditStatus::COMPLETE));
     }
 
     public function submitComplianceResults(User $user, Instrument $instrument): bool
@@ -96,7 +119,12 @@ class InstrumentPolicy
 
     public function showNoncomplianceResults(User $user, Instrument $instrument): bool
     {
-        return $user->isAuditor() || ($user->isAuditor() && AuditStatus::COMPLETE);
+        $area = request('area');
+        if ($user->isProgram()) {
+            $area = $user->program->id . 'Program';
+        }
+        $status = $instrument->auditStatus($area);
+        return $user->isAuditor() || ($user->isAuditee() && ($status == AuditStatus::PROCESS || $status == AuditStatus::COMPLETE));
     }
 
     public function submitNoncomplianceResults(User $user, Instrument $instrument): bool
@@ -107,7 +135,12 @@ class InstrumentPolicy
 
     public function showPTK(User $user, Instrument $instrument): bool
     {
-        return $user->isAuditor() || ($user->isAuditor() && AuditStatus::COMPLETE);
+        $area = request('area');
+        if ($user->isProgram()) {
+            $area = $user->program->id . 'Program';
+        }
+        $status = $instrument->auditStatus($area);
+        return $user->isAuditor() || ($user->isAuditee() && ($status == AuditStatus::PROCESS || $status == AuditStatus::COMPLETE));
     }
 
     public function submitPTK(User $user, Instrument $instrument): bool
@@ -118,7 +151,12 @@ class InstrumentPolicy
 
     public function showPTP(User $user, Instrument $instrument): bool
     {
-        return $user->isAuditor() || ($user->isAuditor() && AuditStatus::COMPLETE);
+        $area = request('area');
+        if ($user->isProgram()) {
+            $area = $user->program->id . 'Program';
+        }
+        $status = $instrument->auditStatus($area);
+        return $user->isAuditor() || ($user->isAuditee() && ($status == AuditStatus::PROCESS || $status == AuditStatus::COMPLETE));
     }
 
     public function submitPTP(User $user, Instrument $instrument): bool

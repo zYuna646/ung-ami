@@ -20,14 +20,12 @@
 			<form action="{{ route('dashboard.users.teams.update', $team->uuid) }}" method="POST" class="flex flex-col gap-5">
 				@csrf
 				@method('PUT')
-				<div x-data>
-					<x-form.select name="chief_auditor_id" label="Ketua" :value="$team->chief->id" disabled :options="$auditors->map(function ($auditor) {
-					    return (object) [
-					        'label' => $auditor->user->name,
-					        'value' => $auditor->id,
-					    ];
-					})" @change="window.location.href = '{{ url()->current() }}?auditor=' + $event.target.value" />
-				</div>
+				<x-form.select name="chief_auditor_id" label="Ketua" :value="$team->chief->id" :options="$auditors->map(function ($auditor) {
+						return (object) [
+								'label' => $auditor->user->name,
+								'value' => $auditor->id,
+						];
+				})" />
 				@if ($availableToBeMember)
 					<x-form.choices name="members[]" label="Anggota" placeholder="Pilih Anggota" :multiple="true" :value="$team->members
 					    ->map(function ($member) {

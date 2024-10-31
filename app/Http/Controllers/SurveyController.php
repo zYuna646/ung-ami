@@ -78,7 +78,7 @@ class SurveyController extends Controller
 
     public function store(SubmitSurveyRequest $request, Instrument $instrument)
     {
-        // $this->authorize('submitSurvey', $instrument);
+        $this->authorize('submitSurvey', $instrument);
 
         try {
             $availabilityData = $request->input('availability');
@@ -120,7 +120,11 @@ class SurveyController extends Controller
     {
         $this->authorize('showAuditResults', $instrument);
 
-        $model = ModelHelper::getModelByRequest($request);
+        if (auth()->user()->isAuditee()) {
+            $model = ModelHelper::getModelByRequest((object) ['area' => auth()->user()->entityId() . auth()->user()->entityType()]);
+        } else {
+            $model = ModelHelper::getModelByRequest($request);
+        }
 
         $showInstrument = isset($model->user);
         if ($showInstrument) {
@@ -210,7 +214,11 @@ class SurveyController extends Controller
     {
         $this->authorize('showComplianceResults', $instrument);
 
-        $model = ModelHelper::getModelByRequest($request);
+        if (auth()->user()->isAuditee()) {
+            $model = ModelHelper::getModelByRequest((object) ['area' => auth()->user()->entityId() . auth()->user()->entityType()]);
+        } else {
+            $model = ModelHelper::getModelByRequest($request);
+        }
 
         $showInstrument = isset($model->user);
         $questions = [];
@@ -268,7 +276,11 @@ class SurveyController extends Controller
     {
         $this->authorize('showNoncomplianceResults', $instrument);
 
-        $model = ModelHelper::getModelByRequest($request);
+        if (auth()->user()->isAuditee()) {
+            $model = ModelHelper::getModelByRequest((object) ['area' => auth()->user()->entityId() . auth()->user()->entityType()]);
+        } else {
+            $model = ModelHelper::getModelByRequest($request);
+        }
 
         $showInstrument = isset($model->user);
         $questions = [];
@@ -328,7 +340,11 @@ class SurveyController extends Controller
     {
         $this->authorize('showPTK', $instrument);
 
-        $model = ModelHelper::getModelByRequest($request);
+        if (auth()->user()->isAuditee()) {
+            $model = ModelHelper::getModelByRequest((object) ['area' => auth()->user()->entityId() . auth()->user()->entityType()]);
+        } else {
+            $model = ModelHelper::getModelByRequest($request);
+        }
 
         $showInstrument = isset($model->user);
         $questions = [];
@@ -396,7 +412,11 @@ class SurveyController extends Controller
     {
         $this->authorize('showPTP', $instrument);
 
-        $model = ModelHelper::getModelByRequest($request);
+        if (auth()->user()->isAuditee()) {
+            $model = ModelHelper::getModelByRequest((object) ['area' => auth()->user()->entityId() . auth()->user()->entityType()]);
+        } else {
+            $model = ModelHelper::getModelByRequest($request);
+        }
 
         $showInstrument = isset($model->user);
         $questions = [];

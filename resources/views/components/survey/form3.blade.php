@@ -13,11 +13,13 @@
 							Tabel
 						</a>
 					</li>
-					<li class="me-2">
-						<a href="#" @click.prevent="tab = 'form'" :class="tab === 'form' ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600'" class="inline-block rounded-t-lg p-4 pt-0">
-							Form
-						</a>
-					</li>
+					@if (auth()->user()->isAuditor())
+						<li class="me-2">
+							<a href="#" @click.prevent="tab = 'form'" :class="tab === 'form' ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600'" class="inline-block rounded-t-lg p-4 pt-0">
+								Form
+							</a>
+						</li>
+					@endif
 				</ul>
 				<div x-show="tab === 'table'" class="mt-5">
 					<table class="w-full table-auto border-collapse text-xs">

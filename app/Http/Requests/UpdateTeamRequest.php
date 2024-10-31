@@ -14,6 +14,7 @@ class UpdateTeamRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'chief_auditor_id' => 'required',
             'members' => 'required|array'
         ];
     }
