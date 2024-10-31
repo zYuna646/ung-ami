@@ -11,13 +11,23 @@
 	<x-main.card class="mb-5">
 		<ul class="flex flex-wrap">
 			<li class="me-2">
-				<a href="#" @click.prevent="tab = 'table'" :class="tab === 'table' ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600'" class="inline-block rounded-t-lg p-4 pt-0">
+				<a
+					href="#"
+					@click.prevent="tab = 'table'"
+					:class="tab === 'table' ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600'"
+					class="inline-block rounded-t-lg p-4 pt-0"
+				>
 					Tabel
 				</a>
 			</li>
 			@if (auth()->user()->isAuditee())
 				<li class="me-2">
-					<a href="#" @click.prevent="tab = 'form'" :class="tab === 'form' ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600'" class="inline-block rounded-t-lg p-4 pt-0">
+					<a
+						href="#"
+						@click.prevent="tab = 'form'"
+						:class="tab === 'form' ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600'"
+						class="inline-block rounded-t-lg p-4 pt-0"
+					>
 						Form
 					</a>
 				</li>
@@ -57,14 +67,22 @@
 									</td>
 									<td class="border px-4 py-2 align-top">
 										@if (filter_var($question->response->notes, FILTER_VALIDATE_URL))
-											<a class="text-blue-500 underline" href="{{ $question->response->notes }}" target="_blank">Tautan</a>
+											<a
+												class="text-blue-500 underline"
+												href="{{ $question->response->notes }}"
+												target="_blank"
+											>Tautan</a>
 										@else
 											{{ $question->response->notes ?? '-' }}
 										@endif
 									</td>
 									<td class="border px-4 py-2 align-top">
 										@if (filter_var($question->response->evidence, FILTER_VALIDATE_URL))
-											<a class="text-blue-500 underline" href="{{ $question->response->evidence }}" target="_blank">Tautan</a>
+											<a
+												class="text-blue-500 underline"
+												href="{{ $question->response->evidence }}"
+												target="_blank"
+											>Tautan</a>
 										@else
 											-
 										@endif
@@ -80,7 +98,11 @@
 
 	@if (auth()->user()->isAuditee())
 		<div x-show="tab === 'form'" class="space-y-5">
-			<form action="{{ route('survey.store', $instrument->uuid) }}" method="POST" enctype="multipart/form-data">
+			<form
+				action="{{ route('survey.store', $instrument->uuid) }}"
+				method="POST"
+				enctype="multipart/form-data"
+			>
 				@csrf
 				@foreach ($instrument->indicators as $key => $indicator)
 					<div class="rounded-lg border border-slate-100 bg-white shadow-sm">
@@ -103,30 +125,54 @@
 											$evidenceFieldName = "evidence.{$question->id}";
 										@endphp
 
-										<x-form.select x-model="availability" name="availability[{{ $question->id }}]" placeholder="Pilih Ketersediaan Dokumen" :value="old($availabilityFieldName) ?? $question->response->availability" :disabled="auth()->user()->isAuditor()" :options="[
-										    (object) [
-										        'label' => 'Tersedia',
-										        'value' => 'Tersedia',
-										    ],
-										    (object) [
-										        'label' => 'Tidak Tersedia',
-										        'value' => 'Tidak Tersedia',
-										    ],
-										]" :inputClass="$errors->has($availabilityFieldName) ? 'border-red-700' : ''" />
+										<x-form.select
+											x-model="availability"
+											name="availability[{{ $question->id }}]"
+											placeholder="Pilih Ketersediaan Dokumen"
+											:value="old($availabilityFieldName) ?? $question->response->availability"
+											:disabled="auth()->user()->isAuditor()"
+											:options="[
+											    (object) [
+											        'label' => 'Tersedia',
+											        'value' => 'Tersedia',
+											    ],
+											    (object) [
+											        'label' => 'Tidak Tersedia',
+											        'value' => 'Tidak Tersedia',
+											    ],
+											]"
+											:inputClass="$errors->has($availabilityFieldName) ? 'border-red-700' : ''"
+										/>
 										@error($availabilityFieldName)
 											<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
 										@enderror
 
 										<div x-show="availability === 'Tersedia'" class="mt-3">
-											<x-form.input name="evidence[{{ $question->id }}]" placeholder="https//" :inputClass="$errors->has($evidenceFieldName) ? 'border-red-700' : ''" :value="old($evidenceFieldName) ?? $question->response->evidence" :disabled="auth()->user()->isAuditor()" />
+											<x-form.input
+												name="evidence[{{ $question->id }}]"
+												placeholder="https//"
+												:inputClass="$errors->has($evidenceFieldName) ? 'border-red-700' : ''"
+												:value="old($evidenceFieldName) ?? $question->response->evidence"
+												:disabled="auth()->user()->isAuditor()"
+											/>
 											@error($evidenceFieldName)
 												<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
 											@enderror
 										</div>
 
-										<x-form.textarea name="notes[{{ $question->id }}]" placeholder="Catatan" :inputClass="$errors->has($notesFieldName) ? 'border-red-700' : ''" :value="old($notesFieldName) ?? $question->response->notes" :disabled="auth()->user()->isAuditor()" />
+										<x-form.textarea
+											name="notes[{{ $question->id }}]"
+											placeholder="Catatan"
+											:inputClass="$errors->has($notesFieldName) ? 'border-red-700' : ''"
+											:value="old($notesFieldName) ?? $question->response->notes"
+											:disabled="auth()->user()->isAuditor()"
+										/>
 										@if (filter_var($question->response->notes, FILTER_VALIDATE_URL))
-											<a class="mt-2 text-xs text-blue-500 underline" href="{{ $question->response->notes }}" target="_blank">TAUTAN</a>
+											<a
+												class="mt-2 text-xs text-blue-500 underline"
+												href="{{ $question->response->notes }}"
+												target="_blank"
+											>TAUTAN</a>
 										@endif
 										@error($notesFieldName)
 											<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
@@ -139,18 +185,13 @@
 						</div>
 					</div>
 				@endforeach
-				@php
-					$area = auth()->user()->entityId() . auth()->user()->entityType();
-				@endphp
 				<div class="flex justify-end gap-3">
-					@if (auth()->user()->isAuditee())
-						@if ($instrument->auditStatus($area) == AuditStatus::PENDING || $instrument->auditStatus($area) == AuditStatus::REJECTED)
-							<x-button type="submit" color="info">
-								Simpan Penilaian
-								<i class="fa-solid fa-floppy-disk ms-2"></i>
-							</x-button>
-						@endif
-					@endif
+					@can('submitSurvey', $instrument)
+						<x-button type="submit" color="info">
+							Simpan Penilaian
+							<i class="fa-solid fa-floppy-disk ms-2"></i>
+						</x-button>
+					@endcan
 				</div>
 			</form>
 		</div>

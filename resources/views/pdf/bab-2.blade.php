@@ -131,11 +131,14 @@
 
 		<h6 class="heading-2">2.3. AREA AUDIT</h6>
 		<p class="paragraf">
-			Area Audit Mutu Internal tahun 2023 adalah UPPS dan Program Studi
+			Area Audit Mutu Internal tahun {{ $periode->year }} adalah UPPS dan Program Studi.
 		</p>
 
 		<h6 class="heading-2">2.4. JADWAL PELAKSANAAN AUDIT</h6>
-		<table class="table">
+		<p class="paragraf">
+			Pelaksanaan dilakukan dari tanggal {{ $periode->formatted_start_date }} sampai {{ $periode->formatted_end_date }}.
+		</p>
+		{{-- <table class="table">
 			<thead>
 				<tr>
 					<th>No</th>
@@ -174,7 +177,7 @@
 					<td>Temu Akhir/Penutupan</td>
 				</tr>
 			</tbody>
-		</table>
+		</table> --}}
 
 	</body>
 

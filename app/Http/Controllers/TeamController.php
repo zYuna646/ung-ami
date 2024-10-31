@@ -67,6 +67,17 @@ class TeamController extends Controller
     {
         try {
             $data = $request->validated();
+
+            if ($data['chief_auditor_id'] != $team->chief_auditor_id) {
+                // Remove chief_auditor_id from members array if present
+                $data['members'] = array_filter($data['members'], fn($member) => $member != $data['chief_auditor_id']);
+
+                // Update the team's chief_auditor_id
+                $team->chief_auditor_id = $data['chief_auditor_id'];
+                $team->update();
+            }
+
+            // Sync the team members
             $team->members()->sync($data['members']);
 
             return redirect()->back()->with('success', 'Data berhasil diperbarui.');

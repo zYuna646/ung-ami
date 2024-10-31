@@ -88,25 +88,101 @@
 			bawah ini
 		</p>
 		<div style="text-align: center;">
-			<img src="{{ public_path('images/report-3-1.png') }}" alt="Gambar" style="width: 250px">
+			@php
+				// Calculate the percentage for Kesesuaian and Ketidaksesuaian
+				$kesesuaianData = array_map(fn($item) => $item['count']['totalAuditResult'] > 0 ? number_format(($item['count']['kesesuaian'] / $item['count']['totalAuditResult']) * 100, 1) : 0, $kriteria);
+
+				$ketidaksesuaianData = array_map(fn($item) => $item['count']['totalAuditResult'] > 0 ? number_format(($item['count']['ketidaksesuaian'] / $item['count']['totalAuditResult']) * 100, 1) : 0, $kriteria);
+
+				$chartData = [
+				    'type' => 'bar',
+				    'data' => [
+				        'labels' => array_column($kriteria, 'name'),
+				        'datasets' => [
+				            [
+				                'label' => 'Kesesuaian (%)',
+				                'data' => $kesesuaianData,
+				                'backgroundColor' => 'blue',
+				            ],
+				            [
+				                'label' => 'Ketidaksesuaian (%)',
+				                'data' => $ketidaksesuaianData,
+				                'backgroundColor' => 'red',
+				            ],
+				        ],
+				    ],
+				    'options' => [
+				        'scales' => [
+				            'yAxes' => [['ticks' => ['beginAtZero' => true, 'max' => 100]]],
+				        ],
+				    ],
+				];
+
+				$chartUrl = 'https://quickchart.io/chart?c=' . urlencode(json_encode($chartData));
+
+				// Fetch the chart image and convert to Base64
+				$imageData = file_get_contents($chartUrl);
+				$base64 = base64_encode($imageData);
+				$src = 'data:image/png;base64,' . $base64; // Set the data type
+			@endphp
+			<img
+				src="{{ $src }}"
+				alt="{{ $chartUrl }}"
+				style="max-width: 50%; margin: 0 auto; display: block;"
+			>
 			<div>
 				<b>Gambar 1. Ketercapain Kriteria</b>
 			</div>
 		</div>
 		<p class="paragraf">
-			Berdasarkan gambar di atas, terlihat bahwa kriteria visi misi dan mahasiswa
-			memiliki persentase terendah yakni sebesar 75%, walaupun demikian, pada umumnya
-			semua kriteria sebesar sudah berada pada skor yang sangat memuaskan dengan
-			persentase rata-rata sebesar 91,17%
+			Berdasarkan gambar di atas, terlihat bahwa kriteria <b>{{ $lowestCompliance['name'] }}</b>
+			memiliki persentase terendah yakni sebesar {{ $lowestCompliance['compliance_percentage'] }}%.
+			{!! $averageCompliance > 50
+			    ? 'Walaupun demikian, pada umumnya
+															semua kriteria sudah berada pada skor yang <b>sangat memuaskan</b>'
+			    : 'Selain itu, semua kriteria berada pada skor yang <b>perlu ditingkatkan</b>, ' !!}
+			dengan persentase rata-rata sebesar {{ $averageCompliance }}%
 		</p>
 		<p class="paragraf">
-			Berdasarkan jenis ketidak sesuaian pada gambar 2 di bawah, kita dapat ketahui
-			bahwa ketidak sesuaian yang bersifat obeservasi (OBS) sebanya 2 pada kriteria visi misi
-			dan kemahasiswaan. Sedangkan kriteria ketidaksesuaian (KTS) ada 1 yaitu pada kriteria
-			pendidikan.
+			Berdasarkan jenis ketidaksesuaian pada gambar 2 di bawah, kita dapat mengetahui
+			bahwa
+			@foreach ($kriteria as $item)
+				<span><b>{{ $item['name'] }}</b> memiliki ketidaksesuaian dengan kategori OBS sebanyak {{ $item['count']['obs'] }} dan kategori KTS sebanyak {{ $item['count']['kts'] }}.</span> 
+			@endforeach
 		</p>
 		<div style="text-align: center;">
-			<img src="{{ public_path('images/report-3-2.png') }}" alt="Gambar" style="width: 250px">
+			@php
+				$chartData2 = [
+				    'type' => 'bar',
+				    'data' => [
+				        'labels' => array_column($kriteria, 'name'),
+				        'datasets' => [
+				            [
+				                'label' => 'OBS',
+				                'data' => array_map(fn($item) => $item['count']['obs'], $kriteria),
+				                'backgroundColor' => 'yellow',
+				            ],
+				            [
+				                'label' => 'KTS',
+				                'data' => array_map(fn($item) => $item['count']['kts'], $kriteria),
+				                'backgroundColor' => 'purple',
+				            ],
+				        ],
+				    ],
+				];
+
+				$chartUrl2 = 'https://quickchart.io/chart?c=' . urlencode(json_encode($chartData2));
+
+				// Fetch the chart image and convert to Base64
+				$imageData = file_get_contents($chartUrl2);
+				$base64 = base64_encode($imageData);
+				$src2 = 'data:image/png;base64,' . $base64; // Set the data type
+			@endphp
+			<img
+				src="{{ $src2 }}"
+				alt="{{ $chartUrl2 }}"
+				style="max-width: 50%; margin: 0 auto; display: block;"
+			>
 			<div>
 				<b>Gambar 2. Jenis Ketidaksesuaian</b>
 			</div>
