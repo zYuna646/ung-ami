@@ -106,9 +106,9 @@
 			PENDAHULUAN
 		</h5>
 		<p class="paragraf">
-			Dalam rangka meningkatkan pelaksanaan sIstem penjaminan mutu pendidikan tinggi
-			yang diselenggarakan oleh Universitas Negeri Gorontalo maka LP3M melaksanakan Audit
-			Mutu Internal (AMI) tahun 2023. Hal ini perlu dilakukan agar penyelenggaraan pendidikan
+			Dalam rangka meningkatkan pelaksanaan sistem penjaminan mutu pendidikan tinggi
+			yang diselenggarakan oleh Universitas Negeri Gorontalo maka LPMPP melaksanakan Audit
+			Mutu Internal (AMI) tahun {{ $periode->year }}. Hal ini perlu dilakukan agar penyelenggaraan pendidikan
 			tinggi di UNG dapat terselenggara dengan perencanaan yang matang dan berkelanjutan.
 			Kegiatan audit ini dilakukan untuk memotret sampai sejauh mana pelaksanaan sistem
 			pejaminan mutu yang telah dilaksanakan oleh program studi, fakultas, lembaga maupun
@@ -116,8 +116,8 @@
 			mampu mempertahankan peringkat akreditasi perguruan tinggi maksimal (Unggul).
 		</p>
 		<p class="paragraf">
-			Audit Mutu Internal (AMI) pada tahun 2023 ini menggunakan instrumen revisi dari
-			instrumen yang digunakan pada tahun 2022, dimana pada instrument kali ini
+			Audit Mutu Internal (AMI) pada tahun {{ $periode->year }} ini menggunakan instrumen revisi dari
+			instrumen yang digunakan pada tahun {{ $periode->year - 1 }}, dimana pada instrument kali ini
 			mengkombinasikan instrumen penilaian akreditasi yang digunakan pada BAN-PT, LAMDIK,
 			LAMSAMA dan beberapa LAM lainnya. Adapun tujuan penggunaan instrument penilaian dari
 			BAN-PT maupun beberapa LAM yang ada adalah untuk membiasakan prodi maupun fakultas
@@ -125,7 +125,7 @@
 			akreditasi
 		</p>
 		<p class="paragraf">
-			AMI 2023 ini meliputi beberapa kriteria yang ada dalam instrumen akreditasi, antara
+			AMI {{ $periode->year }} ini meliputi beberapa kriteria yang ada dalam instrumen akreditasi, antara
 			lain kriteria visi misi tujuan dan strategi, kemahasiswaan, Sumber Daya Manusia, Pendidikan,
 			Penelitian dan Pengabdian yang keseluruhan butir pertanyaanya bersumber pad matriks
 			penilaian akreditasi.
