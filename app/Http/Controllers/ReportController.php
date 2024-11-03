@@ -201,7 +201,69 @@ class ReportController extends Controller
         $bab3Part1 = Pdf::loadView('pdf.bab-3-part-1', compact('periode', 'program', 'instruments'))
             ->setPaper('a4', 'landscape')
             ->output();
-        $bab3Part2 = Pdf::loadView('pdf.bab-3-part-2', compact('periode', 'program'))
+
+        $kriteria = [];
+        $totalKesesuaian = 0;
+        $totalQuestions = 0;
+
+        foreach ($instruments as $instrument) {
+            $kriteria[] = [
+                'name' => $instrument->name,
+                'count' => [
+                    'kesesuaian' => 0,
+                    'ketidaksesuaian' => 0,
+                    'obs' => 0,
+                    'kts' => 0,
+                    'totalAuditResult' => 0,
+                ]
+            ];
+
+            // Reference the last item in the $kriteria array to update counts
+            $currentIndex = count($kriteria) - 1;
+
+            foreach ($instrument->questions as $question) {
+                $auditResult = $program->auditResults->firstWhere('question_id', $question->id);
+                $noncomplianceResult = $program->noncomplianceResults->firstWhere('question_id', $question->id);
+
+                if ($auditResult?->compliance == 'Sesuai') {
+                    $kriteria[$currentIndex]['count']['kesesuaian']++;
+                    $kriteria[$currentIndex]['count']['totalAuditResult']++;
+                }
+
+                if ($auditResult?->compliance == 'Tidak Sesuai') {
+                    $kriteria[$currentIndex]['count']['ketidaksesuaian']++;
+                    $kriteria[$currentIndex]['count']['totalAuditResult']++;
+                }
+
+                if ($noncomplianceResult?->category == 'OBS') {
+                    $kriteria[$currentIndex]['count']['obs']++;
+                }
+
+                if ($noncomplianceResult?->category == 'KTS') {
+                    $kriteria[$currentIndex]['count']['kts']++;
+                }
+            }
+
+            // Calculate the total questions for compliance rate calculation
+            $totalQuestions += $kriteria[$currentIndex]['count']['kesesuaian'] + $kriteria[$currentIndex]['count']['ketidaksesuaian'];
+            $totalKesesuaian += $kriteria[$currentIndex]['count']['kesesuaian'];
+
+            // Calculate compliance percentage for each instrument
+            $totalInstrumentQuestions = $kriteria[$currentIndex]['count']['kesesuaian'] + $kriteria[$currentIndex]['count']['ketidaksesuaian'];
+            $kriteria[$currentIndex]['compliance_percentage'] = $totalInstrumentQuestions > 0
+                ? number_format(($kriteria[$currentIndex]['count']['kesesuaian'] / $totalInstrumentQuestions) * 100, 1)
+                : 0;
+        }
+
+        // Determine the criterion with the lowest compliance percentage
+        $lowestCompliance = collect($kriteria)->sortBy('compliance_percentage')->first();
+
+        // Calculate the average compliance percentage
+        $averageCompliance = $totalQuestions > 0
+            ? number_format(($totalKesesuaian / $totalQuestions) * 100, 1)
+            : 0;
+
+        $bab3Part2 = Pdf::loadView('pdf.bab-3-part-2', compact('periode', 'program', 'kriteria', 'lowestCompliance', 'averageCompliance'))
             ->setPaper('a4', 'portrait')
             ->output();
         $pdfMerger->addString($bab3Part1);
