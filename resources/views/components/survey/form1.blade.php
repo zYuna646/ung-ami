@@ -142,6 +142,7 @@
 											    ],
 											]"
 											:inputClass="$errors->has($availabilityFieldName) ? 'border-red-700' : ''"
+											required
 										/>
 										@error($availabilityFieldName)
 											<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
@@ -154,6 +155,7 @@
 												:inputClass="$errors->has($evidenceFieldName) ? 'border-red-700' : ''"
 												:value="old($evidenceFieldName) ?? $question->response->evidence"
 												:disabled="auth()->user()->isAuditor()"
+												x-bind:required="availability === 'Tersedia'"
 											/>
 											@error($evidenceFieldName)
 												<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
@@ -166,6 +168,7 @@
 											:inputClass="$errors->has($notesFieldName) ? 'border-red-700' : ''"
 											:value="old($notesFieldName) ?? $question->response->notes"
 											:disabled="auth()->user()->isAuditor()"
+											required
 										/>
 										@if (filter_var($question->response->notes, FILTER_VALIDATE_URL))
 											<a

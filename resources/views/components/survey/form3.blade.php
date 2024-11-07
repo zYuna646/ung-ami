@@ -9,13 +9,23 @@
 			<x-main.card class="mb-5">
 				<ul class="flex flex-wrap">
 					<li class="me-2">
-						<a href="#" @click.prevent="tab = 'table'" :class="tab === 'table' ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600'" class="inline-block rounded-t-lg p-4 pt-0">
+						<a
+							href="#"
+							@click.prevent="tab = 'table'"
+							:class="tab === 'table' ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600'"
+							class="inline-block rounded-t-lg p-4 pt-0"
+						>
 							Tabel
 						</a>
 					</li>
 					@if (auth()->user()->isAuditor())
 						<li class="me-2">
-							<a href="#" @click.prevent="tab = 'form'" :class="tab === 'form' ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600'" class="inline-block rounded-t-lg p-4 pt-0">
+							<a
+								href="#"
+								@click.prevent="tab = 'form'"
+								:class="tab === 'form' ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600'"
+								class="inline-block rounded-t-lg p-4 pt-0"
+							>
 								Form
 							</a>
 						</li>
@@ -62,14 +72,26 @@
 							<div class="grid grid-cols-2 gap-3">
 								<div>
 									{{-- Deskripsi Hasil Audit --}}
-									<x-form.textarea name="description[{{ $question->id }}]" placeholder="Deskripsi Hasil Audit" :inputClass="$errors->has($descriptionFieldName) ? 'border-red-700' : ''" :value="old($descriptionFieldName) ?? $question->response->description" />
+									<x-form.textarea
+										name="description[{{ $question->id }}]"
+										placeholder="Deskripsi Hasil Audit"
+										:inputClass="$errors->has($descriptionFieldName) ? 'border-red-700' : ''"
+										:value="old($descriptionFieldName) ?? $question->response->description"
+										required
+									/>
 									@error($descriptionFieldName)
 										<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
 									@enderror
 								</div>
 								<div>
 									{{-- Faktor Pendukung Keberhasilan --}}
-									<x-form.textarea name="success_factors[{{ $question->id }}]" placeholder="Faktor Pendukung Keberhasilan" :inputClass="$errors->has($descriptionFieldName) ? 'border-red-700' : ''" :value="old($successFactorsFieldName) ?? $question->response->success_factors" />
+									<x-form.textarea
+										name="success_factors[{{ $question->id }}]"
+										placeholder="Faktor Pendukung Keberhasilan"
+										:inputClass="$errors->has($descriptionFieldName) ? 'border-red-700' : ''"
+										:value="old($successFactorsFieldName) ?? $question->response->success_factors"
+										required
+									/>
 									@error($successFactorsFieldName)
 										<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
 									@enderror

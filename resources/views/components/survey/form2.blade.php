@@ -9,13 +9,23 @@
 			<x-main.card class="mb-5">
 				<ul class="flex flex-wrap">
 					<li class="me-2">
-						<a href="#" @click.prevent="tab = 'table'" :class="tab === 'table' ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600'" class="inline-block rounded-t-lg p-4 pt-0">
+						<a
+							href="#"
+							@click.prevent="tab = 'table'"
+							:class="tab === 'table' ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600'"
+							class="inline-block rounded-t-lg p-4 pt-0"
+						>
 							Tabel
 						</a>
 					</li>
 					@if (auth()->user()->isAuditor())
 						<li class="me-2">
-							<a href="#" @click.prevent="tab = 'form'" :class="tab === 'form' ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600'" class="inline-block rounded-t-lg p-4 pt-0">
+							<a
+								href="#"
+								@click.prevent="tab = 'form'"
+								:class="tab === 'form' ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600'"
+								class="inline-block rounded-t-lg p-4 pt-0"
+							>
 								Form
 							</a>
 						</li>
@@ -76,19 +86,27 @@
 												</thead>
 												<tbody>
 													<tr>
-														<td class="border px-4 py-2 align-top text-center">
+														<td class="border px-4 py-2 text-center align-top">
 															{{ $question->response->availability ?? 'Belum Diisi' }}
 														</td>
-														<td class="border px-4 py-2 align-top text-center">
+														<td class="border px-4 py-2 text-center align-top">
 															@if (filter_var($question->response->notes, FILTER_VALIDATE_URL))
-																<a class="text-blue-500 underline" href="{{ $question->response->notes }}" target="_blank">Tautan</a>
+																<a
+																	class="text-blue-500 underline"
+																	href="{{ $question->response->notes }}"
+																	target="_blank"
+																>Tautan</a>
 															@else
 																{{ $question->response->notes ?? 'Tidak ada catatan' }}
 															@endif
 														</td>
-														<td class="border px-4 py-2 align-top text-center">
+														<td class="border px-4 py-2 text-center align-top">
 															@if (filter_var($question->response->evidence, FILTER_VALIDATE_URL))
-																<a class="text-blue-500 underline" href="{{ $question->response->evidence }}" target="_blank">Tautan</a>
+																<a
+																	class="text-blue-500 underline"
+																	href="{{ $question->response->evidence }}"
+																	target="_blank"
+																>Tautan</a>
 															@else
 																-
 															@endif
@@ -107,26 +125,52 @@
 										$complianceFieldName = "compliance.{$question->id}";
 									@endphp
 
-									<x-form.textarea name="description[{{ $question->id }}]" placeholder="Deskripsi Hasil Audit" :inputClass="$errors->has($descriptionFieldName) ? 'border-red-700' : ''" :value="old($descriptionFieldName) ?? $question->response->description" />
+									<x-form.textarea
+										name="description[{{ $question->id }}]"
+										placeholder="Deskripsi Hasil Audit"
+										:inputClass="$errors->has($descriptionFieldName) ? 'border-red-700' : ''"
+										:value="old($descriptionFieldName) ?? $question->response->description"
+										required
+									/>
 									@error($descriptionFieldName)
 										<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
 									@enderror
 
 									<div class="grid grid-cols-3 gap-3">
 										<div>
-											<x-form.input name="amount_target[{{ $question->id }}]" placeholder="Jumlah Target" :inputClass="$errors->has($amountTargetFieldName) ? 'border-red-700' : ''" :value="old($amountTargetFieldName) ?? $question->response->amount_target" />
+											<x-form.input
+												name="amount_target[{{ $question->id }}]"
+												placeholder="Jumlah Target"
+												:inputClass="$errors->has($amountTargetFieldName) ? 'border-red-700' : ''"
+												:value="old($amountTargetFieldName) ?? $question->response->amount_target"
+												required
+											/>
 											@error($amountTargetFieldName)
 												<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
 											@enderror
 										</div>
 										<div>
-											<x-form.select name="existence[{{ $question->id }}]" placeholder="Pilih Keberadaan" :value="old($existenceFieldName) ?? $question->response->existence" :options="[(object) ['label' => 'Ada', 'value' => 'Ada'], (object) ['label' => 'Tidak Ada', 'value' => 'Tidak Ada']]" :inputClass="$errors->has($existenceFieldName) ? 'border-red-700' : ''" />
+											<x-form.select
+												name="existence[{{ $question->id }}]"
+												placeholder="Pilih Keberadaan"
+												:value="old($existenceFieldName) ?? $question->response->existence"
+												:options="[(object) ['label' => 'Ada', 'value' => 'Ada'], (object) ['label' => 'Tidak Ada', 'value' => 'Tidak Ada']]"
+												:inputClass="$errors->has($existenceFieldName) ? 'border-red-700' : ''"
+												required
+											/>
 											@error($existenceFieldName)
 												<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
 											@enderror
 										</div>
 										<div>
-											<x-form.select name="compliance[{{ $question->id }}]" placeholder="Pilih Kesesuaian Standar" :value="old($complianceFieldName) ?? $question->response->compliance" :options="[(object) ['label' => 'Sesuai', 'value' => 'Sesuai'], (object) ['label' => 'Tidak Sesuai', 'value' => 'Tidak Sesuai']]" :inputClass="$errors->has($complianceFieldName) ? 'border-red-700' : ''" />
+											<x-form.select
+												name="compliance[{{ $question->id }}]"
+												placeholder="Pilih Kesesuaian Standar"
+												:value="old($complianceFieldName) ?? $question->response->compliance"
+												:options="[(object) ['label' => 'Sesuai', 'value' => 'Sesuai'], (object) ['label' => 'Tidak Sesuai', 'value' => 'Tidak Sesuai']]"
+												:inputClass="$errors->has($complianceFieldName) ? 'border-red-700' : ''"
+												required
+											/>
 											@error($complianceFieldName)
 												<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
 											@enderror

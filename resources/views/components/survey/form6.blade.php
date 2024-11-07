@@ -8,13 +8,23 @@
 			<x-main.card class="mb-5">
 				<ul class="flex flex-wrap">
 					<li class="me-2">
-						<a href="#" @click.prevent="tab = 'table'" :class="tab === 'table' ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600'" class="inline-block rounded-t-lg p-4 pt-0">
+						<a
+							href="#"
+							@click.prevent="tab = 'table'"
+							:class="tab === 'table' ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600'"
+							class="inline-block rounded-t-lg p-4 pt-0"
+						>
 							Tabel
 						</a>
 					</li>
 					@if (auth()->user()->isAuditor())
 						<li class="me-2">
-							<a href="#" @click.prevent="tab = 'form'" :class="tab === 'form' ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600'" class="inline-block rounded-t-lg p-4 pt-0">
+							<a
+								href="#"
+								@click.prevent="tab = 'form'"
+								:class="tab === 'form' ? 'border-b-2 border-color-primary-500 text-color-primary-500' : 'hover:border-gray-300 hover:text-gray-600'"
+								class="inline-block rounded-t-lg p-4 pt-0"
+							>
 								Form
 							</a>
 						</li>
@@ -69,14 +79,26 @@
 							<div class="grid grid-cols-2 gap-3">
 								<div>
 									{{-- Rekomendasi --}}
-									<x-form.textarea name="recommendations[{{ $question->id }}]" placeholder="Rekomendasi" :inputClass="$errors->has($recommendationsFieldName) ? 'border-red-700' : ''" :value="old($recommendationsFieldName) ?? $question->response->recommendations" />
+									<x-form.textarea
+										required
+										name="recommendations[{{ $question->id }}]"
+										placeholder="Rekomendasi"
+										:inputClass="$errors->has($recommendationsFieldName) ? 'border-red-700' : ''"
+										:value="old($recommendationsFieldName) ?? $question->response->recommendations"
+									/>
 									@error($recommendationsFieldName)
 										<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
 									@enderror
 								</div>
 								<div>
 									{{-- Rencana Peningkatan --}}
-									<x-form.textarea name="improvement_plan[{{ $question->id }}]" placeholder="Rencana Peningkatan" :inputClass="$errors->has($improvementPlanFieldName) ? 'border-red-700' : ''" :value="old($improvementPlanFieldName) ?? $question->response->improvement_plan" />
+									<x-form.textarea
+										required
+										name="improvement_plan[{{ $question->id }}]"
+										placeholder="Rencana Peningkatan"
+										:inputClass="$errors->has($improvementPlanFieldName) ? 'border-red-700' : ''"
+										:value="old($improvementPlanFieldName) ?? $question->response->improvement_plan"
+									/>
 									@error($improvementPlanFieldName)
 										<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
 									@enderror
@@ -85,14 +107,26 @@
 							<div class="grid grid-cols-2 gap-3">
 								<div>
 									{{-- Jadwal Penyelesaian --}}
-									<x-form.textarea name="completion_schedule[{{ $question->id }}]" placeholder="Jadwal Penyelesaian" :inputClass="$errors->has($completionScheduleFieldName) ? 'border-red-700' : ''" :value="old($completionScheduleFieldName) ?? $question->response->completion_schedule" />
+									<x-form.textarea
+										required
+										name="completion_schedule[{{ $question->id }}]"
+										placeholder="Jadwal Penyelesaian"
+										:inputClass="$errors->has($completionScheduleFieldName) ? 'border-red-700' : ''"
+										:value="old($completionScheduleFieldName) ?? $question->response->completion_schedule"
+									/>
 									@error($completionScheduleFieldName)
 										<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
 									@enderror
 								</div>
 								<div>
 									{{-- Pihak yang Bertanggungjawab --}}
-									<x-form.textarea name="responsible_party[{{ $question->id }}]" placeholder="Pihak yang Bertanggungjawab" :inputClass="$errors->has($responsiblePartyFieldName) ? 'border-red-700' : ''" :value="old($responsiblePartyFieldName) ?? $question->response->responsible_party" />
+									<x-form.textarea
+										required
+										name="responsible_party[{{ $question->id }}]"
+										placeholder="Pihak yang Bertanggungjawab"
+										:inputClass="$errors->has($responsiblePartyFieldName) ? 'border-red-700' : ''"
+										:value="old($responsiblePartyFieldName) ?? $question->response->responsible_party"
+									/>
 									@error($responsiblePartyFieldName)
 										<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
 									@enderror
