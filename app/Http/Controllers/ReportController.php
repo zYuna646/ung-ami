@@ -49,6 +49,7 @@ class ReportController extends Controller
             $program->auditReports()->attach($periode->id, [
                 'meeting_report' => basename($request->file('meeting_report')->store('public/audits')),
                 'activity_evidences' => json_encode($fileNames), // Save as JSON
+                'saran' => $request->saran
             ]);
 
             return redirect()->back()->with('success', 'File berhasil diunggah.');
@@ -169,7 +170,69 @@ class ReportController extends Controller
     public function bab5(Periode $periode, Program $program)
     {
         $instruments = $program->instruments()->where('periode_id', $periode->id)->get();
-        $pdf = Pdf::loadView('pdf.bab-5', compact('periode', 'program', 'instruments'))->setPaper('a4', 'portrait');
+
+        $kriteria = [];
+        $totalKesesuaian = 0;
+        $totalQuestions = 0;
+
+        foreach ($instruments as $instrument) {
+            $kriteria[] = [
+                'name' => $instrument->name,
+                'count' => [
+                    'kesesuaian' => 0,
+                    'ketidaksesuaian' => 0,
+                    'obs' => 0,
+                    'kts' => 0,
+                    'totalAuditResult' => 0,
+                ]
+            ];
+
+            // Reference the last item in the $kriteria array to update counts
+            $currentIndex = count($kriteria) - 1;
+
+            foreach ($instrument->questions as $question) {
+                $auditResult = $program->auditResults->firstWhere('question_id', $question->id);
+                $noncomplianceResult = $program->noncomplianceResults->firstWhere('question_id', $question->id);
+
+                if ($auditResult?->compliance == 'Sesuai') {
+                    $kriteria[$currentIndex]['count']['kesesuaian']++;
+                    $kriteria[$currentIndex]['count']['totalAuditResult']++;
+                }
+
+                if ($auditResult?->compliance == 'Tidak Sesuai') {
+                    $kriteria[$currentIndex]['count']['ketidaksesuaian']++;
+                    $kriteria[$currentIndex]['count']['totalAuditResult']++;
+                }
+
+                if ($noncomplianceResult?->category == 'OBS') {
+                    $kriteria[$currentIndex]['count']['obs']++;
+                }
+
+                if ($noncomplianceResult?->category == 'KTS') {
+                    $kriteria[$currentIndex]['count']['kts']++;
+                }
+            }
+
+            // Calculate the total questions for compliance rate calculation
+            $totalQuestions += $kriteria[$currentIndex]['count']['kesesuaian'] + $kriteria[$currentIndex]['count']['ketidaksesuaian'];
+            $totalKesesuaian += $kriteria[$currentIndex]['count']['kesesuaian'];
+
+            // Calculate compliance percentage for each instrument
+            $totalInstrumentQuestions = $kriteria[$currentIndex]['count']['kesesuaian'] + $kriteria[$currentIndex]['count']['ketidaksesuaian'];
+            $kriteria[$currentIndex]['compliance_percentage'] = $totalInstrumentQuestions > 0
+                ? number_format(($kriteria[$currentIndex]['count']['kesesuaian'] / $totalInstrumentQuestions) * 100, 1)
+                : 0;
+        }
+
+        // Determine the criterion with the lowest compliance percentage
+        $lowestCompliance = collect($kriteria)->sortBy('compliance_percentage')->first();
+
+        // Calculate the average compliance percentage
+        $averageCompliance = $totalQuestions > 0
+            ? number_format(($totalKesesuaian / $totalQuestions) * 100, 1)
+            : 0;
+
+        $pdf = Pdf::loadView('pdf.bab-5', compact(['periode', 'program', 'instruments', 'kriteria', 'lowestCompliance', 'averageCompliance']))->setPaper('a4', 'portrait');
 
         return $pdf->stream('BAB V - Laporan AMI ' . $program->program_name  . ' Tahun ' . $periode->year . '.pdf');
     }
@@ -274,7 +337,7 @@ class ReportController extends Controller
             ->output();
         $pdfMerger->addString($bab4);
 
-        $bab5 = Pdf::loadView('pdf.bab-5', compact('periode', 'program'))
+        $bab5 = Pdf::loadView('pdf.bab-5', compact(['periode', 'program', 'kriteria', 'lowestCompliance', 'averageCompliance']))
             ->setPaper('a4', 'portrait')
             ->output();
         $pdfMerger->addString($bab5);
