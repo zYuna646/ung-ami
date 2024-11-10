@@ -26,6 +26,10 @@
 								</p>
 							</div>
 							<div class="flex basis-1/2 items-start justify-end gap-3">
+								<x-button :href="asset('files/template.docx')" color="info" size="sm">
+									Berita Acara
+									<i class="fa-solid fa-download ms-2"></i>
+								</x-button>
 								@if (auth()->user()->isAuditor())
 									<div x-data="{ addFilesModal: false }">
 										<x-button @click="addFilesModal = true" color="info" size="sm">
