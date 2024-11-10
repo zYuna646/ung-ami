@@ -95,6 +95,12 @@
 									<div x-cloak x-show="open" @click.away="open = false" class="absolute right-0 z-10 mt-2 w-32 rounded-md bg-white shadow-lg">
 										<ul class="py-1">
 											<li>
+												<a href="{{ route('report.cover', [$periode->uuid, $program->uuid]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+													COVER
+													<i class="fa-solid fa-download float-end ms-2"></i>
+												</a>
+											</li>
+											<li>
 												<a href="{{ route('report.bab1', [$periode->uuid, $program->uuid]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
 													BAB I
 													<i class="fa-solid fa-download float-end ms-2"></i>

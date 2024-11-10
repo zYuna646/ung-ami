@@ -60,6 +60,14 @@ class ReportController extends Controller
         }
     }
 
+    public function cover(Periode $periode, Program $program)
+    {
+        $instruments = $program->instruments()->where('periode_id', $periode->id)->get();
+        $pdf = Pdf::loadView('pdf.cover', compact(['periode', 'program', 'instruments']))->setPaper('a4', 'portrait');
+
+        return $pdf->stream('COVER - Laporan AMI ' . $program->program_name  . ' Tahun ' . $periode->year . '.pdf');
+    }
+
     public function bab1(Periode $periode, Program $program)
     {
         $instruments = $program->instruments()->where('periode_id', $periode->id)->get();
@@ -250,6 +258,11 @@ class ReportController extends Controller
         $instruments = $program->instruments()->where('periode_id', $periode->id)->get();
 
         $pdfMerger = PDFMerger::init();
+
+        $cover = Pdf::loadView('pdf.cover', compact('periode', 'program'))
+            ->setPaper('a4', 'portrait')
+            ->output();
+        $pdfMerger->addString($cover);        
 
         $bab1 = Pdf::loadView('pdf.bab-1', compact('periode', 'program'))
             ->setPaper('a4', 'portrait')
