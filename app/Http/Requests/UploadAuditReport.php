@@ -14,6 +14,7 @@ class UploadAuditReport extends FormRequest
     public function rules(): array
     {
         return [
+            'saran' => 'required',
             'meeting_report' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'activity_evidences' => 'required|array',
             'activity_evidences.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -23,6 +24,8 @@ class UploadAuditReport extends FormRequest
     public function messages(): array
     {
         return [
+            'saran.required' => 'Saran wajib diisi.',
+
             'meeting_report.required' => 'Berita Acara wajib diunggah.',
             'meeting_report.image' => 'Berita Acara harus berupa file gambar.',
             'meeting_report.mimes' => 'Berita Acara harus berformat jpeg, png, jpg, gif, atau svg.',

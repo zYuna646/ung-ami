@@ -89,6 +89,6 @@ class Program extends Model
 
     public function auditReports()
     {
-        return $this->belongsToMany(Periode::class, 'audit_reports')->withPivot('meeting_report', 'activity_evidences');
+        return $this->belongsToMany(Periode::class, 'audit_reports')->withPivot('meeting_report', 'activity_evidences', 'saran');
     }
 }

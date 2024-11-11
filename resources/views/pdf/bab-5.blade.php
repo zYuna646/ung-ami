@@ -109,15 +109,26 @@
 		<h6 class="heading-2">5.1. KESIMPULAN</h6>
 		<p class="paragraf">
 			Berdasarkan data yang diperoleh saat melakukan audit, pada umumnya semua
-			kriteria pada prodi Agrotek sudah memperoleh skor persentase rata-rata sebesar 91,17%
-			atau berada pada kriteia sangat memuaskan. Walaupun demikian, pada kriteria
-			pendidikan terdapat 1 bagian yang masih berstatus ketidaksesuaian (KTS) yaitu pada
-			ketersedian RPS matakuliah, dimana baru tersedia 60 RPS dari total 67 matakuliah atau
-			baru tersedia sebesar 89,55%
+			kriteria pada prodi {{ $program->program_name }} sudah memperoleh skor persentase rata-rata sebesar {{ $averageCompliance }}%
+			atau berada pada kriteia yang {{ $averageCompliance > 50 ? 'sangat memuaskan' : 'perlu ditingkatkan' }}. Dengan persentase terendah yaitu kriteria {{ $lowestCompliance['name'] }} sebesar {{ $lowestCompliance['compliance_percentage'] }}%.
+			Selain itu, Berdasarkan jenis ketidaksesuaian, 
+			@foreach ($kriteria as $item)
+				<span>{{ $item['name'] }} memiliki ketidaksesuaian dengan kategori OBS sebanyak {{ $item['count']['obs'] }} dan kategori KTS sebanyak {{ $item['count']['kts'] }}.</span> 
+			@endforeach
 		</p>
 
 		<h6 class="heading-2">5.2. SARAN</h6>
-		<p class="paragraf">
+		@php
+			$auditReport = $program
+					->auditReports()
+					->where('periode_id', $periode->id)
+					->get()
+					->last();
+		@endphp
+		<div class="paragraf">
+			{!! $auditReport?->pivot?->saran !!}
+		</div>
+		{{-- <p class="paragraf">
 			Melalui kesempatan ini, tim auditor menyarankan beberapa masukan, antara lain:
 		</p>
 		<ol class="number-list">
@@ -125,7 +136,7 @@
 			<li>Ketercapaian yang sudah diraih harap lebih ditingkatkan lagi pada tahun-tahun berikutnya</li>
 			<li>Ketersedian dana penunjang kegiatan, kiranya dapat ditingkatkan dengan melakukan kerjasama dengan instansi/lembaga yang ada baik local, nasional maupun ineternasional</li>
 			<li>Mendorong DTPS untuk membuat RPS, agar semua matakuliah memiliki RPS sebagai pedoman dalam melaksanakan perkuliahan.</li>
-		</ol>
+		</ol> --}}
 
 	</body>
 

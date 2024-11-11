@@ -1,6 +1,11 @@
 @extends('layouts.app', [
     'title' => 'Laporan',
 ])
+@push('styles')
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+	<link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.js"></script>
+@endpush
 @section('content')
 	<section class="mx-auto grid w-full max-w-screen-xl gap-5 p-5 pt-7">
 		<div class="flex flex-col justify-between gap-5 lg:flex-row">
@@ -21,6 +26,10 @@
 								</p>
 							</div>
 							<div class="flex basis-1/2 items-start justify-end gap-3">
+								<x-button :href="asset('files/template.docx')" color="info" size="sm">
+									Berita Acara
+									<i class="fa-solid fa-download ms-2"></i>
+								</x-button>
 								@if (auth()->user()->isAuditor())
 									<div x-data="{ addFilesModal: false }">
 										<x-button @click="addFilesModal = true" color="info" size="sm">
@@ -28,7 +37,7 @@
 											<i class="fa-solid fa-upload ms-2"></i>
 										</x-button>
 										<div x-cloak x-show="addFilesModal" class="fixed left-0 right-0 top-0 z-50 flex h-full w-full items-center justify-center bg-black/50">
-											<div class="relative w-full max-w-2xl rounded-lg bg-white p-6 shadow-lg">
+											<div class="relative w-full max-w-2xl rounded-lg bg-white p-6 shadow-lg max-h-[90%] overflow-y-auto">
 												<div class="flex items-center justify-between border-b pb-4">
 													<h3 class="text-lg font-bold">Unggah</h3>
 													<button type="button" @click="addFilesModal = false" class="text-gray-400 hover:text-gray-900">
@@ -45,9 +54,14 @@
 															    ->where('periode_id', $periode->id)
 															    ->get()
 															    ->last();
-
 															$evidences = json_decode($auditReport?->pivot?->activity_evidences);
 														@endphp
+														<div>
+															<label for="saran-{{ $periode->uuid }}" class="mb-2 block text-sm font-medium text-gray-900">
+																Saran
+															</label>
+															<textarea id="saran-{{ $periode->uuid }}" name="saran">{{ $auditReport?->pivot?->saran }}</textarea>
+														</div>
 														<x-form.input type="file" name="meeting_report" label="Unggah Berita Acara" />
 														<div>
 															@isset($auditReport->pivot->meeting_report)
@@ -84,6 +98,12 @@
 
 									<div x-cloak x-show="open" @click.away="open = false" class="absolute right-0 z-10 mt-2 w-32 rounded-md bg-white shadow-lg">
 										<ul class="py-1">
+											<li>
+												<a href="{{ route('report.cover', [$periode->uuid, $program->uuid]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+													COVER
+													<i class="fa-solid fa-download float-end ms-2"></i>
+												</a>
+											</li>
 											<li>
 												<a href="{{ route('report.bab1', [$periode->uuid, $program->uuid]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
 													BAB I
@@ -154,3 +174,12 @@
 		</div>
 	</section>
 @endsection
+@push('scripts')
+	@foreach ($programPeriodes as $periode)
+		<script>
+			$(document).ready(function() {
+				$("#saran-{{ $periode->uuid }}").summernote();
+			});
+		</script>
+	@endforeach
+@endpush
