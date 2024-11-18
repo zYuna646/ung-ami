@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GenerateBeritaAcaraRequest;
 use App\Http\Requests\UploadAuditReport;
 use App\Models\Periode;
 use App\Models\Program;
@@ -53,6 +54,21 @@ class ReportController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'File berhasil diunggah.');
+        } catch (\Exception $e) {
+            logger()->error($e->getMessage());
+
+            return back()->withErrors(['error' => 'Terjadi kesalahan.']);
+        }
+    }
+
+    public function generate(GenerateBeritaAcaraRequest $request, Periode $periode, Program $program)
+    {
+        try {
+            $data = $request->validated();
+            $instruments = $program->instruments()->where('periode_id', $periode->id)->get();
+            $pdf = Pdf::loadView('pdf.berita-acara', compact(['periode', 'program', 'instruments', 'data']))->setPaper('a4', 'portrait');
+
+            return $pdf->download('Berita Acara - AMI UNG ' . $program->program_name  . ' Tahun ' . $periode->year . '.pdf');
         } catch (\Exception $e) {
             logger()->error($e->getMessage());
 
@@ -262,7 +278,7 @@ class ReportController extends Controller
         $cover = Pdf::loadView('pdf.cover', compact('periode', 'program'))
             ->setPaper('a4', 'portrait')
             ->output();
-        $pdfMerger->addString($cover);        
+        $pdfMerger->addString($cover);
 
         $bab1 = Pdf::loadView('pdf.bab-1', compact('periode', 'program'))
             ->setPaper('a4', 'portrait')

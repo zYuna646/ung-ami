@@ -48,6 +48,7 @@ Route::get('/survey/{instrument}/report', [SurveyController::class, 'showReport'
 // Route::get('/survey/{instrument}/report/download', [SurveyController::class, 'downloadReport'])->name('survey.report.download');
 Route::get('/report', [ReportController::class, 'index'])->name('report.index');
 Route::post('/report/upload/{periode}/{program}', [ReportController::class, 'upload'])->name('report.upload');
+Route::post('/report/generate/{periode}/{program}', [ReportController::class, 'generate'])->name('report.generate');
 Route::get('/report/cover/{periode}/{program}', [ReportController::class, 'cover'])->name('report.cover');
 Route::get('/report/bab1/{periode}/{program}', [ReportController::class, 'bab1'])->name('report.bab1');
 Route::get('/report/bab2/{periode}/{program}', [ReportController::class, 'bab2'])->name('report.bab2');
