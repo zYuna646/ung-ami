@@ -26,10 +26,38 @@
 								</p>
 							</div>
 							<div class="flex basis-1/2 items-start justify-end gap-3">
-								<x-button :href="asset('files/template.docx')" color="info" size="sm">
+								{{-- <x-button :href="asset('files/template.docx')" color="info" size="sm">
 									Berita Acara
 									<i class="fa-solid fa-download ms-2"></i>
-								</x-button>
+								</x-button> --}}
+								<div x-data="{ generateBeritaAcaraModal: false }">
+									<x-button @click="generateBeritaAcaraModal = true" color="info" size="sm">
+										Berita Acara
+										<i class="fa-solid fa-upload ms-2"></i>
+									</x-button>
+									<div x-cloak x-show="generateBeritaAcaraModal" class="fixed left-0 right-0 top-0 z-50 flex h-full w-full items-center justify-center bg-black/50">
+										<div class="relative w-full max-w-2xl rounded-lg bg-white p-6 shadow-lg max-h-[90%] overflow-y-auto">
+											<div class="flex items-center justify-between border-b pb-4">
+												<h3 class="text-lg font-bold">Generate Berita Acara</h3>
+												<button type="button" @click="generateBeritaAcaraModal = false" class="text-gray-400 hover:text-gray-900">
+													<i class="fas fa-times"></i>
+												</button>
+											</div>
+											<div class="p-4">
+												<form action="{{ route('report.generate', [$periode->uuid, $program->uuid]) }}" method="POST" class="flex flex-col gap-5" enctype="multipart/form-data">
+													@csrf
+													<input type="hidden" name="periode_id" value="{{ $periode->id }}">
+													<x-form.input type="date" name="berita_acara_date" label="Tanggal Berita Acara" />
+													<x-form.input name="kaprodi_name" label="Nama Kaprodi" placeholder="Nama Kaprodi" />
+													<div class="flex justify-end gap-2">
+														<x-button @click="generateBeritaAcaraModal = false" color="default">Batal</x-button>
+														<x-button type="submit" color="info">Submit</x-button>
+													</div>
+												</form>
+											</div>
+										</div>
+									</div>
+								</div>
 								@if (auth()->user()->isAuditor())
 									<div x-data="{ addFilesModal: false }">
 										<x-button @click="addFilesModal = true" color="info" size="sm">
