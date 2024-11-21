@@ -37,12 +37,12 @@ class Periode extends Model
 
     public function getFormattedStartDateAttribute(): string
     {
-        return Carbon::parse($this->start_date)->translatedFormat('j F Y');
+        return Carbon::parse($this->start_date)->locale('id')->translatedFormat('j F Y');
     }
 
     public function getFormattedEndDateAttribute(): string
     {
-        return Carbon::parse($this->end_date)->translatedFormat('j F Y');
+        return Carbon::parse($this->end_date)->locale('id')->translatedFormat('j F Y');
     }
 
     public function standard()
