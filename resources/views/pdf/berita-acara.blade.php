@@ -117,7 +117,10 @@
 					<p>Jalan Jendral Sudirman No.6 Kota Gorontalo, Telp: 0435-821698</p>
 				</td>
 				<td class="kop-no-doc" style="width: 20%;">
-					<strong>NO. DOKUMEN:</strong>
+					<strong>
+						NO. DOKUMEN: <br>
+						{{ $periode->code }}
+					</strong>
 				</td>
 			</tr>
 			<tr>
@@ -145,75 +148,92 @@
 			DAFTAR HADIR <br>
 			PELAKSANAAN AUDIT MUTU INTERNAL
 		</h5>
-		@foreach ($instruments as $instrument)
-			<table class="audit-detail">
-				<tr>
-					<th>Standar</th>
-					<td>: {{ $instrument->name }}</td>
-				</tr>
-				<tr>
-					<th>Area Audit</th>
-					<td>: {{ $instrument->units->pluck('unit_name')->implode(', ') }}</td>
-				</tr>
-				<tr>
-					<th>Tipe Audit</th>
-					<td>: {{ $periode->tipe }}</td>
-				</tr>
-				<tr>
-					<th>Tanggal Audit</th>
-					<td>: {{ \Carbon\Carbon::parse($data['berita_acara_date'])->translatedFormat('d F Y') }}</td>
-				</tr>
-				<tr>
-					<th>Tempat Audit</th>
-					<td>: Kantor Ketua Program Studi {{ $program->program_name }}, Fakultas {{ $program->department->faculty->faculty_name }}, Universitas Negeri Gorontalo</td>
-				</tr>
-			</table>
-			<table class="daftar-hadir">
-				<thead>
-					<tr>
-						<th>Identitas</th>
-						<th>Nama</th>
-						<th>Tanda Tangan</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>Pelaksana Standar</td>
-						<td>Koordinator Program Studi {{ $program->program_name }} / {{ $data['kaprodi_name'] }}</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>Ketua Tim Auditor</td>
-						<td>{{ $instrument->entityTeam($program->user->entityId(), $program->user->entityType())->chief->user->name ?? '-' }}</td>
-						<td></td>
-					</tr>
-					@php
-						$members = $instrument->entityTeam($program->user->entityId(), $program->user->entityType())->members ?? [];
-					@endphp
-					<tr>
-						<td rowspan="{{ count($members) ?: 1 }}">Anggota Tim Auditor</td>
-						@if (count($members) > 0)
-							@foreach ($members as $index => $member)
-								@if ($index == 0)
-									<td>{{ $member->user->name }}</td>
-									<td></td>
-								@else
-					</tr>
-					<tr>
-						<td>{{ $member->user->name }}</td>
-						<td></td>
-		@endif
-		@endforeach
-	@else
-		<td>-</td>
-		<td></td>
-		@endif
-		</tr>
-
-		</tbody>
+		<table class="audit-detail">
+			<tr>
+				<th>Standar</th>
+				<td>:</td>
+				<td>
+					{{ implode(', ', $instruments->pluck('name')->toArray()) }}
+				</td>
+			</tr>
+			<tr>
+				<th>Area Audit</th>
+				<td>:</td>
+				<td>
+					{{ $instruments->flatMap(function ($instrument) {return $instrument->units->pluck('unit_name');})->unique()->implode(', ') }}
+				</td>
+			</tr>
+			<tr>
+				<th>Tanggal Audit</th>
+				<td>:</td>
+				<td>{{ \Carbon\Carbon::parse($data['berita_acara_date'])->translatedFormat('d F Y') }}</td>
+			</tr>
+			<tr>
+				<th>Tempat Audit</th>
+				<td>:</td>
+				<td>Kantor Ketua Program Studi {{ $program->program_name }}, Fakultas {{ $program->department->faculty->faculty_name }}, Universitas Negeri Gorontalo</td>
+			</tr>
 		</table>
-		<div class="page-break"></div>
-		@endforeach
-	</body>
+		<table class="daftar-hadir">
+			<thead>
+				<tr>
+					<th>Identitas</th>
+					<th>Nama</th>
+					<th>Tanda Tangan</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Pelaksana Standar</td>
+					<td>Koordinator Program Studi {{ $program->program_name }} / {{ $data['kaprodi_name'] }}</td>
+					<td></td>
+				</tr>
+
+				@php
+					$chiefs = $instruments->map(fn($instrument) => $instrument->entityTeam($program->user->entityId(), $program->user->entityType())->chief->user ?? null)->unique();
+					$members = $instruments->flatMap(fn($instrument) => $instrument->entityTeam($program->user->entityId(), $program->user->entityType())->members->pluck('user'))->unique();
+				@endphp
+
+				@if ($chiefs->isNotEmpty())
+					<tr>
+						<td rowspan="{{ $chiefs->count() }}">Ketua Tim Auditor</td>
+						@foreach ($chiefs as $index => $chief)
+							@if ($index == 0)
+								<td>{{ $chief->name ?? '-' }}</td>
+								<td></td>
+							@else
+					</tr>
+					<tr>
+						<td>{{ $chief->name ?? '-' }}</td>
+						<td></td>
+				@endif
+				@endforeach
+				</tr>
+				@endif
+
+				@if ($members->isNotEmpty())
+					<tr>
+						<td rowspan="{{ $members->count() }}">Anggota Tim Auditor</td>
+						@foreach ($members as $index => $member)
+							@if ($index == 0)
+								<td>{{ $member->name }}</td>
+								<td></td>
+							@else
+					</tr>
+					<tr>
+						<td>{{ $member->name }}</td>
+						<td></td>
+				@endif
+				@endforeach
+				</tr>
+			@else
+				<tr>
+					<td>Anggota Tim Auditor</td>
+					<td>-</td>
+					<td></td>
+				</tr>
+				@endif
+			</tbody>
+		</table>
 
 </html>
