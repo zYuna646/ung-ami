@@ -68,7 +68,7 @@ class ReportController extends Controller
             $instruments = $program->instruments()->where('periode_id', $periode->id)->get();
             $pdf = Pdf::loadView('pdf.berita-acara', compact(['periode', 'program', 'instruments', 'data']))->setPaper('a4', 'portrait');
 
-            return $pdf->download('Berita Acara - AMI UNG ' . $program->program_name  . ' Tahun ' . $periode->year . '.pdf');
+            return $pdf->stream('Berita Acara - AMI UNG ' . $program->program_name  . ' Tahun ' . $periode->year . '.pdf');
         } catch (\Exception $e) {
             logger()->error($e->getMessage());
 

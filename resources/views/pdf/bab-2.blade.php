@@ -112,10 +112,10 @@
 		</p>
 		<ol class="list" style="list-style-type: lower-alpha">
 			<li>Memastikan apakah temuan/rencana tindakan koreksi pada Siklus Audit tahun sebelumnya telah ditindaklanjuti.</li>
-			<li>Memastikan kesesuaian arah dan pelaksanaan penjaminan mutu Fakulktas Teknik terhadap Dokumen Akademik Universitas, Dokumen Akademik Pascasarjana dan Dokumen Mutu Fakultas Teknik</li>
-			<li>Memetakan kesiapan Fakultas Teknik dalam melaksanakan program Akreditasi/sertifikasi</li>
-			<li>Memastikan kelancaran pelaksanaan pengelolaan Fakultas Teknik</li>
-			<li>Memetakan peluang peningkatan mutu Fakultas Teknik</li>
+			<li>Memastikan kesesuaian arah dan pelaksanaan penjaminan mutu Fakultas {{ $program->department->faculty->faculty_name }} terhadap Dokumen Akademik Universitas, Dokumen Akademik Pascasarjana dan Dokumen Mutu Fakultas {{ $program->department->faculty->faculty_name }}</li>
+			<li>Memetakan kesiapan Fakultas {{ $program->department->faculty->faculty_name }} dalam melaksanakan program Akreditasi/sertifikasi</li>
+			<li>Memastikan kelancaran pelaksanaan pengelolaan Fakultas {{ $program->department->faculty->faculty_name }}</li>
+			<li>Memetakan peluang peningkatan mutu Fakultas {{ $program->department->faculty->faculty_name }}</li>
 		</ol>
 
 		<h6 class="heading-2">2.2. LINGKUP AUDIT</h6>
@@ -138,47 +138,60 @@
 		<p class="paragraf">
 			Pelaksanaan dilakukan dari tanggal {{ $periode->formatted_start_date }} sampai {{ $periode->formatted_end_date }}.
 		</p>
-		{{-- <table class="table">
+		<table class="table">
 			<thead>
 				<tr>
 					<th>No</th>
-					<th>Hari/Tanggal</th>
-					<th>Jam</th>
-					<th>Kegiatan Audit</th>
+					<th>Kegiatan</th>
+					<th>Pihak Yang Terlibat</th>
+					<th>Waktu Pelaksanaan</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td rowspan="3">1</td>
-					<td rowspan="3">Selasa, 24 Oktober 2023</td>
-					<td>09.00 - 09.30</td>
-					<td>Pembukaan & Pertemuan dengan Pimpinan UPPS dan Pimpinan Prodi</td>
+					<td>1</td>
+					<td>Sosialisasi Instrumen</td>
+					<td>LPMPP</td>
+					<td></td>
 				</tr>
 				<tr>
-					<td>09.30 - 10.30</td>
-					<td>Pertemuan dengan Ketua Prodi Pendidikan Teknik Mesin</td>
+					<td>2</td>
+					<td>Pengajuan Laporan Kinerja Prodi (Prodi Mengisi Instrumen AMI Secara Digital)</td>
+					<td>Prodi</td>
+					<td></td>
 				</tr>
 				<tr>
-					<td>10.31 - 11.31</td>
-					<td>Pertemuan dengan Ketua Prodi Vokasional Konstruksi Bangunan</td>
+					<td>3</td>
+					<td>Audit Dokumen</td>
+					<td>Auditor</td>
+					<td>{{ $periode->formatted_start_date }} - {{ $periode->formatted_end_date }}</td>
 				</tr>
 				<tr>
-					<td rowspan="3">2</td>
-					<td rowspan="3">Jumat, 27 Oktober 2023</td>
-					<td>12.01 - 13.01</td>
-					<td>Pembukaan</td>
+					<td>4</td>
+					<td>Audit Lapangan</td>
+					<td>Auditor, Auditie</td>
+					<td>{{ $periode->formatted_start_date }} - {{ $periode->formatted_end_date }}</td>
 				</tr>
 				<tr>
-					<td>13.15 - 14.00</td>
-					<td>Pertemuan dengan Kaprodi Ilmu Teknologi Pangan, Agribisnis, Agroteknologi, Peternakan</td>
+					<td>5</td>
+					<td>Menyusun Laporan Audit</td>
+					<td>Auditor</td>
+					<td></td>
 				</tr>
 				<tr>
-					<td>08.00 - 08.15</td>
-					<td>Temu Akhir/Penutupan</td>
+					<td>6</td>
+					<td>Rapat Tinjauan Manajemen (RTM)</td>
+					<td>Pimpinan, Penjamin Mutu, UPPS, Prodi</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>7</td>
+					<td>Menyusun Rencana Tindak Lanjut</td>
+					<td>UPPS, Prodi, Penjamin Mutu Fakultas dan Prodi</td>
+					<td></td>
 				</tr>
 			</tbody>
-		</table> --}}
-
+		</table>
 	</body>
 
 </html>
