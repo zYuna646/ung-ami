@@ -21,3 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/periodes', [ApiController::class, 'getPeriodes']);
 Route::get('/prodi', [ApiController::class, 'getProdi']);
+Route::get('/fakultas', [ApiController::class, 'getFakultas']);

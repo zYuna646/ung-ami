@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Faculty;
 use App\Models\Fakultas;
 use App\Models\Instrument;
 use App\Models\Periode;
@@ -65,4 +66,21 @@ class ApiController extends Controller
         }
     }
 
+    public function getFakultas()
+    {
+        try {
+            $fakultas = Faculty::with('prodi')->get();
+            return response()->json([
+                'success' => true,
+                'message' => 'Data fakultas berhasil diambil',
+                'data' => $fakultas
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
