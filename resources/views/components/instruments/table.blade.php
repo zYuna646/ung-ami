@@ -38,4 +38,5 @@
 			ordering: false
 		});
 	</script>
+	
 @endpush

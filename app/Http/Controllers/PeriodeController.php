@@ -7,6 +7,7 @@ use App\Http\Requests\UpdatePeriodeRequest;
 use App\Models\Auditor;
 use App\Models\MasterInstrument;
 use App\Models\Periode;
+use App\Models\Program;
 use App\Models\Standard;
 use App\Models\Team;
 use App\Models\Unit;
@@ -49,14 +50,26 @@ class PeriodeController extends Controller
         $units = Unit::get();
         $masterInstruments = MasterInstrument::get();
 
-        return view('pages.dashboard.master.periodes.show', compact('periode', 'units', 'masterInstruments'));
+        $programs = Program::all()->map(function ($program) {
+            return [
+                'program' => $program,
+                'ptp' => $program->PTPs->count(),
+                'kts' => $program->noncomplianceResults()->where('category', 'KTS')->count(),
+                'obs' => $program->noncomplianceResults()->where('category', 'OBS')->count(),
+                'score' => $program->PTPs->count() - $program->noncomplianceResults()->where('category', 'OBS')->count(),
+            ];
+        })->sortByDesc('score')->values(); // Mengurutkan berdasarkan (PTP - OBS) secara descending
+
+        return view('pages.dashboard.master.periodes.show', compact('periode', 'units', 'masterInstruments', 'programs'));
     }
 
+    
     public function edit(Periode $periode)
     {
         $standards = Standard::get();
         $auditors = Auditor::all();
         $teams = Team::get();
+
 
         return view('pages.dashboard.master.periodes.edit', compact('periode', 'standards', 'teams'));
     }

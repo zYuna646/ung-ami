@@ -22,6 +22,7 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('/login', [AuthController::class, 'login'])->name('auth.login');

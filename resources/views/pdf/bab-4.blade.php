@@ -98,8 +98,8 @@
 		@foreach ($instruments as $instrument)
 			<div class="kop">
 				<h5 class="heading-1">
-					PUSAT PENJAMINAN MUTU <br>
-					LEMBAGA PENGEMBANGAN PEMBELAJARAN DAN PENJAMINAN MUTU <br>
+					PUSAT PENGEMBANGAN STANDAR, AMI DAN MANAJEMEN RESIKO<br>
+					LEMBAGA PENJAMIN MUTU DAN PENGEMBANGAN PEMBELAJARAN <br>
 					UNIVERSITAS NEGERI GORONTALO <br>
 					Jln. Jend. Sudirman No. 6 Kota Gorontalo <br>
 					<a href="#">penjamu@ung.ac.id</a>
@@ -229,8 +229,8 @@
 		@foreach ($instruments as $instrument)
 			<div class="kop">
 				<h5 class="heading-1">
-					PUSAT PENJAMINAN MUTU <br>
-					LEMBAGA PENGEMBANGAN PEMBELAJARAN DAN PENJAMINAN MUTU <br>
+					PUSAT PENGEMBANGAN STANDAR, AMI DAN MANAJEMEN RESIKO<br>
+					LEMBAGA PENJAMIN MUTU DAN PENGEMBANGAN PEMBELAJARAN <br>
 					UNIVERSITAS NEGERI GORONTALO <br>
 					Jln. Jend. Sudirman No. 6 Kota Gorontalo <br>
 					<a href="#">penjamu@ung.ac.id</a>
