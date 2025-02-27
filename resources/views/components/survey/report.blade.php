@@ -7,19 +7,19 @@
                 <th>PTPs</th>
                 <th>KTS</th>
                 <th>OBS</th>
-                <th>Score</th>
+                <th>Capaian Kinerja</th>
                 <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($programs as $index =>  $program)
+            @foreach ($programs as $index => $program)
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $program['program']->program_name }}</td>
-                    <td>{{$program['program']->PTPs->count()}}</td>
-                    <td>{{$program['program']->noncomplianceResults()->where('category', 'KTS')->count()}}</td>
-                    <td>{{$program['program']->noncomplianceResults()->where('category', 'OBS')->count()}}</td>
-                    <td>{{$program['score']}}</td>
+                    <td>{{ $program['program']->PTPs->count() }}</td>
+                    <td>{{ $program['program']->noncomplianceResults()->where('category', 'KTS')->count() }}</td>
+                    <td>{{ $program['program']->noncomplianceResults()->where('category', 'OBS')->count() }}</td>
+                    <td>{{ $program['score'] }}%</td>
                     <td>
                         <div x-data="{ open: false }" class="relative">
                             <x-button @click="open = !open" color="info" size="sm">
