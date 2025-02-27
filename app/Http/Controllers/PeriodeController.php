@@ -12,6 +12,7 @@ use App\Models\Standard;
 use App\Models\Team;
 use App\Models\Unit;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Reader\Xml\Style\NumberFormat;
 
 class PeriodeController extends Controller
 {
@@ -50,20 +51,26 @@ class PeriodeController extends Controller
         $units = Unit::get();
         $masterInstruments = MasterInstrument::get();
 
-        $programs = Program::all()->map(function ($program) {
+        $total = 0;
+        foreach ($masterInstruments as $key => $instrument) {
+            $total += $instrument->questions()->count();
+        }
+
+        $programs = Program::all()->map(function ($program) use ($total) {
             return [
                 'program' => $program,
                 'ptp' => $program->PTPs->count(),
                 'kts' => $program->noncomplianceResults()->where('category', 'KTS')->count(),
                 'obs' => $program->noncomplianceResults()->where('category', 'OBS')->count(),
-                'score' => $program->PTPs->count() - $program->noncomplianceResults()->where('category', 'OBS')->count(),
+                'score' =>number_format( ($program->PTPs->count() / $total) * 100, 2),
             ];
         })->sortByDesc('score')->values(); // Mengurutkan berdasarkan (PTP - OBS) secara descending
 
         return view('pages.dashboard.master.periodes.show', compact('periode', 'units', 'masterInstruments', 'programs'));
     }
 
-    
+   
+
     public function edit(Periode $periode)
     {
         $standards = Standard::get();
