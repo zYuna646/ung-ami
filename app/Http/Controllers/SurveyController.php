@@ -293,6 +293,7 @@ class SurveyController extends Controller
                     $questions[$key]->response = (object) [
                         'description' => optional($response)->description,
                         'category' => optional($response)->category,
+                        'kts_category' => optional($response)->kts_category,
                         'barriers' => optional($response)->barriers,
                     ];
                 }
@@ -316,6 +317,7 @@ class SurveyController extends Controller
                     $data = [
                         'description' => $request->description[$question->id],
                         'category' => $request->category[$question->id],
+                        'kts_category' => ($request->category[$question->id] ?? null) === 'KTS' ? ($request->kts_category[$question->id] ?? null) : null,
                         'barriers' => $request->barriers[$question->id],
                     ];
 

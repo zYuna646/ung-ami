@@ -13,6 +13,7 @@ class NoncomplianceResult extends Model
         'question_id',
         'description',
         'category',
+        'kts_category',
         'barriers',
     ];
 

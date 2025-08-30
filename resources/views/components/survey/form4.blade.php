@@ -36,7 +36,8 @@
 							<tr class="bg-gray-100">
 								<th class="border px-4 py-2">Check List</th>
 								<th class="border px-4 py-2">Deskripsi Hasil Audit</th>
-								<th class="border px-4 py-2">Kategori Temuan Audit (OBS / KTS)</th>
+                                <th class="border px-4 py-2">Kategori Temuan Audit (OBS / KTS)</th>
+                                <th class="border px-4 py-2">Kategori KTS (Minor/Major)</th>
 								<th class="border px-4 py-2">Akar Penyebab / Faktor Penghambat</th>
 							</tr>
 						</thead>
@@ -45,7 +46,8 @@
 								<tr>
 									<td class="border px-4 py-2 text-center">{{ $question->code }}</td>
 									<td class="border px-4 py-2">{{ $question->response->description ?? '' }}</td>
-									<td class="border px-4 py-2">{{ $question->response->category ?? '' }}</td>
+                                    <td class="border px-4 py-2">{{ $question->response->category ?? '' }}</td>
+                                    <td class="border px-4 py-2">{{ $question->response->kts_category ?? '' }}</td>
 									<td class="border px-4 py-2">{{ $question->response->barriers ?? '' }}</td>
 								</tr>
 							@endforeach
@@ -63,11 +65,12 @@
 								<p class="text-sm text-gray-600">{{ $question->units->pluck('unit_name')->implode(', ') }}</p>
 							</div>
 
-							@php
-								$descriptionFieldName = "description.{$question->id}";
-								$categoryFieldName = "category.{$question->id}";
-								$barriersFieldName = "barriers.{$question->id}";
-							@endphp
+                            @php
+                                $descriptionFieldName = "description.{$question->id}";
+                                $categoryFieldName = "category.{$question->id}";
+                                $ktsCategoryFieldName = "kts_category.{$question->id}";
+                                $barriersFieldName = "barriers.{$question->id}";
+                            @endphp
 
 							<div class="grid grid-cols-2 gap-3">
 								<div>
@@ -97,29 +100,53 @@
 									@enderror
 								</div>
 							</div>
-							<div>
-								{{-- Keberadaan --}}
-								<x-form.select
-									name="category[{{ $question->id }}]"
-									placeholder="Pilih Kategori"
-									:value="old($categoryFieldName) ?? $question->response->category"
-									:options="[
-									    (object) [
-									        'label' => 'OBS',
-									        'value' => 'OBS',
-									    ],
-									    (object) [
-									        'label' => 'KTS',
-									        'value' => 'KTS',
-									    ],
-									]"
-									:inputClass="$errors->has($categoryFieldName) ? 'border-red-700' : ''"
-									required
-								/>
-								@error($categoryFieldName)
-									<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
-								@enderror
-							</div>
+                            <div x-data="{ selected: '{{ old($categoryFieldName) ?? ($question->response->category ?? '') }}' }">
+                                {{-- Kategori Temuan Audit --}}
+                                <x-form.select
+                                    x-model="selected"
+                                    name="category[{{ $question->id }}]"
+                                    placeholder="Pilih Kategori"
+                                    :value="old($categoryFieldName) ?? $question->response->category"
+                                    :options="[
+                                        (object) [
+                                            'label' => 'OBS',
+                                            'value' => 'OBS',
+                                        ],
+                                        (object) [
+                                            'label' => 'KTS',
+                                            'value' => 'KTS',
+                                        ],
+                                    ]"
+                                    :inputClass="$errors->has($categoryFieldName) ? 'border-red-700' : ''"
+                                    required
+                                />
+                                @error($categoryFieldName)
+                                    <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
+                                @enderror
+
+                                <div x-show="selected === 'KTS'" class="mt-3">
+                                    {{-- Kategori KTS --}}
+                                    <x-form.select
+                                        name="kts_category[{{ $question->id }}]"
+                                        placeholder="Pilih Kategori KTS"
+                                        :value="old($ktsCategoryFieldName) ?? $question->response->kts_category"
+                                        :options="[
+                                            (object) [
+                                                'label' => 'KTS MINOR',
+                                                'value' => 'MINOR',
+                                            ],
+                                            (object) [
+                                                'label' => 'KTS MAYOR',
+                                                'value' => 'MAYOR',
+                                            ],
+                                        ]"
+                                        :inputClass="$errors->has($ktsCategoryFieldName) ? 'border-red-700' : ''"
+                                    />
+                                    @error($ktsCategoryFieldName)
+                                        <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
 							<p class="text-right text-sm text-gray-600">{{ $question->code }}</p>
 						</div>
 					@endforeach

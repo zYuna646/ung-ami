@@ -35,6 +35,9 @@ class SubmitNoncomplianceResultsRequest extends FormRequest
                 $rules["description.$question->id"] = 'required';
                 $rules["category.$question->id"] = 'required';
                 $rules["barriers.$question->id"] = 'required';
+                if (($this->category[$question->id] ?? null) === 'KTS') {
+                    $rules["kts_category.$question->id"] = 'required|in:MINOR,MAYOR';
+                }
             }
         }
 
@@ -53,6 +56,8 @@ class SubmitNoncomplianceResultsRequest extends FormRequest
                 $messages["description.$question->id.required"] = "Deskripsi Hasil Audit untuk pertanyaan '{$question->text}' harus diisi.";
                 $messages["category.$question->id.required"] = "Kategori Temuan Audit untuk pertanyaan '{$question->text}' harus diisi.";
                 $messages["barriers.$question->id.required"] = "Faktor Penghambat untuk pertanyaan '{$question->text}' harus diisi.";
+                $messages["kts_category.$question->id.required"] = "Kategori KTS (Minor/Major) untuk pertanyaan '{$question->text}' harus dipilih.";
+                $messages["kts_category.$question->id.in"] = "Kategori KTS harus salah satu dari: MINOR atau MAYOR.";
             }
         }
 

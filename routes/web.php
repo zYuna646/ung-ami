@@ -24,6 +24,11 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 
+Route::get('/run-storage-link', function () {
+    Artisan::call('storage:link');
+    return 'Storage link created successfully!';
+});
+
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('auth.authenticate');
@@ -70,6 +75,8 @@ Route::prefix('dashboard')->name('dashboard.')->middleware(['web', 'auth'])->gro
         Route::resource('/periodes', PeriodeController::class)->names('periodes');
         Route::post('/periodes/{periode}/add-member', [PeriodeController::class, 'addMember'])->name('periodes.add_member');
         Route::delete('/periodes/{periode}/delete-member/{auditor}', [PeriodeController::class, 'deleteMember'])->name('periodes.delete_member');
+        Route::get('/periode/export-rangking/{periode}', [PeriodeController::class, 'exportRangking'])->name('periode.export.rangking');
+        Route::get('/periode/export-rtm/{periode}', [PeriodeController::class, 'exportRtm'])->name('periode.export.rtm');
         Route::post('/periodes/{periode}/instruments', [InstrumentController::class, 'store'])->name('periodes.instruments.store');
         Route::get('/periodes/{periode}/instruments/{instrument}', [InstrumentController::class, 'show'])->name('periodes.instruments.show');
         Route::get('/periodes/{periode}/instruments/{instrument}/edit', [InstrumentController::class, 'edit'])->name('periodes.instruments.edit');

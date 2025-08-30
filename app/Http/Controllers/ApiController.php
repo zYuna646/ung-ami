@@ -2,15 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Auditor;
+use App\Models\AuditResult;
 use App\Models\Department;
 use App\Models\Faculty;
 use App\Models\Fakultas;
 use App\Models\Instrument;
+use App\Models\MasterInstrument;
+use App\Models\NoncomplianceResult;
 use App\Models\Periode;
 use App\Models\Prodi;
 use App\Models\Program;
+use App\Models\PTP;
+use App\Models\Unit;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use OpenApi\Annotations as OA;
 /**
  * @OA\Info(
  *      version="1.0.0",
@@ -659,6 +666,29 @@ class ApiController extends Controller
     {
         try {
             $periode = Periode::with(['standard', 'instruments'])->find($id);
+            $total = 0;
+            // foreach ($masterInstruments as $key => $instrument) {
+            //     $total += $instrument->questions()->count();
+            // }
+            $question_id = [];
+            foreach ($periode->instruments as $instrument) {
+                foreach ($instrument->indicators as $indicator) {
+                    foreach ($indicator->questions as $question) {
+                        $question_id[] = $question->id;
+                        $total += 1;
+                    }
+                }
+            }
+            $programs = Program::with(['PTPs', 'noncomplianceResults'])->get()->map(function ($program) use ($total, $question_id) {
+                return [
+                    'program' => $program,
+                    'ptp' => $program->PTPs()->whereIn('question_id', $question_id)->count(),
+                    'kts' => $program->noncomplianceResults()->where('category', 'KTS')->whereIn('question_id', $question_id)->count(),
+                    'obs' => $program->noncomplianceResults()->where('category', 'OBS')->whereIn('question_id', $question_id)->count(),
+                    'score' => $total > 0 ? number_format(($program->PTPs->count() / $total) * 100, 2) : 0,
+                ];
+            })->sortByDesc('score')->values(); // Sort descending by score
+            $periode->rangking = $programs;
 
             if (!$periode) {
                 return response()->json([
@@ -798,6 +828,213 @@ class ApiController extends Controller
         }
     }
 
+    public function getAmiData($id, $fakultas_id = null): JsonResponse
+    {
+        try {
+            // Ambil data pendukung (bisa disesuaikan jika diperlukan)
+            $auditors = Auditor::all();
+            $units = Unit::get();
+            $masterInstruments = MasterInstrument::get();
 
+            // Siapkan filter auditable_id berdasarkan prodi atau fakultas jika ada
+            $auditable_id = [];
+            $total_rtm = Program::all()->count();
+            $periode = Periode::find($id);
+
+            if ($fakultas_id != 'null') {
+                // Perbaiki "pluc" menjadi "pluck" dan konversi ke array
+                $auditable_id = Department::find($fakultas_id)->programs->pluck('id')->toArray();
+                $total_rtm = Department::find($fakultas_id)->programs()->count();
+            }
+
+            // Hitung total pertanyaan
+            $total = 0;
+            $question_id = [];
+            $rtm = [];
+            foreach ($periode->instruments as $instrument) {
+                foreach ($instrument->indicators as $indicator) {
+                    foreach ($indicator->questions as $question) {
+                        $total++;
+                    }
+                }
+            }
+
+
+            // Proses pertanyaan dan hitung nilai
+            foreach ($periode->instruments as $instrument) {
+                foreach ($instrument->indicators as $indicator) {
+                    foreach ($indicator->questions as $question) {
+
+                        // Dapatkan nama instrument sebagai key
+                        $instrumentKey = $question->indicator->instrument->name;
+
+
+
+                        $querySesuai = AuditResult::where('question_id', $question->id)
+                            ->where('compliance', 'Sesuai');
+                        if (!empty($auditable_id)) {
+                            $querySesuai->whereIn('auditable_id', $auditable_id);
+                        }
+                        $sesuaiIds = $querySesuai->pluck('auditable_id', 'id')->toArray();
+
+                        $queryTidakSesuai = AuditResult::where('question_id', $question->id)
+                            ->where('compliance', 'Tidak Sesuai');
+                        if (!empty($auditable_id)) {
+                            $queryTidakSesuai->whereIn('auditable_id', $auditable_id);
+                        }
+
+                        $sesuaiCount = $querySesuai->count();
+                        $tidakSesuaiCount = $queryTidakSesuai->count();
+
+                        $tidakSesuaiIds = $queryTidakSesuai->pluck('auditable_id', 'id')->toArray();
+
+
+                        $rtm[$instrumentKey][] = [
+                            'id' => $question->id,
+                            'code' => $question->code,
+                            'desc' => $question->text,
+                            'sesuai' => $sesuaiIds,
+                            'tidak_sesuai' => $tidakSesuaiIds,
+                            'score' => $total_rtm > 0 ? number_format(($sesuaiCount / $total_rtm) * 100, 2) : 0
+                        ];
+
+                        $question_id[] = $question->id;
+                    }
+                }
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'Data ami ditemukan',
+                'data' => $rtm
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/api/ami/{id}/program/{program_id}",
+     *      tags={"AMI"},
+     *      summary="Get AMI data by program",
+     *      description="Mengambil data AMI berdasarkan program studi",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="ID Periode",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Parameter(
+     *          name="program_id",
+     *          in="path",
+     *          description="ID Program Studi",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Data AMI ditemukan",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="success", type="boolean", example=true),
+     *              @OA\Property(property="message", type="string", example="Data AMI ditemukan"),
+     *              @OA\Property(property="data", type="object")
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Data tidak ditemukan",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="success", type="boolean", example=false),
+     *              @OA\Property(property="message", type="string", example="Data AMI tidak ditemukan")
+     *          )
+     *      )
+     * )
+     */
+    public function getAmiDataByProgram($id, $program_id): JsonResponse
+    {
+        try {
+            // Validate if program exists
+            $program = Program::find($program_id);
+            if (!$program) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Program studi tidak ditemukan'
+                ], 404);
+            }
+
+            // Get the period
+            $periode = Periode::find($id);
+            if (!$periode) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Periode tidak ditemukan'
+                ], 404);
+            }
+
+            // Initialize variables
+            $total = 0;
+            $rtm = [];
+
+            // Count total questions
+            foreach ($periode->instruments as $instrument) {
+                foreach ($instrument->indicators as $indicator) {
+                    $total += $indicator->questions->count();
+                }
+            }
+
+            // Process questions and calculate values
+            foreach ($periode->instruments as $instrument) {
+                foreach ($instrument->indicators as $indicator) {
+                    foreach ($indicator->questions as $question) {
+                        $instrumentKey = $question->indicator->instrument->name;
+
+                        // Get audit results for this question and program
+                        $sesuai = AuditResult::where('question_id', $question->id)
+                            ->where('auditable_id', $program_id)
+                            ->where('compliance', 'Sesuai')
+                            ->first();
+
+                        $tidakSesuai = AuditResult::where('question_id', $question->id)
+                            ->where('auditable_id', $program_id)
+                            ->where('compliance', 'Tidak Sesuai')
+                            ->first();
+
+                        $rtm[$instrumentKey][] = [
+                            'id' => $question->id,
+                            'code' => $question->code,
+                            'desc' => $question->text,
+                            'sesuai' => $sesuai ? [$sesuai->id => $sesuai->auditable_id] : [],
+                            'tidak_sesuai' => $tidakSesuai ? [$tidakSesuai->id => $tidakSesuai->auditable_id] : [],
+                            'score' => $sesuai ? 100 : 0,
+                            'evidence' => $sesuai ? $sesuai->evidence : ($tidakSesuai ? $tidakSesuai->evidence : null),
+                            'notes' => $sesuai ? $sesuai->notes : ($tidakSesuai ? $tidakSesuai->notes : null)
+                        ];
+                    }
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data AMI ditemukan',
+                'data' => [
+                    'program' => $program->only(['id', 'name', 'department_id']),
+                    'rtm' => $rtm
+                ]
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 
 }

@@ -30,3 +30,5 @@ Route::get('/periodes', [ApiController::class, 'getPeriode']);
 Route::get('/periodes/{id}', [ApiController::class, 'getPeriodeById']);
 Route::get('/instruments', [ApiController::class, 'getInstrument']);
 Route::get('/instruments/{id}', [ApiController::class, 'getInstrumentById']);
+Route::get('/ami/{id}/{fakultas_id}', [ApiController::class, 'getAmiData']);
+Route::get('/ami/{id}/program/{program_id}', [ApiController::class, 'getAmiDataByProgram']);

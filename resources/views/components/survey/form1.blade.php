@@ -42,7 +42,7 @@
 						<th class="border px-4 py-2">Indikator</th>
 						<th class="border px-4 py-2" colspan="2">Butir Pertanyaan</th>
 						<th class="border px-4 py-2">Ketersediaan Dokumen</th>
-						<th class="border px-4 py-2">Catatan</th>
+						<th class="border px-4 py-2">Faktor Penghambat / Faktor Pendukung</th>
 						<th class="border px-4 py-2">Bukti</th>
 					</tr>
 				</thead>

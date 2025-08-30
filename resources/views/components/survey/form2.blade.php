@@ -80,7 +80,7 @@
 													</tr>
 													<tr class="bg-gray-100">
 														<th class="border px-4 py-2">Ketersediaan Dokumen</th>
-														<th class="border px-4 py-2">Catatan</th>
+														<th class="border px-4 py-2">Faktor Penghambat / Faktor Pendukung</th>
 														<th class="border px-4 py-2">Bukti</th>
 													</tr>
 												</thead>
