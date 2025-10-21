@@ -16,6 +16,7 @@
 					@method('PUT')
 					<x-form.input name="code" label="Kode" placeholder="Isi kode" :value="$question->code" />
 					<x-form.input name="text" label="Pertanyaan" placeholder="Isi pertanyaan" :value="$question->text" />
+					<x-form.textarea name="desc" label="Indikator" placeholder="Isi deskripsi indikator" :value="$question->desc" />
 					<x-form.choices name="units[]" label="Area Audit" placeholder="Pilih Area Audit" :multiple="true" :value="$question->units
 					    ->map(function ($unit) {
 					        return strval($unit->id);

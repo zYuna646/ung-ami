@@ -41,6 +41,7 @@ class InstrumentController extends Controller
                     $questions = Question::create([
                         'code' => $masterQuestion->code,
                         'text' => $masterQuestion->question,
+                        'desc' => $masterQuestion->desc,
                         'indicator_id' => $indicator->id
                     ]);
                     $questions->units()->attach($data['units']);

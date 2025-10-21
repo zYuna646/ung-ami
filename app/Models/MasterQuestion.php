@@ -13,7 +13,8 @@ class MasterQuestion extends Model
     protected $fillable = [
         'question',
         'code',
-        'master_indicator_id'
+        'master_indicator_id',
+        'desc'
     ];
 
     public function getRouteKeyName(): string

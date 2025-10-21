@@ -16,6 +16,7 @@
 					@method('PUT')
 					<x-form.input name="code" label="Kode" placeholder="Isi Kode" :value="$question->code" />
 					<x-form.input name="question" label="Pertanyaan" placeholder="Isi Indikator" :value="$question->question" />
+					<x-form.textarea name="desc" label="Indikator" placeholder="Isi deskripsi indikator" :value="$question->desc" />
 					<div class="flex justify-end gap-2">
 						<x-button @click="editQuestionModal = false" color="default">Batal</x-button>
 						<x-button type="submit" color="success">Perbarui</x-button>

@@ -34,16 +34,23 @@
 			@endif
 		</ul>
 
-		<div x-show="tab === 'table'" class="mt-5">
+		<div x-show="tab === 'table'" class="mt-5 overflow-x-auto">
 			<table class="w-full table-auto border-collapse text-xs">
 				<thead>
 					<tr class="bg-gray-100">
 						<th class="border px-4 py-2">No.</th>
 						<th class="border px-4 py-2">Indikator</th>
-						<th class="border px-4 py-2" colspan="2">Butir Pertanyaan</th>
+						<th class="border px-4 py-2" colspan="3">Butir Pertanyaan</th>
 						<th class="border px-4 py-2">Ketersediaan Dokumen</th>
 						<th class="border px-4 py-2">Faktor Penghambat / Faktor Pendukung</th>
 						<th class="border px-4 py-2">Bukti</th>
+					</tr>
+					<tr class="bg-gray-50">
+						<th class="border px-4 py-2" colspan="2"></th>
+						<th class="border px-4 py-2">Kode</th>
+						<th class="border px-4 py-2">Pertanyaan</th>
+						<th class="border px-4 py-2">Indikator</th>
+						<th class="border px-4 py-2" colspan="3"></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -58,10 +65,12 @@
 									@if ($questionKey == 0)
 										<td class="border px-4 py-2 text-center align-top" rowspan="{{ $questionsCount }}">{{ $indicatorKey + 1 }}</td>
 										<td class="border px-4 py-2 align-top" rowspan="{{ $questionsCount }}">{{ $indicator->name }}</td>
+										
 									@endif
 
 									<td class="border px-4 py-2 align-top">{{ $question->code }}</td>
 									<td class="border px-4 py-2 align-top">{{ $question->text }}</td>
+									<td class="border px-4 py-2 align-top">{{ $question->desc ?? '' }}</td>
 									<td class="border px-4 py-2 align-top">
 										{{ $question->response->availability ?? 'Belum Diisi' }}
 									</td>
@@ -116,6 +125,12 @@
 										<div>
 											<h3 class="font-semibold">Butir Pertanyaan</h3>
 											<p class="mb-1 text-lg">{{ $question->text }}</p>
+											@if($question->desc)
+											<div class="mb-2">
+												<h4 class="font-medium text-sm">Indikator:</h4>
+												<p class="text-sm text-gray-700">{{ $question->desc }}</p>
+											</div>
+											@endif
 											<p class="text-sm text-gray-600">{{ $question->units->pluck('unit_name')->implode(', ') }}</p>
 										</div>
 
@@ -125,51 +140,58 @@
 											$evidenceFieldName = "evidence.{$question->id}";
 										@endphp
 
-										<x-form.select
-											x-model="availability"
-											name="availability[{{ $question->id }}]"
-											placeholder="Pilih Ketersediaan Dokumen"
-											:value="old($availabilityFieldName) ?? $question->response->availability"
-											:disabled="auth()->user()->isAuditor()"
-											:options="[
-											    (object) [
-											        'label' => 'Tersedia',
-											        'value' => 'Tersedia',
-											    ],
-											    (object) [
-											        'label' => 'Tidak Tersedia',
-											        'value' => 'Tidak Tersedia',
-											    ],
-											]"
-											:inputClass="$errors->has($availabilityFieldName) ? 'border-red-700' : ''"
-											required
-										/>
+										<div class="mb-3">
+											<label for="availability-{{ $question->id }}" class="block mb-1 font-medium text-sm">Ketersediaan Dokumen:</label>
+											<x-form.select
+												x-model="availability"
+												name="availability[{{ $question->id }}]"
+												id="availability-{{ $question->id }}"
+												placeholder="Pilih Ketersediaan Dokumen"
+												:value="old($availabilityFieldName) ?? $question->response->availability"
+												:disabled="auth()->user()->isAuditor()"
+												:options="[
+												    (object) [
+												        'label' => 'Tersedia',
+												        'value' => 'Tersedia',
+												    ],
+												    (object) [
+												        'label' => 'Tidak Tersedia',
+												        'value' => 'Tidak Tersedia',
+												    ],
+												]"
+												:inputClass="$errors->has($availabilityFieldName) ? 'border-red-700' : ''"
+											/>
+										</div>
 										@error($availabilityFieldName)
 											<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
 										@enderror
 
 										<div x-show="availability === 'Tersedia'" class="mt-3">
+											<label for="evidence-{{ $question->id }}" class="block mb-1 font-medium text-sm">Bukti:</label>
 											<x-form.input
 												name="evidence[{{ $question->id }}]"
+												id="evidence-{{ $question->id }}"
 												placeholder="https//"
 												:inputClass="$errors->has($evidenceFieldName) ? 'border-red-700' : ''"
 												:value="old($evidenceFieldName) ?? $question->response->evidence"
 												:disabled="auth()->user()->isAuditor()"
-												x-bind:required="availability === 'Tersedia'"
 											/>
 											@error($evidenceFieldName)
 												<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
 											@enderror
 										</div>
 
-										<x-form.textarea
-											name="notes[{{ $question->id }}]"
-											placeholder="Catatan"
-											:inputClass="$errors->has($notesFieldName) ? 'border-red-700' : ''"
-											:value="old($notesFieldName) ?? $question->response->notes"
-											:disabled="auth()->user()->isAuditor()"
-											required
-										/>
+										<div class="mb-2">
+											<label for="notes-{{ $question->id }}" class="block mb-1 font-medium text-sm">Faktor Penghambat / Faktor Pendukung:</label>
+											<x-form.textarea
+												name="notes[{{ $question->id }}]"
+												id="notes-{{ $question->id }}"
+												placeholder="Catatan"
+												:inputClass="$errors->has($notesFieldName) ? 'border-red-700' : ''"
+												:value="old($notesFieldName) ?? $question->response->notes"
+												:disabled="auth()->user()->isAuditor()"
+											/>
+										</div>
 										@if (filter_var($question->response->notes, FILTER_VALIDATE_URL))
 											<a
 												class="mt-2 text-xs text-blue-500 underline"

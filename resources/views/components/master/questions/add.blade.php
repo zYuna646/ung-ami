@@ -16,6 +16,7 @@
 					<input type="hidden" name="master_indicator_id" value="{{ $indicatorId }}" />
 					<x-form.input name="code" label="Kode" placeholder="Isi Kode" />
 					<x-form.input name="question" label="Pertanyaan" placeholder="Isi Pertanyaan" />
+					<x-form.textarea name="desc" label="Indikator" placeholder="Isi deskripsi indikator" />
 					<div class="flex justify-end gap-2">
 						<x-button @click="addQuestionModal = false" color="default">Batal</x-button>
 						<x-button type="submit" color="info">Submit</x-button>

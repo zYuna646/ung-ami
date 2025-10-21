@@ -18,6 +18,7 @@ class UpdateQuestionRequest extends FormRequest
             'text' => 'required',
             'units' => 'required|array',
             'units.*' => 'exists:units,id',
+            'desc' => 'nullable',
         ];
     }
 

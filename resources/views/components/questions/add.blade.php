@@ -16,6 +16,7 @@
 					<input type="hidden" name="indicator_id" value="{{ $indicator->id }}">
 					<x-form.input name="code" label="Kode" placeholder="Kode" />
 					<x-form.input name="text" label="Pertanyaan" placeholder="Pertanyaan" />
+					<x-form.textarea name="desc" label="Indikator" placeholder="Isi deskripsi indikator" />
 					<x-form.choices name="units[]" label="Area Audit" placeholder="Pilih Area Audit" :multiple="true" :options="$units->map(function ($unit) {
 					    return (object) [
 					        'label' => $unit->unit_name,

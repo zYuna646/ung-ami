@@ -16,6 +16,7 @@ class UpdateMasterQuestionRequest extends FormRequest
         return [
             'code' => 'required',
             'question' => 'required',
+            'desc' => 'nullable',
         ];
     }
 

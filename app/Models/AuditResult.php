@@ -13,7 +13,6 @@ class AuditResult extends Model
         'question_id',
         'description',
         'amount_target',
-        'existence',
         'compliance',
     ];
 

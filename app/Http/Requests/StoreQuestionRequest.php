@@ -19,6 +19,7 @@ class StoreQuestionRequest extends FormRequest
             'indicator_id' => 'required',
             'units' => 'required|array',
             'units.*' => 'exists:units,id',
+            'desc' => 'nullable',
         ];
     }
 

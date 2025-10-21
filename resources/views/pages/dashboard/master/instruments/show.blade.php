@@ -60,6 +60,7 @@
 					    return (object) [
 					        'label' => $indicator->indicator,
 					        'value' => $indicator->uuid,
+					        'desc' => $indicator->desc,
 					    ];
 					})" @change="window.location.href = '{{ url()->current() }}?indicator=' + $event.target.value" />
 				</div>

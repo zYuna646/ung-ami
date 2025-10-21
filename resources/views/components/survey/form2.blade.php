@@ -38,8 +38,7 @@
 								<th class="border px-4 py-2">Check List</th>
 								<th class="border px-4 py-2">Butir Pertanyaan</th>
 								<th class="border px-4 py-2">Deskripsi Hasil Audit</th>
-								<th class="border px-4 py-2">Jumlah Target</th>
-								<th class="border px-4 py-2">Keberadaan</th>
+								<th class="border px-4 py-2">Score</th>
 								<th class="border px-4 py-2">Kesesuaian Standar</th>
 							</tr>
 						</thead>
@@ -48,11 +47,10 @@
 								@foreach ($indicator->questions as $question)
 									<tr>
 										<td class="border px-4 py-2 text-center">{{ $question->code }}</td>
-										<td class="border px-4 py-2">{{ $question->text }}</td>
-										<td class="border px-4 py-2">{{ $question->response->description ?? '' }}</td>
-										<td class="border px-4 py-2">{{ $question->response->amount_target ?? '' }}</td>
-										<td class="border px-4 py-2">{{ $question->response->existence ?? '' }}</td>
-										<td class="border px-4 py-2">{{ $question->response->compliance ?? '' }}</td>
+									<td class="border px-4 py-2">{{ $question->text }}</td>
+									<td class="border px-4 py-2">{{ $question->response->description ?? '' }}</td>
+									<td class="border px-4 py-2">{{ $question->response->amount_target ?? '' }}</td>
+									<td class="border px-4 py-2">{{ $question->response->compliance ?? '' }}</td>
 									</tr>
 								@endforeach
 							@endforeach
@@ -72,6 +70,10 @@
 									<div>
 										<h3 class="font-semibold">Butir Pertanyaan</h3>
 										<p class="mb-1 text-lg">{{ $question->text }}</p>
+										@if($question->desc)
+											<h4 class="font-medium text-sm mb-1">Indikator</h4>
+											<p class="mb-3 text-sm">{{ $question->desc }}</p>
+										@endif
 										<div class="mb-1">
 											<table class="w-full table-auto border-collapse text-xs">
 												<thead>
@@ -119,62 +121,60 @@
 									</div>
 
 									@php
-										$descriptionFieldName = "description.{$question->id}";
-										$amountTargetFieldName = "amount_target.{$question->id}";
-										$existenceFieldName = "existence.{$question->id}";
-										$complianceFieldName = "compliance.{$question->id}";
-									@endphp
+									$descriptionFieldName = "description.{$question->id}";
+									$amountTargetFieldName = "amount_target.{$question->id}";
+									$complianceFieldName = "compliance.{$question->id}";
+								@endphp
 
-									<x-form.textarea
-										name="description[{{ $question->id }}]"
-										placeholder="Deskripsi Hasil Audit"
-										:inputClass="$errors->has($descriptionFieldName) ? 'border-red-700' : ''"
-										:value="old($descriptionFieldName) ?? $question->response->description"
-										required
-									/>
+									<div class="mb-3">
+										<label for="description_{{ $question->id }}" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi Hasil Audit</label>
+										<x-form.textarea
+											id="description_{{ $question->id }}"
+											name="description[{{ $question->id }}]"
+											placeholder="Deskripsi Hasil Audit"
+											:inputClass="$errors->has($descriptionFieldName) ? 'border-red-700' : ''"
+											:value="old($descriptionFieldName) ?? $question->response->description"
+										/>
+									</div>
 									@error($descriptionFieldName)
 										<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
 									@enderror
 
-									<div class="grid grid-cols-3 gap-3">
+									<div class="grid grid-cols-2 gap-3">
+									<div>
+										<label for="amount_target_{{ $question->id }}" class="block text-sm font-medium text-gray-700 mb-1">Score</label>
+										<x-form.select
+											id="amount_target_{{ $question->id }}"
+											name="amount_target[{{ $question->id }}]"
+											placeholder="Pilih Score"
+											:value="old($amountTargetFieldName) ?? $question->response->amount_target"
+											:options="[
+												(object) ['label' => '1', 'value' => '1'],
+												(object) ['label' => '2', 'value' => '2'],
+												(object) ['label' => '3', 'value' => '3'],
+												(object) ['label' => '4', 'value' => '4']
+											]"
+											:inputClass="$errors->has($amountTargetFieldName) ? 'border-red-700' : ''"
+										/>
+										@error($amountTargetFieldName)
+											<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
+										@enderror
+									</div>
+
 										<div>
-											<x-form.input
-												name="amount_target[{{ $question->id }}]"
-												placeholder="Jumlah Target"
-												:inputClass="$errors->has($amountTargetFieldName) ? 'border-red-700' : ''"
-												:value="old($amountTargetFieldName) ?? $question->response->amount_target"
-												required
-											/>
-											@error($amountTargetFieldName)
-												<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
-											@enderror
-										</div>
-										<div>
-											<x-form.select
-												name="existence[{{ $question->id }}]"
-												placeholder="Pilih Keberadaan"
-												:value="old($existenceFieldName) ?? $question->response->existence"
-												:options="[(object) ['label' => 'Ada', 'value' => 'Ada'], (object) ['label' => 'Tidak Ada', 'value' => 'Tidak Ada']]"
-												:inputClass="$errors->has($existenceFieldName) ? 'border-red-700' : ''"
-												required
-											/>
-											@error($existenceFieldName)
-												<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
-											@enderror
-										</div>
-										<div>
-											<x-form.select
-												name="compliance[{{ $question->id }}]"
-												placeholder="Pilih Kesesuaian Standar"
-												:value="old($complianceFieldName) ?? $question->response->compliance"
-												:options="[(object) ['label' => 'Sesuai', 'value' => 'Sesuai'], (object) ['label' => 'Tidak Sesuai', 'value' => 'Tidak Sesuai']]"
-												:inputClass="$errors->has($complianceFieldName) ? 'border-red-700' : ''"
-												required
-											/>
-											@error($complianceFieldName)
-												<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
-											@enderror
-										</div>
+										<label for="compliance_{{ $question->id }}" class="block text-sm font-medium text-gray-700 mb-1">Kesesuaian Standar</label>
+										<x-form.select
+											id="compliance_{{ $question->id }}"
+											name="compliance[{{ $question->id }}]"
+											placeholder="Pilih Kesesuaian Standar"
+											:value="old($complianceFieldName) ?? $question->response->compliance"
+											:options="[(object) ['label' => 'Sesuai', 'value' => 'Sesuai'], (object) ['label' => 'Tidak Sesuai', 'value' => 'Tidak Sesuai']]"
+											:inputClass="$errors->has($complianceFieldName) ? 'border-red-700' : ''"
+										/>
+										@error($complianceFieldName)
+											<p class="mt-2 text-xs text-red-600">{{ $message }}</p>
+										@enderror
+								</div>
 									</div>
 
 									<p class="text-right text-sm text-gray-600">{{ $question->code }}</p>

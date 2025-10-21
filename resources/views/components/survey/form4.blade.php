@@ -62,6 +62,9 @@
 							<div>
 								<h3 class="font-semibold">Butir Pertanyaan</h3>
 								<p class="mb-1 text-lg">{{ $question->text }}</p>
+								@if($question->desc)
+									<p class="mb-2 text-md italic">Indikator: {{ $question->desc }}</p>
+								@endif
 								<p class="text-sm text-gray-600">{{ $question->units->pluck('unit_name')->implode(', ') }}</p>
 							</div>
 
@@ -74,10 +77,11 @@
 
 							<div class="grid grid-cols-2 gap-3">
 								<div>
-									{{-- Deskripsi Hasil Audit --}}
+									<label for="description_{{ $question->id }}" class="block mb-1 font-medium text-gray-700">Deskripsi Hasil Audit</label>
 									<x-form.textarea
+										id="description_{{ $question->id }}"
 										name="description[{{ $question->id }}]"
-										placeholder="Deskripsi Hasil Audit"
+										placeholder="Masukkan deskripsi hasil audit"
 										:inputClass="$errors->has($descriptionFieldName) ? 'border-red-700' : ''"
 										:value="old($descriptionFieldName) ?? $question->response->description"
 										required
@@ -87,10 +91,11 @@
 									@enderror
 								</div>
 								<div>
-									{{-- Faktor Penghambat --}}
+									<label for="barriers_{{ $question->id }}" class="block mb-1 font-medium text-gray-700">Akar Penyebab / Faktor Penghambat</label>
 									<x-form.textarea
+										id="barriers_{{ $question->id }}"
 										name="barriers[{{ $question->id }}]"
-										placeholder="Faktor Penghambat"
+										placeholder="Masukkan akar penyebab atau faktor penghambat"
 										:inputClass="$errors->has($barriersFieldName) ? 'border-red-700' : ''"
 										:value="old($barriersFieldName) ?? $question->response->barriers"
 										required
@@ -101,34 +106,38 @@
 								</div>
 							</div>
                             <div x-data="{ selected: '{{ old($categoryFieldName) ?? ($question->response->category ?? '') }}' }">
-                                {{-- Kategori Temuan Audit --}}
-                                <x-form.select
-                                    x-model="selected"
-                                    name="category[{{ $question->id }}]"
-                                    placeholder="Pilih Kategori"
-                                    :value="old($categoryFieldName) ?? $question->response->category"
-                                    :options="[
-                                        (object) [
-                                            'label' => 'OBS',
-                                            'value' => 'OBS',
-                                        ],
-                                        (object) [
-                                            'label' => 'KTS',
-                                            'value' => 'KTS',
-                                        ],
-                                    ]"
-                                    :inputClass="$errors->has($categoryFieldName) ? 'border-red-700' : ''"
-                                    required
-                                />
-                                @error($categoryFieldName)
-                                    <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
-                                @enderror
+                                <div class="mb-3">
+                                    <label for="category_{{ $question->id }}" class="block mb-1 font-medium text-gray-700">Kategori Temuan Audit</label>
+                                    <x-form.select
+                                        id="category_{{ $question->id }}"
+                                        x-model="selected"
+                                        name="category[{{ $question->id }}]"
+                                        placeholder="Pilih Kategori Temuan Audit (OBS/KTS)"
+                                        :value="old($categoryFieldName) ?? $question->response->category"
+                                        :options="[
+                                            (object) [
+                                                'label' => 'OBS',
+                                                'value' => 'OBS',
+                                            ],
+                                            (object) [
+                                                'label' => 'KTS',
+                                                'value' => 'KTS',
+                                            ],
+                                        ]"
+                                        :inputClass="$errors->has($categoryFieldName) ? 'border-red-700' : ''"
+                                        required
+                                    />
+                                    @error($categoryFieldName)
+                                        <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
 
                                 <div x-show="selected === 'KTS'" class="mt-3">
-                                    {{-- Kategori KTS --}}
+                                    <label for="kts_category_{{ $question->id }}" class="block mb-1 font-medium text-gray-700">Kategori KTS</label>
                                     <x-form.select
+                                        id="kts_category_{{ $question->id }}"
                                         name="kts_category[{{ $question->id }}]"
-                                        placeholder="Pilih Kategori KTS"
+                                        placeholder="Pilih Kategori KTS (Minor/Mayor)"
                                         :value="old($ktsCategoryFieldName) ?? $question->response->kts_category"
                                         :options="[
                                             (object) [

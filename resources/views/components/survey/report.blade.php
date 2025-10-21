@@ -10,12 +10,16 @@
                 <th>Tidak Sesuai</th>
                 <th>Total</th>
                 <th>Capaian Kinerja</th>
+                <th>Total Score</th>
+                <th>Score Percentage</th>
                 <th>Berita Acara</th>
                 <th>Bukti</th>
+            
                 <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
+
             @foreach ($data as $index => $program)
                 @php
                     $auditReport = $program['program']
@@ -54,6 +58,9 @@
                     <td>{{ $tidak_sesuai }}</td>
                     <td>{{ $total_sum }}</td>
                     <td>{{ $score }}%</td>
+                    <td>{{ $program['score_points'] }}</td>
+                   <td>{{ number_format($program['score_percentage'], 2) }}%</td>
+
                     <td>
                         @isset($auditReport->pivot->meeting_report)
                             <p style="color: green;">Berita acara sudah diunggah.</p>

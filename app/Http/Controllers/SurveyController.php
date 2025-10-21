@@ -88,11 +88,13 @@ class SurveyController extends Controller
             foreach ($instrument->questions as $question) {
                 $questionId = $question->id;
 
-                if (isset($availabilityData[$questionId])) {
-                    $availability = $availabilityData[$questionId];
-                    $notes = $notesData[$questionId] ?? '';
-                    $evidence = $evidenceData[$questionId] ?? null;
+                // Simpan data meskipun beberapa field kosong
+                $availability = $availabilityData[$questionId] ?? null;
+                $notes = $notesData[$questionId] ?? null;
+                $evidence = $evidenceData[$questionId] ?? null;
 
+                // Hanya simpan jika setidaknya salah satu field diisi
+                if ($availability !== null && $notes !== null ) {
                     SurveyResponse::updateOrCreate(
                         [
                             'instrument_id' => $instrument->id,
@@ -163,19 +165,28 @@ class SurveyController extends Controller
             $model = ModelHelper::getModelByRequest($request);
 
             foreach ($instrument->questions as $question) {
-                $data = [
-                    'description' => $request->description[$question->id],
-                    'amount_target' => $request->amount_target[$question->id],
-                    'existence' => $request->existence[$question->id],
-                    'compliance' => $request->compliance[$question->id],
-                ];
+                // Mengambil data dari request atau set null jika tidak ada
+                $description = $request->description[$question->id] ?? null;
+                $amount_target = $request->amount_target[$question->id] ?? null;
+                $existence = $request->existence[$question->id] ?? null;
+                $compliance = $request->compliance[$question->id] ?? null;
 
-                $model->auditResults()->updateOrCreate(
-                    [
-                        'question_id' => $question->id,
-                    ],
-                    $data
-                );
+                // Hanya simpan jika setidaknya satu field diisi
+                if ($description !== null && $amount_target !== null  && $compliance !== null) {
+                    $data = [
+                        'description' => $description,
+                        'amount_target' => $amount_target,
+                        'existence' => $existence,
+                        'compliance' => $compliance,
+                    ];
+
+                    $model->auditResults()->updateOrCreate(
+                        [
+                            'question_id' => $question->id,
+                        ],
+                        $data
+                    );
+                }
             }
 
             return redirect()->back()->with('success', 'Survei berhasil disimpan.');
@@ -223,14 +234,27 @@ class SurveyController extends Controller
         $showInstrument = isset($model->user);
         $questions = [];
         if ($showInstrument) {
+            $responses = SurveyResponse::where('instrument_id', $instrument->id)
+                ->where('user_id', $model->user_id)
+                ->whereIn('question_id', $instrument->questions->pluck('id'))
+                ->get()
+                ->keyBy('question_id');
             foreach ($instrument->questions as $key => $question) {
                 $response = $model->complianceResults->firstWhere('question_id', $question->id);
                 $auditResult = $model->auditResults->firstWhere('question_id', $question->id);
+
+                $auditeeResponse = $responses->get($question->id);
                 if ($auditResult?->compliance == 'Sesuai') {
                     $questions[$key] = $question;
                     $questions[$key]->response = (object) [
-                        'description' => optional($response)->description,
-                        'success_factors' => optional($response)->success_factors,
+                        'description' => $response && $response->description
+                            ? $response->description
+                            : $auditResult->description,
+
+                        'success_factors' => $response && $response->success_factors
+                            ? $response->success_factors
+                            : $auditeeResponse->notes,
+
                     ];
                 }
             }
@@ -285,16 +309,25 @@ class SurveyController extends Controller
         $showInstrument = isset($model->user);
         $questions = [];
         if ($showInstrument) {
+              $responses = SurveyResponse::where('instrument_id', $instrument->id)
+                ->where('user_id', $model->user_id)
+                ->whereIn('question_id', $instrument->questions->pluck('id'))
+                ->get()
+                ->keyBy('question_id');
             foreach ($instrument->questions as $key => $question) {
                 $response = $model->noncomplianceResults->firstWhere('question_id', $question->id);
                 $auditResult = $model->auditResults->firstWhere('question_id', $question->id);
+                $auditeeResponse = $responses->get($question->id);
+
                 if ($auditResult?->compliance == 'Tidak Sesuai') {
                     $questions[$key] = $question;
                     $questions[$key]->response = (object) [
-                        'description' => optional($response)->description,
+                        'description' => $response && $response->description
+                            ? $response->description
+                            : $auditResult->description,
                         'category' => optional($response)->category,
                         'kts_category' => optional($response)->kts_category,
-                        'barriers' => optional($response)->barriers,
+                        'barriers' => $response && $response->barriers ? $response->barriers : $auditeeResponse->notes,
                     ];
                 }
             }
@@ -427,6 +460,7 @@ class SurveyController extends Controller
                 $response = $model->PTPs->firstWhere('question_id', $question->id);
                 $auditResult = $model->auditResults->firstWhere('question_id', $question->id);
                 $complianceResult = $model->complianceResults->firstWhere('question_id', $question->id);
+                
                 if ($auditResult?->compliance == 'Sesuai') {
                     $questions[$key] = $question;
                     $questions[$key]->response = (object) [

@@ -15,6 +15,7 @@ class Question extends Model
         'text',
         'indicator_id',
         'indicator',
+        'desc',
     ];
 
     public function getRouteKeyName(): string

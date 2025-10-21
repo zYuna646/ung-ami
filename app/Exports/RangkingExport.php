@@ -33,7 +33,9 @@ class RangkingExport implements FromCollection, WithHeadings, WithStyles, WithCo
             "Sesuai",
             "Tidak Sesuai",
             "Total",
-            "Capaian Kinerja (%)"
+            "Capaian Kinerja (%)",
+            "Total Score",
+            "Score Percentage (%)"
         ];
     }
 
@@ -46,6 +48,8 @@ class RangkingExport implements FromCollection, WithHeadings, WithStyles, WithCo
             'D' => 10, // Tidak Sesuai
             'E' => 10, // Total
             'F' => 15, // Capaian Kinerja
+            'G' => 15, // Total Score
+            'H' => 15, // Score Percentage
         ];
     }
 
@@ -65,14 +69,14 @@ class RangkingExport implements FromCollection, WithHeadings, WithStyles, WithCo
                     'size' => 12
                 ],
             ],
-            'A1:G1' => [
+            'A1:H1' => [
                 'borders' => [
                     'allBorders' => [
                         'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                     ],
                 ],
             ],
-            'A2:G1000' => [
+            'A2:H1000' => [
                 'borders' => [
                     'allBorders' => [
                         'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
@@ -101,6 +105,8 @@ class RangkingExport implements FromCollection, WithHeadings, WithStyles, WithCo
                 $program['Tidak Sesuai'],
                 $program['total'],
                 $program['score'],
+                $program['score_points'],
+                $program['score_percentage']
             ];
         });
     }

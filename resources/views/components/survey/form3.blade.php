@@ -37,6 +37,7 @@
 							<tr class="bg-gray-100">
 								<th class="border px-4 py-2">Check List</th>
 								<th class="border px-4 py-2">Butir Pertanyaan</th>
+								<th class="border px-4 py-2">Indikator</th>
 								<th class="border px-4 py-2">Deskripsi Hasil Audit</th>
 								<th class="border px-4 py-2">Faktor Pendukung Keberhasilan</th>
 							</tr>
@@ -46,6 +47,7 @@
 								<tr>
 									<td class="border px-4 py-2 text-center">{{ $question->code }}</td>
 									<td class="border px-4 py-2">{{ $question->text }}</td>
+									<td class="border px-4 py-2">{{ $question->desc }}</td>
 									<td class="border px-4 py-2">{{ $question->response->description ?? '' }}</td>
 									<td class="border px-4 py-2">{{ $question->response->success_factors ?? '' }}</td>
 								</tr>
@@ -61,6 +63,10 @@
 							<div>
 								<h3 class="font-semibold">Butir Pertanyaan</h3>
 								<p class="mb-1 text-lg">{{ $question->text }}</p>
+								@if($question->desc)
+									<h4 class="font-medium text-sm mb-1">Indikator</h4>
+									<p class="mb-3 text-sm">{{ $question->desc }}</p>
+								@endif
 								<p class="text-sm text-gray-600">{{ $question->units->pluck('unit_name')->implode(', ') }}</p>
 							</div>
 
@@ -71,8 +77,9 @@
 
 							<div class="grid grid-cols-2 gap-3">
 								<div>
-									{{-- Deskripsi Hasil Audit --}}
+									<label for="description_{{ $question->id }}" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi Hasil Audit</label>
 									<x-form.textarea
+										id="description_{{ $question->id }}"
 										name="description[{{ $question->id }}]"
 										placeholder="Deskripsi Hasil Audit"
 										:inputClass="$errors->has($descriptionFieldName) ? 'border-red-700' : ''"
@@ -84,11 +91,12 @@
 									@enderror
 								</div>
 								<div>
-									{{-- Faktor Pendukung Keberhasilan --}}
+									<label for="success_factors_{{ $question->id }}" class="block text-sm font-medium text-gray-700 mb-1">Faktor Pendukung Keberhasilan</label>
 									<x-form.textarea
+										id="success_factors_{{ $question->id }}"
 										name="success_factors[{{ $question->id }}]"
 										placeholder="Faktor Pendukung Keberhasilan"
-										:inputClass="$errors->has($descriptionFieldName) ? 'border-red-700' : ''"
+										:inputClass="$errors->has($successFactorsFieldName) ? 'border-red-700' : ''"
 										:value="old($successFactorsFieldName) ?? $question->response->success_factors"
 										required
 									/>

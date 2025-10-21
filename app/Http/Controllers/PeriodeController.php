@@ -75,14 +75,24 @@ class PeriodeController extends Controller
         $total_rtm = Program::all()->count();
         $prodi = Program::all();
         // dd(Program::all()->co)
-
-        $data = Program::all()->map(function ($program) use ($question_id, $total) {
+        $total_score = $total * 4;
+        $data = Program::all()->map(function ($program) use ($question_id, $total, $total_score) {
             $compilance = ComplianceResult::whereIn('question_id', $question_id)->where('auditable_id', $program->id)->get();
             $noncompilance = NoncomplianceResult::whereIn('question_id', $question_id)->where('auditable_id', $program->id)->get();
             $ptps = PTP::whereIn('question_id', $question_id)->where('auditable_id', $program->id)->get();
             $ptks = PTK::whereIn('question_id', $question_id)->where('auditable_id', $program->id)->get();
             $sesuai = AuditResult::where('auditable_id', $program->id)->whereIn('question_id', $question_id)->where('compliance', 'Sesuai')->count();
             $tidak_sesuai = AuditResult::where('auditable_id', $program->id)->whereIn('question_id', $question_id)->where('compliance', 'Tidak Sesuai')->count();
+            $score_results = AuditResult::where('auditable_id', $program->id)->whereIn('question_id', $question_id)->get();
+            $score_points = $score_results
+                ->map(function ($item) {
+                    return is_numeric($item->amount_target) ? (float) $item->amount_target : 0;
+                })
+                ->sum();
+            $score_percentage = $score_points > 0
+                ? number_format(($score_points / $total_score) * 100, 2)
+                : 0;
+
             return [
                 'program' => $program,
                 'ptp' => $ptps->count(),
@@ -90,12 +100,15 @@ class PeriodeController extends Controller
                 'sesuai' => $sesuai,
                 'tidak_sesuai' => $tidak_sesuai,
                 'compilance' => $compilance->count(),
+                'score_results' => $score_results,
                 'noncompilance' => $noncompilance->count(),
                 'kts' => $noncompilance->where('category', 'KTS')->count(),
                 'obs' => $noncompilance->where('category', 'OBS')->count(),
+                'score_points' => $score_points,
+                'score_percentage' => $score_percentage,
                 'score' => $total > 0 ? number_format(($sesuai / $total) * 100, 2) : 0,
             ];
-        })->sortByDesc('score')->values();
+        })->sortByDesc('score_percentage')->values();
         // Proses pertanyaan dan hitung nilai
         foreach ($periode->instruments as $instrument) {
             foreach ($instrument->indicators as $indicator) {
@@ -170,7 +183,6 @@ class PeriodeController extends Controller
             }
         }
 
-
         // Proses pertanyaan dan hitung nilai
         foreach ($periode->instruments as $instrument) {
             foreach ($instrument->indicators as $indicator) {
@@ -203,8 +215,8 @@ class PeriodeController extends Controller
                     $score = $total > 0 ? number_format(($sesuai / count($auditable_id)) * 100, 2) : 0;
 
                     $instrumentKey = $question->indicator->instrument->name;
-                    
-                    
+
+
                     $rtm[$instrumentKey][] = [
                         'id' => $question->id,
                         'code' => $question->code,
@@ -246,7 +258,10 @@ class PeriodeController extends Controller
             }
         }
 
-        $data = Program::all()->map(function ($program) use ($question_id, $total) {
+        $total_score = $total * 4;
+
+
+        $data = Program::all()->map(function ($program) use ($question_id, $total, $total_score) {
             $compilance = ComplianceResult::whereIn('question_id', $question_id)->where('auditable_id', $program->id)->get();
             $noncompilance = NoncomplianceResult::whereIn('question_id', $question_id)->where('auditable_id', $program->id)->get();
             $ptps = PTP::whereIn('question_id', $question_id)->where('auditable_id', $program->id)->get();
@@ -278,14 +293,25 @@ class PeriodeController extends Controller
             $total_sum = $sesuai + $tidak_sesuai;
             $score = $total > 0 ? number_format(($sesuai / $total) * 100, 2) : 0;
 
+              $score_results = AuditResult::where('auditable_id', $program->id)->whereIn('question_id', $question_id)->get();
+            $score_points = $score_results
+                ->map(function ($item) {
+                    return is_numeric($item->amount_target) ? (float) $item->amount_target : 0;
+                })
+                ->sum();
+            $score_percentage = $score_points > 0
+                ? number_format(($score_points / $total_score) * 100, 2)
+                : 0;
             return [
                 'program' => $program,
                 'Tidak Sesuai' => $tidak_sesuai,
                 'Sesuai' => $sesuai,
                 'total' => $total_sum,
                 'score' => $score,
+                     'score_points' => $score_points,
+                'score_percentage' => $score_percentage,
             ];
-        })->sortByDesc('score')->values();
+        })->sortByDesc('score_percentage')->values();
 
 
         return Excel::download(new RangkingExport($data), 'ranking.xlsx');

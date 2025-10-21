@@ -18,10 +18,9 @@ class SubmitAuditResultsRequest extends FormRequest
         ];
 
         foreach ($this->instrument->questions as $question) {
-            $rules["description.$question->id"] = 'required';
-            $rules["amount_target.$question->id"] = 'required';
-            $rules["existence.$question->id"] = 'required';
-            $rules["compliance.$question->id"] = 'required';
+            $rules["description.$question->id"] = 'nullable';
+            $rules["amount_target.$question->id"] = 'nullable';
+            $rules["compliance.$question->id"] = 'nullable';
         }
 
         return $rules;
@@ -36,7 +35,6 @@ class SubmitAuditResultsRequest extends FormRequest
         foreach ($this->instrument->questions as $question) {
             $messages["description.$question->id.required"] = "Deskripsi Hasil Audit untuk pertanyaan '{$question->text}' harus diisi.";
             $messages["amount_target.$question->id.required"] = "Jumlah Target untuk pertanyaan '{$question->text}' harus diisi.";
-            $messages["existence.$question->id.required"] = "Keberadaan untuk pertanyaan '{$question->text}' harus diisi.";
             $messages["compliance.$question->id.required"] = "Kesesuaian Standar untuk pertanyaan '{$question->text}' harus diisi.";
         }
 

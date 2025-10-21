@@ -4,6 +4,7 @@
 			<tr>
 				<th>Kode</th>
 				<th>Pertanyaan</th>
+				<th>Indikator</th>
 				<th>Aksi</th>
 			</tr>
 		</thead>
@@ -12,6 +13,7 @@
 				<tr>
 					<td>{{ $question->code }}</td>
 					<td>{{ $question->question }}</td>
+					<td>{{ $question->desc }}</td>
 					<td>
 						<div class="flex gap-2">
 							<x-master.questions.edit :$question size="sm" />

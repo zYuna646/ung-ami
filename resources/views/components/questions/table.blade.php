@@ -4,6 +4,7 @@
 			<tr>
 				<th>Kode</th>
 				<th>Pertanyaan</th>
+				<th>Indikator</th>
 				<th>Area Audit</th>
 				<th>Aksi</th>
 			</tr>
@@ -13,6 +14,7 @@
 				<tr>
 					<td>{{ $question->code }}</td>
 					<td>{{ $question->text }}</td>
+					<td>{{ $question->desc }}</td>
 					<td>{{ $question->units->isNotEmpty() ? $question->units->pluck('unit_name')->implode(', ') : '-' }}</td>
 					<td>
 						<div class="flex flex-col gap-2 sm:flex-row">

@@ -16,7 +16,8 @@ class StoreMasterQuestionRequest extends FormRequest
         return [
             'code' => 'required',
             'question' => 'required',
-            'master_indicator_id' => 'required'
+            'master_indicator_id' => 'required',
+            'desc' => 'nullable'
         ];
     }
 

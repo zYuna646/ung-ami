@@ -17,12 +17,13 @@ class SubmitSurveyRequest extends FormRequest
 
         foreach ($this->instrument->questions as $question) {
             if ($this->user()->can('view', $question)) {
-                $rules["availability.$question->id"] = 'required';
-                $rules["notes.$question->id"] = 'required';
+                // Tidak wajib mengisi semua field
+                $rules["availability.$question->id"] = 'nullable';
+                $rules["notes.$question->id"] = 'nullable';
 
-                // Only require 'evidence' if 'availability' is set to 'Tersedia'
-                if ($this->input("availability.$question->id") === 'Tersedia') {
-                    $rules["evidence.$question->id"] = 'required|url';
+                // Hanya validasi URL jika evidence diisi dan availability adalah 'Tersedia'
+                if ($this->input("availability.$question->id") === 'Tersedia' && $this->has("evidence.$question->id") && !empty($this->input("evidence.$question->id"))) {
+                    $rules["evidence.$question->id"] = 'nullable|url';
                 }
             }
         }
