@@ -66,20 +66,16 @@ class ReportController extends Controller
         try {
             $data = $request->validated();
             $instruments = $program->instruments()->where('periode_id', $periode->id)->get();
-            $html = view('pdf.berita-acara', compact(['periode', 'program', 'instruments', 'data']))->render();
+            $pdf = Pdf::loadView('pdf.berita-acara', compact(['periode', 'program', 'instruments', 'data']))->setPaper('a4', 'portrait');
 
-            $filename = 'Berita Acara - AMI UNG ' . $program->program_name  . ' Tahun ' . $periode->year . '.doc';
-
-            return response($html)
-                ->header('Content-Type', 'application/msword')
-                ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
+            return $pdf->stream('Berita Acara - AMI UNG ' . $program->program_name  . ' Tahun ' . $periode->year . '.pdf');
         } catch (\Exception $e) {
             logger()->error($e->getMessage());
 
             return back()->withErrors(['error' => 'Terjadi kesalahan.']);
         }
     }
-
+    
     public function cover(Periode $periode, Program $program)
     {
         $instruments = $program->instruments()->where('periode_id', $periode->id)->get();

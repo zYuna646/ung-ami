@@ -1,31 +1,21 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Berita Acara - AMI UNG {{ $program->program_name }} Tahun {{ $periode->year }}</title>
-    <!--[if gte mso 9]>
-    <xml>
-        <w:WordDocument>
-            <w:View>Print</w:View>
-            <w:Zoom>100</w:Zoom>
-            <w:DoNotOptimizeForBrowser/>
-        </w:WordDocument>
-    </xml>
-    <![endif]-->
     <style>
-        /* Word-specific page setup */
-        @page Section1 {
-            size: 595.3pt 841.9pt; /* A4 */
-            margin: 2cm 2cm 2cm 2cm;
-            mso-page-orientation: portrait;
+        @page {
+            margin-top: 2cm;
+            margin-bottom: 2cm;
+            margin-left: 2cm;
+            margin-right: 2cm;
         }
-        div.Section1 { page: Section1; }
 
         body {
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Helvetica', sans-serif;
             margin: 0;
         }
 
@@ -36,11 +26,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            mso-table-lspace: 0pt;
-            mso-table-rspace: 0pt;
         }
-
-        img { -ms-interpolation-mode: bicubic; }
 
         .kop-surat img {
             width: 80px;
@@ -117,32 +103,17 @@
         .page-break {
             page-break-after: always;
         }
-
-        .signoff th,
-        .signoff td {
-            border: 1px solid #000;
-            padding: 10px;
-            text-align: center;
-            vertical-align: top;
-        }
-
-        .signature-box {
-            height: 70px;
-            border-bottom: 1px solid #000;
-            margin: 16px 0 8px 0;
-        }
     </style>
 </head>
 
 <body>
-    <div class="Section1">
     <table class="kop-surat">
         <tr>
             <td style="width: 20%;">
-                <img src="{{ asset('images/ung.png') }}" alt="Logo">
+                <img src="{{ public_path('images/ung.png') }}" alt="Logo">
             </td>
             <td class="kop-header" style="width: 60%;">
-                <h4>KEMENTERIAN PENDIDIKAN KEBUDAYAAN RISET DAN TEKNOLOGI<br>UNIVERSITAS NEGERI GORONTALO</h4>
+                <h4>KEMENTRIAN PENDIDIKAN TINGGI, SAINS, DAN TEKNOLOGI<br>UNIVERSITAS NEGERI GORONTALO</h4>
                 <p>Jalan Jendral Sudirman No.6 Kota Gorontalo, Telp: 0435-821698</p>
             </td>
             <td class="kop-no-doc" style="width: 20%;">
@@ -171,28 +142,24 @@
 
         </tr>
     </table>
+    <h5 class="heading-1">
+        DAFTAR HADIR <br>
+        PELAKSANAAN AUDIT MUTU INTERNAL
+    </h5>
     <table class="audit-detail">
+        <tr>
+            <th>Standar</th>
+            <td>:</td>
+            <td>
+                {{ implode(', ', $instruments->pluck('name')->toArray()) }}
+            </td>
+        </tr>
         <tr>
             <th>Area Audit</th>
             <td>:</td>
             <td>
                 {{ $instruments->flatMap(function ($instrument) {return $instrument->units->pluck('unit_name');})->unique()->implode(', ') }}
             </td>
-        </tr>
-        <tr>
-            <th>Auditee</th>
-            <td>:</td>
-            <td>Pelaksana Standar</td>
-        </tr>
-        <tr>
-            <th>Auditor</th>
-            <td>:</td>
-            <td>Ketua Tim Auditor; Anggota Tim Auditor</td>
-        </tr>
-        <tr>
-            <th>Lingkup Audit</th>
-            <td>:</td>
-            <td>{{ implode(', ', $instruments->pluck('name')->toArray()) }}</td>
         </tr>
         <tr>
             <th>Tanggal Audit</th>
@@ -206,76 +173,99 @@
                 {{ $program->department->faculty->faculty_name }}, Universitas Negeri Gorontalo</td>
         </tr>
     </table>
-    <p style="text-align: justify; margin-top: 16px;">
-        Dari hasil pelaksanaan Audit lapangan atas pelaksanaan standar
-        <strong>{{ implode(', ', $instruments->pluck('name')->toArray()) }}</strong>,
-        diperoleh hasil sebagai berikut:
-    </p>
-    <ol>
-        <li>Kesesuaian (petunjuk penulisan dijelaskan apa saja temuan hasil AMI Kesesuaian)</li>
-        <li>Observasi ditemukan (petunjuk penulisan dijelaskan apa saja temuan hasil AMI Observasi)</li>
-        <li>KTS Minor ditemukan (petunjuk penulisan dijelaskan apa saja temuan hasil AMI KTS Minor)</li>
-        <li>KTS Mayor ditemukan (petunjuk penulisan dijelaskan apa saja temuan hasil AMI KTS Mayor)</li>
-    </ol>
-
-    <p style="text-align: justify;">
-        Dari hasil temuan AMI telah disampaikan rekomendasi perbaikan/koreksi untuk temuan yang bersifat Observasi dan KTS Minor sebagai berikut:
-    </p>
-    <ol>
-        <li>Rekomendasi untuk temuan Observasi</li>
-        <li>Rekomendasi untuk temuan KTS Minor</li>
-    </ol>
-
-    <p style="text-align: justify;">
-        (Jika ada temuan Observasi yang telah ditindaklanjuti) Dalam pelaksanaan Audit Lapangan temuan Observasi yang telah ditindaklanjuti sebagai berikut:
-    </p>
-    <ol>
-        <li>(tuliskan RTL yang telah direalisasikan)</li>
-        <li>(tuliskan RTL yang telah direalisasikan)</li>
-    </ol>
-
-    <p style="text-align: justify;">
-        (Jika ada temuan KTS Minor yang telah ditindaklanjuti) Dalam pelaksanaan Audit Lapangan temuan KTS Minor yang telah ditindaklanjuti sebagai berikut:
-    </p>
-    <ol>
-        <li>(tuliskan RTL yang telah direalisasikan)</li>
-        <li>(tuliskan RTL yang telah direalisasikan)</li>
-    </ol>
-
-    <p style="text-align: justify;">
-        Demikian berita acara pelaksanaan Audit Lapangan ini dibuat dengan sebenarnya setelah dibaca dan diketahui oleh auditor dan auditee.
-    </p>
-
-    <br>
-    <table class="signoff">
+    <table class="daftar-hadir">
         <thead>
             <tr>
-                <th>Disusun</th>
-                <th>Disetujui</th>
-                <th>Validasi</th>
+                <th>Identitas</th>
+                <th>Nama</th>
+                <th>Tanda Tangan</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>
-                    Tanda tangan
-                    <div class="signature-box"></div>
-                    Tanggal: ______________________
-                </td>
-                <td>
-                    Tanda tangan
-                    <div class="signature-box"></div>
-                    Tanggal: ______________________
-                </td>
-                <td>
-                    Tanda tangan
-                    <div class="signature-box"></div>
-                    Tanggal: ______________________
-                </td>
+                <td>Pelaksana Standar</td>
+                <td>Koordinator Program Studi {{ $program->program_name }} / {{ $data['kaprodi_name'] }}</td>
+                <td></td>
             </tr>
+
+            @php
+                // Mengambil data tim auditor dengan cara yang sama seperti di InstrumentController
+                // Menggunakan Team::latest()->get() untuk konsistensi dengan InstrumentController
+                $allTeams = \App\Models\Team::latest()->get();
+                
+                // Filter tim yang terkait dengan program dan instrumen saat ini
+                $relevantTeams = collect();
+                foreach ($instruments as $instrument) {
+                    $entityTeams = $instrument->entityTeams()
+                        ->where('entity_id', $program->id)
+                        ->where('entity_type', 'Program')
+                        ->get();
+                    
+                    foreach ($entityTeams as $entityTeam) {
+                        $team = $allTeams->firstWhere('id', $entityTeam->team_id);
+                        if ($team) {
+                            $relevantTeams->push($team);
+                        }
+                    }
+                }
+                
+                // Mengambil ketua tim auditor
+                $chiefs = $relevantTeams->map(function ($team) {
+                    return $team->chief->user ?? null;
+                })
+                ->filter()
+                ->unique('id')
+                ->values();
+                
+                // Mengambil anggota tim auditor
+                $members = $relevantTeams->flatMap(function ($team) {
+                    return $team->members->pluck('user') ?? collect();
+                })
+                ->filter()
+                ->unique('id')
+                ->values();
+            @endphp
+
+            @if ($chiefs->isNotEmpty())
+                <tr>
+                    <td rowspan="{{ $chiefs->count() }}">Ketua Tim Auditor</td>
+                    @foreach ($chiefs as $index => $chief)
+                        @if ($index == 0)
+                            <td>{{ $chief->name ?? '-' }}</td>
+                            <td></td>
+                        @else
+                </tr>
+                <tr>
+                    <td>{{ $chief->name ?? '-' }}</td>
+                    <td></td>
+            @endif
+            @endforeach
+            </tr>
+            @endif
+
+            @if ($members->isNotEmpty())
+                <tr>
+                    <td rowspan="{{ $members->count() }}">Anggota Tim Auditor</td>
+                    @foreach ($members as $index => $member)
+                        @if ($index == 0)
+                            <td>{{ $member->name }}</td>
+                            <td></td>
+                        @else
+                </tr>
+                <tr>
+                    <td>{{ $member->name }}</td>
+                    <td></td>
+            @endif
+            @endforeach
+            </tr>
+        @else
+            <tr>
+                <td>Anggota Tim Auditor</td>
+                <td>-</td>
+                <td></td>
+            </tr>
+            @endif
         </tbody>
     </table>
-    </div>
 
-    </body>
-    </html>
+</html>

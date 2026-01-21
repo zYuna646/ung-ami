@@ -6,7 +6,6 @@ use App\Models\Auditor;
 use App\Models\AuditResult;
 use App\Models\Department;
 use App\Models\Faculty;
-use App\Models\Fakultas;
 use App\Models\Instrument;
 use App\Models\MasterInstrument;
 use App\Models\NoncomplianceResult;
@@ -17,6 +16,7 @@ use App\Models\PTP;
 use App\Models\Unit;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use OpenApi\Annotations as OA;
 /**
  * @OA\Info(
@@ -840,12 +840,53 @@ class ApiController extends Controller
             $auditable_id = [];
             $total_rtm = Program::all()->count();
             $periode = Periode::find($id);
+            $instrument_periode = Instrument::where('periode_id', $id)->get();
+            $instrument_prodi = [];
+            foreach ($instrument_periode as $key => $instrument) {
+                $areas = $instrument->units
+                    ->concat($instrument->faculties)
+                    ->concat($instrument->programs)
+                    ->filter(function ($item) {
+                        return $item->user !== null;
+                    })
+                    ->map(function ($item) {
+                        return $item->setAttribute('model_type', class_basename($item));
+                    })
+                    ->values();
+                foreach ($areas as $area) {
+                    $instrument_prodi[] = $area->id;
+                }
+            }
+            $instrument_prodi = array_values(array_unique($instrument_prodi));
+            $total_rtm = Program::whereIn('id', $instrument_prodi)->count();
+            Log::info($instrument_prodi);
 
+
+            $department = Department::find($fakultas_id);
+            $fakultas_id = $department->faculty_id;
             if ($fakultas_id != 'null') {
                 // Perbaiki "pluc" menjadi "pluck" dan konversi ke array
-                $auditable_id = Department::find($fakultas_id)->programs->pluck('id')->toArray();
-                $total_rtm = Department::find($fakultas_id)->programs()->count();
+                $auditable_id = Program::whereIn('id', $instrument_prodi)
+                    ->whereHas('department', function ($query) use ($fakultas_id) {
+                        $query->where('faculty_id', $fakultas_id);
+                    })
+                    ->pluck('id')
+                    ->toArray();
+
+                $total_rtm = Program::whereIn('id', $instrument_prodi)
+                    ->whereHas('department', function ($query) use ($fakultas_id) {
+                        $query->where('faculty_id', $fakultas_id);
+                    })
+                    ->count();
             }
+
+            Log::info("data", [
+                'areas' => $instrument_prodi,
+                'total_rtm' => $total_rtm,
+                'areas_count' => count($instrument_prodi),
+                'auditable_id' => $auditable_id,
+                "total auditable" => count($auditable_id)
+            ]);
 
             // Hitung total pertanyaan
             $total = 0;
@@ -888,13 +929,25 @@ class ApiController extends Controller
 
                         $tidakSesuaiIds = $queryTidakSesuai->pluck('auditable_id', 'id')->toArray();
 
+                        $selisih = abs(($sesuaiCount + $tidakSesuaiCount) - $total_rtm);
+
+
+                        $tidakSesuaiCount += $selisih;
+                        Log::info("total", [
+                            "sesuai" => $sesuaiCount,
+                            "tidak sesuai" => $tidakSesuaiCount,
+                            "selisih" => $selisih,
+                            "total" => $sesuaiCount + $tidakSesuaiCount
+                        ]);
 
                         $rtm[$instrumentKey][] = [
                             'id' => $question->id,
                             'code' => $question->code,
                             'desc' => $question->text,
                             'sesuai' => $sesuaiIds,
+                            'sesuai_count' => $sesuaiCount,
                             'tidak_sesuai' => $tidakSesuaiIds,
+                            'tidak_sesuai_count' => $tidakSesuaiCount,
                             'score' => $total_rtm > 0 ? number_format(($sesuaiCount / $total_rtm) * 100, 2) : 0
                         ];
 
