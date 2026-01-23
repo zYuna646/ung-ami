@@ -862,9 +862,7 @@ class ApiController extends Controller
             Log::info($instrument_prodi);
 
 
-            $department = Department::find($fakultas_id);
-            $fakultas_id = $department->faculty_id;
-            if ($fakultas_id != 'null') {
+            if (!is_null($fakultas_id) && $fakultas_id !== 'null' && $fakultas_id !== '') {
                 // Perbaiki "pluc" menjadi "pluck" dan konversi ke array
                 $auditable_id = Program::whereIn('id', $instrument_prodi)
                     ->whereHas('department', function ($query) use ($fakultas_id) {
