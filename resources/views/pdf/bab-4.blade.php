@@ -133,8 +133,8 @@
 				<tr>
 					<th>Auditor</th>
 					<td>
-						: Ketua: {{ $instrument->entityTeam($model->user->entityId(), $model->user->entityType())->chief->user->name ?? '-' }} <br>
-						: Anggota: {{ optional($instrument->entityTeam($model->user->entityId(), $model->user->entityType()))->members?->pluck('user.name')->implode(', ') ?? '-' }}
+						: Ketua: {{ $instrument->entityTeam($program->user->entityId(), $program->user->entityType())->chief->user->name ?? '-' }} <br>
+						: Anggota: {{ optional($instrument->entityTeam($program->user->entityId(), $program->user->entityType()))->members?->pluck('user.name')->implode(', ') ?? '-' }}
 					</td>
 				</tr>
 				<tr>
@@ -155,9 +155,9 @@
 				</tr>
 				@foreach ($instrument->questions as $question)
 					@php
-						$response = $model->PTKs->firstWhere('question_id', $question->id);
-						$auditResult = $model->auditResults->firstWhere('question_id', $question->id);
-						$noncomplianceResult = $model->noncomplianceResults->firstWhere('question_id', $question->id);
+						$response = $program->PTKs->firstWhere('question_id', $question->id);
+						$auditResult = $program->auditResults->firstWhere('question_id', $question->id);
+						$noncomplianceResult = $program->noncomplianceResults->firstWhere('question_id', $question->id);
 					@endphp
 					@if ($auditResult?->compliance == 'Tidak Sesuai' && $noncomplianceResult?->category == 'KTS')
 						<tr>
@@ -264,8 +264,8 @@
 				<tr>
 					<th>Auditor</th>
 					<td>
-						: Ketua: {{ $instrument->entityTeam($model->user->entityId(), $model->user->entityType())->chief->user->name ?? '-' }} <br>
-						: Anggota: {{ optional($instrument->entityTeam($model->user->entityId(), $model->user->entityType()))->members?->pluck('user.name')->implode(', ') ?? '-' }}
+						: Ketua: {{ $instrument->entityTeam($program->user->entityId(), $program->user->entityType())->chief->user->name ?? '-' }} <br>
+						: Anggota: {{ optional($instrument->entityTeam($program->user->entityId(), $program->user->entityType()))->members?->pluck('user.name')->implode(', ') ?? '-' }}
 					</td>
 				</tr>
 				<tr>
@@ -285,9 +285,9 @@
 				</tr>
 				@foreach ($instrument->questions as $question)
 					@php
-						$response = $model->PTPs->firstWhere('question_id', $question->id);
-						$auditResult = $model->auditResults->firstWhere('question_id', $question->id);
-						$complianceResult = $model->complianceResults->firstWhere('question_id', $question->id);
+						$response = $program->PTPs->firstWhere('question_id', $question->id);
+						$auditResult = $program->auditResults->firstWhere('question_id', $question->id);
+						$complianceResult = $program->complianceResults->firstWhere('question_id', $question->id);
 					@endphp
 					@if ($auditResult?->compliance == 'Sesuai')
 						<tr>

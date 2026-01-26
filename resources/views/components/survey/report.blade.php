@@ -86,7 +86,7 @@
                                 class="absolute right-0 z-10 mt-2 w-32 rounded-md bg-white shadow-lg">
                                 <ul class="py-1">
                                     <li>
-                                        <a href="{{ route('report.cover', [$periode->uuid, $program['program']->uuid, 'area' => $program['program']->user->entityId() . $program['program']->user->entityType()]) }}"
+                                        <a href="{{ route('report.cover', [$periode->uuid, $program['program']->uuid]) }}"
                                             target="_blank"
                                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                             COVER
@@ -94,7 +94,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('report.bab1', [$periode->uuid, $program['program']->uuid, 'area' => $program['program']->user->entityId() . $program['program']->user->entityType()]) }}"
+                                        <a href="{{ route('report.bab1', [$periode->uuid, $program['program']->uuid]) }}"
                                             target="_blank"
                                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                             BAB I
@@ -102,7 +102,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('report.bab2', [$periode->uuid, $program['program']->uuid, 'area' => $program['program']->user->entityId() . $program['program']->user->entityType()]) }}"
+                                        <a href="{{ route('report.bab2', [$periode->uuid, $program['program']->uuid]) }}"
                                             target="_blank"
                                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                             BAB II
@@ -110,7 +110,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('report.bab3', [$periode->uuid, $program['program']->uuid, 'area' => $program['program']->user->entityId() . $program['program']->user->entityType()]) }}"
+                                        <a href="{{ route('report.bab3', [$periode->uuid, $program['program']->uuid]) }}"
                                             target="_blank"
                                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                             BAB III
@@ -118,7 +118,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('report.bab4', [$periode->uuid, $program['program']->uuid, 'area' => $program['program']->user->entityId() . $program['program']->user->entityType()]) }}"
+                                        <a href="{{ route('report.bab4', [$periode->uuid, $program['program']->uuid]) }}"
                                             target="_blank"
                                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                             BAB IV
@@ -126,7 +126,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('report.bab5', [$periode->uuid, $program['program']->uuid, 'area' => $program['program']->user->entityId() . $program['program']->user->entityType()]) }}"
+                                        <a href="{{ route('report.bab5', [$periode->uuid, $program['program']->uuid]) }}"
                                             target="_blank"
                                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                             BAB V
@@ -134,7 +134,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('report.lampiran', [$periode->uuid, $program['program']->uuid, 'area' => $program['program']->user->entityId() . $program['program']->user->entityType()]) }}"
+                                        <a href="{{ route('report.lampiran', [$periode->uuid, $program['program']->uuid]) }}"
                                             target="_blank"
                                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                             LAMPIRAN
@@ -142,7 +142,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('report.full', [$periode->uuid, $program['program']->uuid, 'area' => $program['program']->user->entityId() . $program['program']->user->entityType()]) }}"
+                                        <a href="{{ route('report.full', [$periode->uuid, $program['program']->uuid]) }}"
                                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                             FULL
                                             <i class="fa-solid fa-download float-end ms-2"></i>

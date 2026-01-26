@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ModelHelper;
 use App\Http\Requests\GenerateBeritaAcaraRequest;
 use App\Http\Requests\UploadAuditReport;
 use App\Models\Periode;
@@ -67,9 +66,7 @@ class ReportController extends Controller
         try {
             $data = $request->validated();
             $instruments = $program->instruments()->where('periode_id', $periode->id)->get();
-            $auditeeArea = $program->user ? ($program->user->entityId() . $program->user->entityType()) : null;
-            $model = ModelHelper::getModelByArea($request->area ?? $auditeeArea);
-            $pdf = Pdf::loadView('pdf.berita-acara', compact(['periode', 'program', 'instruments', 'data', 'model']))->setPaper('a4', 'portrait');
+            $pdf = Pdf::loadView('pdf.berita-acara', compact(['periode', 'program', 'instruments', 'data']))->setPaper('a4', 'portrait');
 
             return $pdf->stream('Berita Acara - AMI UNG ' . $program->program_name  . ' Tahun ' . $periode->year . '.pdf');
         } catch (\Exception $e) {
@@ -79,43 +76,35 @@ class ReportController extends Controller
         }
     }
     
-    public function cover(Request $request, Periode $periode, Program $program)
+    public function cover(Periode $periode, Program $program)
     {
         $instruments = $program->instruments()->where('periode_id', $periode->id)->get();
-        $auditeeArea = $program->user ? ($program->user->entityId() . $program->user->entityType()) : null;
-        $model = ModelHelper::getModelByArea($request->area ?? $auditeeArea);
-        $pdf = Pdf::loadView('pdf.cover', compact(['periode', 'program', 'instruments', 'model']))->setPaper('a4', 'portrait');
+        $pdf = Pdf::loadView('pdf.cover', compact(['periode', 'program', 'instruments']))->setPaper('a4', 'portrait');
 
         return $pdf->stream('COVER - Laporan AMI ' . $program->program_name  . ' Tahun ' . $periode->year . '.pdf');
     }
 
-    public function bab1(Request $request, Periode $periode, Program $program)
+    public function bab1(Periode $periode, Program $program)
     {
         $instruments = $program->instruments()->where('periode_id', $periode->id)->get();
-        $auditeeArea = $program->user ? ($program->user->entityId() . $program->user->entityType()) : null;
-        $model = ModelHelper::getModelByArea($request->area ?? $auditeeArea);
-        $pdf = Pdf::loadView('pdf.bab-1', compact('periode', 'program', 'instruments', 'model'))->setPaper('a4', 'portrait');
+        $pdf = Pdf::loadView('pdf.bab-1', compact('periode', 'program', 'instruments'))->setPaper('a4', 'portrait');
 
         return $pdf->stream('BAB I - Laporan AMI ' . $program->program_name  . ' Tahun ' . $periode->year . '.pdf');
     }
 
-    public function bab2(Request $request, Periode $periode, Program $program)
+    public function bab2(Periode $periode, Program $program)
     {
         $instruments = $program->instruments()->where('periode_id', $periode->id)->get();
-        $auditeeArea = $program->user ? ($program->user->entityId() . $program->user->entityType()) : null;
-        $model = ModelHelper::getModelByArea($request->area ?? $auditeeArea);
-        $pdf = Pdf::loadView('pdf.bab-2', compact('periode', 'program', 'instruments', 'model'))->setPaper('a4', 'portrait');
+        $pdf = Pdf::loadView('pdf.bab-2', compact('periode', 'program', 'instruments'))->setPaper('a4', 'portrait');
 
         return $pdf->stream('BAB II - Laporan AMI ' . $program->program_name  . ' Tahun ' . $periode->year . '.pdf');
     }
 
-    public function bab3(Request $request, Periode $periode, Program $program)
+    public function bab3(Periode $periode, Program $program)
     {
         $instruments = $program->instruments()->where('periode_id', $periode->id)->get();
-        $auditeeArea = $program->user ? ($program->user->entityId() . $program->user->entityType()) : null;
-        $model = ModelHelper::getModelByArea($request->area ?? $auditeeArea);
 
-        $part1 = Pdf::loadView('pdf.bab-3-part-1', compact('periode', 'program', 'instruments', 'model'))
+        $part1 = Pdf::loadView('pdf.bab-3-part-1', compact('periode', 'program', 'instruments'))
             ->setPaper('a4', 'landscape')
             ->output();
 
@@ -139,8 +128,8 @@ class ReportController extends Controller
             $currentIndex = count($kriteria) - 1;
 
             foreach ($instrument->questions as $question) {
-                $auditResult = $model?->auditResults?->firstWhere('question_id', $question->id);
-                $noncomplianceResult = $model?->noncomplianceResults?->firstWhere('question_id', $question->id);
+                $auditResult = $program->auditResults->firstWhere('question_id', $question->id);
+                $noncomplianceResult = $program->noncomplianceResults->firstWhere('question_id', $question->id);
 
                 if ($auditResult?->compliance == 'Sesuai') {
                     $kriteria[$currentIndex]['count']['kesesuaian']++;
@@ -194,21 +183,17 @@ class ReportController extends Controller
         return $pdf->stream();
     }
 
-    public function bab4(Request $request, Periode $periode, Program $program)
+    public function bab4(Periode $periode, Program $program)
     {
         $instruments = $program->instruments()->where('periode_id', $periode->id)->get();
-        $auditeeArea = $program->user ? ($program->user->entityId() . $program->user->entityType()) : null;
-        $model = ModelHelper::getModelByArea($request->area ?? $auditeeArea);
-        $pdf = Pdf::loadView('pdf.bab-4', compact('periode', 'program', 'instruments', 'model'))->setPaper('a4', 'landscape');
+        $pdf = Pdf::loadView('pdf.bab-4', compact('periode', 'program', 'instruments'))->setPaper('a4', 'landscape');
 
         return $pdf->stream('BAB IV - Laporan AMI ' . $program->program_name  . ' Tahun ' . $periode->year . '.pdf');
     }
 
-    public function bab5(Request $request, Periode $periode, Program $program)
+    public function bab5(Periode $periode, Program $program)
     {
         $instruments = $program->instruments()->where('periode_id', $periode->id)->get();
-        $auditeeArea = $program->user ? ($program->user->entityId() . $program->user->entityType()) : null;
-        $model = ModelHelper::getModelByArea($request->area ?? $auditeeArea);
 
         $kriteria = [];
         $totalKesesuaian = 0;
@@ -230,8 +215,8 @@ class ReportController extends Controller
             $currentIndex = count($kriteria) - 1;
 
             foreach ($instrument->questions as $question) {
-                $auditResult = $model?->auditResults?->firstWhere('question_id', $question->id);
-                $noncomplianceResult = $model?->noncomplianceResults?->firstWhere('question_id', $question->id);
+                $auditResult = $program->auditResults->firstWhere('question_id', $question->id);
+                $noncomplianceResult = $program->noncomplianceResults->firstWhere('question_id', $question->id);
 
                 if ($auditResult?->compliance == 'Sesuai') {
                     $kriteria[$currentIndex]['count']['kesesuaian']++;
@@ -271,45 +256,41 @@ class ReportController extends Controller
             ? number_format(($totalKesesuaian / $totalQuestions) * 100, 1)
             : 0;
 
-        $pdf = Pdf::loadView('pdf.bab-5', compact(['periode', 'program', 'instruments', 'kriteria', 'lowestCompliance', 'averageCompliance', 'model']))->setPaper('a4', 'portrait');
+        $pdf = Pdf::loadView('pdf.bab-5', compact(['periode', 'program', 'instruments', 'kriteria', 'lowestCompliance', 'averageCompliance']))->setPaper('a4', 'portrait');
 
         return $pdf->stream('BAB V - Laporan AMI ' . $program->program_name  . ' Tahun ' . $periode->year . '.pdf');
     }
 
-    public function lampiran(Request $request, Periode $periode, Program $program)
+    public function lampiran(Periode $periode, Program $program)
     {
         $instruments = $program->instruments()->where('periode_id', $periode->id)->get();
-        $auditeeArea = $program->user ? ($program->user->entityId() . $program->user->entityType()) : null;
-        $model = ModelHelper::getModelByArea($request->area ?? $auditeeArea);
-        $pdf = Pdf::loadView('pdf.lampiran', compact('periode', 'program', 'instruments', 'model'))->setPaper('a4', 'portrait');
+        $pdf = Pdf::loadView('pdf.lampiran', compact('periode', 'program', 'instruments'))->setPaper('a4', 'portrait');
 
         return $pdf->stream('Lampiran - Laporan AMI ' . $program->program_name  . ' Tahun ' . $periode->year . '.pdf');
     }
 
-    public function full(Request $request, Periode $periode, Program $program)
+    public function full(Periode $periode, Program $program)
     {
         $instruments = $program->instruments()->where('periode_id', $periode->id)->get();
-        $auditeeArea = $program->user ? ($program->user->entityId() . $program->user->entityType()) : null;
-        $model = ModelHelper::getModelByArea($request->area ?? $auditeeArea);
 
         $pdfMerger = PDFMerger::init();
 
-        $cover = Pdf::loadView('pdf.cover', compact('periode', 'program', 'model'))
+        $cover = Pdf::loadView('pdf.cover', compact('periode', 'program'))
             ->setPaper('a4', 'portrait')
             ->output();
         $pdfMerger->addString($cover);
 
-        $bab1 = Pdf::loadView('pdf.bab-1', compact('periode', 'program', 'model'))
+        $bab1 = Pdf::loadView('pdf.bab-1', compact('periode', 'program'))
             ->setPaper('a4', 'portrait')
             ->output();
         $pdfMerger->addString($bab1);
 
-        $bab2 = Pdf::loadView('pdf.bab-2', compact('periode', 'program', 'model'))
+        $bab2 = Pdf::loadView('pdf.bab-2', compact('periode', 'program'))
             ->setPaper('a4', 'portrait')
             ->output();
         $pdfMerger->addString($bab2);
 
-        $bab3Part1 = Pdf::loadView('pdf.bab-3-part-1', compact('periode', 'program', 'instruments', 'model'))
+        $bab3Part1 = Pdf::loadView('pdf.bab-3-part-1', compact('periode', 'program', 'instruments'))
             ->setPaper('a4', 'landscape')
             ->output();
 
@@ -333,8 +314,8 @@ class ReportController extends Controller
             $currentIndex = count($kriteria) - 1;
 
             foreach ($instrument->questions as $question) {
-                $auditResult = $model?->auditResults?->firstWhere('question_id', $question->id);
-                $noncomplianceResult = $model?->noncomplianceResults?->firstWhere('question_id', $question->id);
+                $auditResult = $program->auditResults->firstWhere('question_id', $question->id);
+                $noncomplianceResult = $program->noncomplianceResults->firstWhere('question_id', $question->id);
 
                 if ($auditResult?->compliance == 'Sesuai') {
                     $kriteria[$currentIndex]['count']['kesesuaian']++;
@@ -380,17 +361,17 @@ class ReportController extends Controller
         $pdfMerger->addString($bab3Part1);
         $pdfMerger->addString($bab3Part2);
 
-        $bab4 = Pdf::loadView('pdf.bab-4', compact('periode', 'program', 'instruments', 'model'))
+        $bab4 = Pdf::loadView('pdf.bab-4', compact('periode', 'program', 'instruments'))
             ->setPaper('a4', 'landscape')
             ->output();
         $pdfMerger->addString($bab4);
 
-        $bab5 = Pdf::loadView('pdf.bab-5', compact(['periode', 'program', 'kriteria', 'lowestCompliance', 'averageCompliance', 'model']))
+        $bab5 = Pdf::loadView('pdf.bab-5', compact(['periode', 'program', 'kriteria', 'lowestCompliance', 'averageCompliance']))
             ->setPaper('a4', 'portrait')
             ->output();
         $pdfMerger->addString($bab5);
 
-        $lampiran = Pdf::loadView('pdf.lampiran', compact('periode', 'program', 'model'))
+        $lampiran = Pdf::loadView('pdf.lampiran', compact('periode', 'program'))
             ->setPaper('a4', 'portrait')
             ->output();
         $pdfMerger->addString($lampiran);
