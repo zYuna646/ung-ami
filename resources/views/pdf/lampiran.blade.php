@@ -109,12 +109,16 @@
 			    ->last();
 
 			$evidences = json_decode($auditReport?->pivot?->activity_evidences);
+			$auditStatus = $model?->auditStatus()?->whereIn('instrument_id', $instruments->pluck('id'))?->get()?->last();
 		@endphp
 		<div style="page-break-inside: avoid;">
 			<h5 class="heading-1" style="margin-bottom: 0;">LAMPIRAN</h5>
-			@isset($auditReport->pivot->meeting_report)
+			@php
+				$meetingReportFile = $auditReport?->pivot?->meeting_report ?? $auditStatus?->meeting_report;
+			@endphp
+			@isset($meetingReportFile)
 				<p class="heading-2" style="text-align: center; margin-bottom: 20px;">BERITA ACARA</p>
-				<img style="width: 100%; height: auto; max-height: 88%; max-width: 100%;" src="{{ public_path('storage/audits/' . $auditReport->pivot->meeting_report) }}" />
+				<img style="width: 100%; height: auto; max-height: 88%; max-width: 100%;" src="{{ public_path('storage/audits/' . $meetingReportFile) }}" />
 			@else
 				<p style="color: red;">Berita acara belum diunggah.</p>
 			@endisset
@@ -126,6 +130,9 @@
 				@foreach ($evidences as $evidence)
 					<img style="width: 100%; height: auto;" src="{{ public_path('storage/audits/' . $evidence) }}" />
 				@endforeach
+			@elseif(!empty($auditStatus?->activity_evidence))
+				<p class="heading-2" style="text-align: center; margin-bottom: 20px;">DOKUMENTASI KEGIATAN</p>
+				<img style="width: 100%; height: auto;" src="{{ public_path('storage/audits/' . $auditStatus->activity_evidence) }}" />
 			@else
 				<p style="color: red;">Bukti kegiatan belum diunggah.</p>
 			@endif

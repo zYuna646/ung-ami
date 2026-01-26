@@ -47,6 +47,7 @@
 												<form action="{{ route('report.generate', [$periode->uuid, $program->uuid]) }}" method="POST" class="flex flex-col gap-5" enctype="multipart/form-data">
 													@csrf
 													<input type="hidden" name="periode_id" value="{{ $periode->id }}">
+													<input type="hidden" name="area" value="{{ $program->user->entityId() . $program->user->entityType() }}">
 													<x-form.input type="date" name="berita_acara_date" label="Tanggal Berita Acara" />
 													<x-form.input name="kaprodi_name" label="Nama Kaprodi" placeholder="Nama Kaprodi" />
 													<div class="flex justify-end gap-2">
@@ -127,49 +128,49 @@
 									<div x-cloak x-show="open" @click.away="open = false" class="absolute right-0 z-10 mt-2 w-32 rounded-md bg-white shadow-lg">
 										<ul class="py-1">
 											<li>
-												<a href="{{ route('report.cover', [$periode->uuid, $program->uuid]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+												<a href="{{ route('report.cover', [$periode->uuid, $program->uuid, 'area' => $program->user->entityId() . $program->user->entityType()]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
 													COVER
 													<i class="fa-solid fa-download float-end ms-2"></i>
 												</a>
 											</li>
 											<li>
-												<a href="{{ route('report.bab1', [$periode->uuid, $program->uuid]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+												<a href="{{ route('report.bab1', [$periode->uuid, $program->uuid, 'area' => $program->user->entityId() . $program->user->entityType()]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
 													BAB I
 													<i class="fa-solid fa-download float-end ms-2"></i>
 												</a>
 											</li>
 											<li>
-												<a href="{{ route('report.bab2', [$periode->uuid, $program->uuid]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+												<a href="{{ route('report.bab2', [$periode->uuid, $program->uuid, 'area' => $program->user->entityId() . $program->user->entityType()]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
 													BAB II
 													<i class="fa-solid fa-download float-end ms-2"></i>
 												</a>
 											</li>
 											<li>
-												<a href="{{ route('report.bab3', [$periode->uuid, $program->uuid]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+												<a href="{{ route('report.bab3', [$periode->uuid, $program->uuid, 'area' => $program->user->entityId() . $program->user->entityType()]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
 													BAB III
 													<i class="fa-solid fa-download float-end ms-2"></i>
 												</a>
 											</li>
 											<li>
-												<a href="{{ route('report.bab4', [$periode->uuid, $program->uuid]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+												<a href="{{ route('report.bab4', [$periode->uuid, $program->uuid, 'area' => $program->user->entityId() . $program->user->entityType()]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
 													BAB IV
 													<i class="fa-solid fa-download float-end ms-2"></i>
 												</a>
 											</li>
 											<li>
-												<a href="{{ route('report.bab5', [$periode->uuid, $program->uuid]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+												<a href="{{ route('report.bab5', [$periode->uuid, $program->uuid, 'area' => $program->user->entityId() . $program->user->entityType()]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
 													BAB V
 													<i class="fa-solid fa-download float-end ms-2"></i>
 												</a>
 											</li>
 											<li>
-												<a href="{{ route('report.lampiran', [$periode->uuid, $program->uuid]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+												<a href="{{ route('report.lampiran', [$periode->uuid, $program->uuid, 'area' => $program->user->entityId() . $program->user->entityType()]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
 													LAMPIRAN
 													<i class="fa-solid fa-download float-end ms-2"></i>
 												</a>
 											</li>
 											<li>
-												<a href="{{ route('report.full', [$periode->uuid, $program->uuid]) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+												<a href="{{ route('report.full', [$periode->uuid, $program->uuid, 'area' => $program->user->entityId() . $program->user->entityType()]) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
 													FULL
 													<i class="fa-solid fa-download float-end ms-2"></i>
 												</a>

@@ -127,8 +127,8 @@
 				<tr>
 					<th>Auditor</th>
 					<td>
-						: Ketua: {{ $instrument->entityTeam($program->user->entityId(), $program->user->entityType())->chief->user->name ?? '-' }} <br>
-						: Anggota: {{ optional($instrument->entityTeam($program->user->entityId(), $program->user->entityType()))->members?->pluck('user.name')->implode(', ') ?? '-' }}
+						: Ketua: {{ $instrument->entityTeam($model->user->entityId(), $model->user->entityType())->chief->user->name ?? '-' }} <br>
+						: Anggota: {{ optional($instrument->entityTeam($model->user->entityId(), $model->user->entityType()))->members?->pluck('user.name')->implode(', ') ?? '-' }}
 					</td>
 				</tr>
 				<tr>
@@ -145,8 +145,8 @@
 				</tr>
 				@foreach ($instrument->questions as $question)
 					@php
-						$response = $program->complianceResults->firstWhere('question_id', $question->id);
-						$auditResult = $program->auditResults->firstWhere('question_id', $question->id);
+						$response = $model->complianceResults->firstWhere('question_id', $question->id);
+						$auditResult = $model->auditResults->firstWhere('question_id', $question->id);
 					@endphp
 					@if ($auditResult?->compliance == 'Sesuai')
 						<tr>
@@ -200,8 +200,8 @@
 				<tr>
 					<th>Auditor</th>
 					<td>
-						: Ketua: {{ $instrument->entityTeam($program->user->entityId(), $program->user->entityType())->chief->user->name ?? '-' }} <br>
-						: Anggota: {{ optional($instrument->entityTeam($program->user->entityId(), $program->user->entityType()))->members?->pluck('user.name')->implode(', ') ?? '-' }}
+						: Ketua: {{ $instrument->entityTeam($model->user->entityId(), $model->user->entityType())->chief->user->name ?? '-' }} <br>
+						: Anggota: {{ optional($instrument->entityTeam($model->user->entityId(), $model->user->entityType()))->members?->pluck('user.name')->implode(', ') ?? '-' }}
 					</td>
 				</tr>
 				<tr>
@@ -218,8 +218,8 @@
 				</tr>
 				@foreach ($instrument->questions as $question)
 					@php
-						$response = $program->noncomplianceResults->firstWhere('question_id', $question->id);
-						$auditResult = $program->auditResults->firstWhere('question_id', $question->id);
+						$response = $model->noncomplianceResults->firstWhere('question_id', $question->id);
+						$auditResult = $model->auditResults->firstWhere('question_id', $question->id);
 					@endphp
 					@if ($auditResult?->compliance == 'Tidak Sesuai')
 						<tr>

@@ -81,7 +81,8 @@ class InstrumentPolicy
 
         return $user->isAuditee() &&
             ($instrument->auditStatus($area) == AuditStatus::PENDING ||
-                $instrument->auditStatus($area) == AuditStatus::REJECTED) &&
+                $instrument->auditStatus($area) == AuditStatus::REJECTED ||
+                $instrument->auditStatus($area) == AuditStatus::COMPLETE) &&
             $today->between($instrument->periode->start_date, $instrument->periode->end_date);
     }
 
@@ -98,7 +99,7 @@ class InstrumentPolicy
     public function submitAuditResults(User $user, Instrument $instrument): bool
     {
         $status = $instrument->auditStatus(request('area'));
-        return $user->isAuditor() && ($status == AuditStatus::PENDING || $status == AuditStatus::REJECTED);
+        return $user->isAuditor() && ($status == AuditStatus::PENDING || $status == AuditStatus::REJECTED || $status == AuditStatus::COMPLETE);
     }
 
     public function showComplianceResults(User $user, Instrument $instrument): bool
@@ -114,7 +115,7 @@ class InstrumentPolicy
     public function submitComplianceResults(User $user, Instrument $instrument): bool
     {
         $status = $instrument->auditStatus(request('area'));
-        return $user->isAuditor() && ($status == AuditStatus::PENDING || $status == AuditStatus::REJECTED);
+        return $user->isAuditor() && ($status == AuditStatus::PENDING || $status == AuditStatus::REJECTED || $status == AuditStatus::COMPLETE);
     }
 
     public function showNoncomplianceResults(User $user, Instrument $instrument): bool
@@ -130,7 +131,7 @@ class InstrumentPolicy
     public function submitNoncomplianceResults(User $user, Instrument $instrument): bool
     {
         $status = $instrument->auditStatus(request('area'));
-        return $user->isAuditor() && ($status == AuditStatus::PENDING || $status == AuditStatus::REJECTED);
+        return $user->isAuditor() && ($status == AuditStatus::PENDING || $status == AuditStatus::REJECTED || $status == AuditStatus::COMPLETE);
     }
 
     public function showPTK(User $user, Instrument $instrument): bool
@@ -146,7 +147,7 @@ class InstrumentPolicy
     public function submitPTK(User $user, Instrument $instrument): bool
     {
         $status = $instrument->auditStatus(request('area'));
-        return $user->isAuditor() && ($status == AuditStatus::PENDING || $status == AuditStatus::REJECTED);
+        return $user->isAuditor() && ($status == AuditStatus::PENDING || $status == AuditStatus::REJECTED || $status == AuditStatus::COMPLETE);
     }
 
     public function showPTP(User $user, Instrument $instrument): bool
@@ -162,7 +163,7 @@ class InstrumentPolicy
     public function submitPTP(User $user, Instrument $instrument): bool
     {
         $status = $instrument->auditStatus(request('area'));
-        return $user->isAuditor() && ($status == AuditStatus::PENDING || $status == AuditStatus::REJECTED);
+        return $user->isAuditor() && ($status == AuditStatus::PENDING || $status == AuditStatus::REJECTED || $status == AuditStatus::COMPLETE);
     }
 
     public function processAudit(User $user, Instrument $instrument): bool
