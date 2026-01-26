@@ -36,6 +36,8 @@ RUN mkdir -p storage/tmp \
 
 RUN composer install --no-dev --optimize-autoloader
 
+RUN npm run prod
+
 RUN npm install && npm run prod
 
 RUN php artisan optimize || true
