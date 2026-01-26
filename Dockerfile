@@ -42,10 +42,6 @@ RUN php artisan optimize || true
 
 RUN php artisan storage:link || true
 
-RUN npm run install
-
-RUN npm run prod
-
 EXPOSE 3000
 
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=3000"]
