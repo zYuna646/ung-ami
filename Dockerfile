@@ -42,6 +42,10 @@ RUN php artisan optimize || true
 
 RUN php artisan storage:link || true
 
+RUN php artisan config:clear
+RUN php artisan cache:clear
+RUN php artisan view:clear
+
 EXPOSE 3000
 
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=3000"]
